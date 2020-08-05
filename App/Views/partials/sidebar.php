@@ -14,7 +14,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/users/farmers">
+            <a class="nav-link" href="/farmers">
               <span data-feather="layers"></span>
               Farmers
             </a>

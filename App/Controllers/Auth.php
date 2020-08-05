@@ -4,10 +4,8 @@ if ( ! defined('APP_PATH')) exit("Access denied");
 Class Auth extends Controller {
     
     public function index($param=null) {
-        $view = new View();
-
+        $user_model = $this->model->load('user');
         if(isset($_POST['do_login'])) {
-            $user_model = $this->model->load('user');
             $username = $_POST['username'];
             $password = $_POST['password'];
     

@@ -1,8 +1,19 @@
 
 
 <form method="post" action="">
+<div class="form-group">
+    <label for="name">Collection Center</label>
+    <select class="form-control" name="collection_center" id="collection_center">
+      <option value="">Select Collection Center</option>
+      <?php foreach($collection_centers as $item) { ?>
+        <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
+      <?php } ?>
+      
+    </select>
+    <span class="error-message"><?= isset($errors["collection_center"]) ? $errors["collection_center"]: ""; ?></span>
+  </div>
   <div class="form-group">
-    <label for="name">Collection Center Name</label>
+    <label for="name">Farmer Name</label>
     <input value="<?= isset($_POST['name']) ? $_POST['name'] : ($record ? $record['name'] : ''); ?>" type="text" class="form-control" required id="name" name="name" placeholder="">
     <span class="error-message"><?= isset($errors["name"]) ? $errors["name"]: ""; ?></span>
   </div>
@@ -12,9 +23,9 @@
     <span class="error-message"><?= isset($errors["address"]) ? $errors["address"]: ""; ?></span>
   </div>
   <div class="form-group">
-    <label for="name">City</label>
-    <input value="<?= isset($_POST['city']) ? $_POST['city'] : ($record ? $record['city'] : ''); ?>" type="text" class="form-control" required id="city" name="city" placeholder="">
-    <span class="error-message"><?= isset($errors["city"]) ? $errors["city"]: ""; ?></span>
+    <label for="name">NIC No</label>
+    <input value="<?= isset($_POST['nic_no']) ? $_POST['nic_no'] : ($record ? $record['nic_no'] : ''); ?>" type="text" class="form-control" required id="nic_no" name="nic_no" placeholder="">
+    <span class="error-message"><?= isset($errors["nic_no"]) ? $errors["nic_no"]: ""; ?></span>
   </div>
   <div class="form-group">
     <label for="name">Phone Number</label>
@@ -22,9 +33,9 @@
     <span class="error-message"><?= isset($errors["phone"]) ? $errors["phone"]: ""; ?></span>
   </div>
   <div class="form-group">
-    <label for="name">Capacity (Metric Tons)</label>
-    <input value="<?= isset($_POST['capacity']) ? $_POST['capacity'] : ($record ? $record['capacity'] : ''); ?>" type="number" class="form-control" required id="capacity" name="capacity" placeholder="">
-    <span class="error-message"><?= isset($errors["capacity"]) ? $errors["capacity"]: ""; ?></span>
+    <label for="name">Land Size</label>
+    <input value="<?= isset($_POST['land_size']) ? $_POST['land_size'] : ($record ? $record['land_size'] : ''); ?>" type="text" class="form-control" required id="land_size" name="land_size" placeholder="">
+    <span class="error-message"><?= isset($errors["land_size"]) ? $errors["land_size"]: ""; ?></span>
   </div>
 
   <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id">

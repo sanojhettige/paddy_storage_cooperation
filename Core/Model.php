@@ -20,7 +20,7 @@ class Model {
     }
 
     public function load($model) {
-        $modelName = ucfirst($model);
+        $modelName = "Model_".ucfirst($model);
         $modelFile = ucfirst($modelName).".php";
         $modelPath = MODEL_PATH . $modelFile;
 

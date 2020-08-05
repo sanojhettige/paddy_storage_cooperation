@@ -1,6 +1,13 @@
 body {
   font-size: .875rem;
 }
+.main-container {
+  margin-top:20px;
+}
+
+.header-title {
+  margin-top: 10px;
+}
 .feather {
   width: 16px;
   height: 16px;
@@ -147,4 +154,15 @@ body {
 .navbar-nav .nav-item .nav-link {
   color: #000 !important;
   cursor: pointer !important;
+}
+
+.component-header {
+  margin-bottom: 10px !important;
+}
+.pull-right {
+  float: right !important;
+}
+
+.pull-left {
+  float: left;
 }

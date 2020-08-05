@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('APP_PATH')) exit("Access denied");
 
-Class User extends Model {
+Class Model_User extends Model {
     private $table = "users";
 
     function do_login($username=null, $password=null) {
