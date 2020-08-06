@@ -17,3 +17,18 @@ function get_post($name, $defVal = null) {
 
     return $defVal;
 }
+
+
+function is_permitted($module=null) {
+    $model = new Model();
+    $role = $_SESSION['role_id'];
+    $user = $_SESSION['user_id'];
+    $per_model = $model->load('permission');
+    $permission = false;
+    try {
+        $permission = $per_model->getIsPermittedByRole($module, $role);
+    } catch(Exception $e) {
+        $permission = false;
+    }
+    return $permission;
+}

@@ -6,7 +6,11 @@
     <select class="form-control" name="collection_center" id="collection_center">
       <option value="">Select Collection Center</option>
       <?php foreach($collection_centers as $item) { ?>
-        <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
+        <?php if($_POST['collection_center'] === $item['id'] || $record['collection_center_id'] === $item['id']) { ?>
+            <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
+        <?php } else { ?>
+            <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
+        <?php } ?>
       <?php } ?>
       
     </select>

@@ -12,6 +12,7 @@ Class Auth extends Controller {
             $res = $user_model->do_login($username, $password);
             if($res) {
                 $_SESSION['user_id'] = $res['id'];
+                $_SESSION['role_id'] = $res['role_id'];
                 $_SESSION['logged_in'] = true;
                 $_SESSION['logged_in_time'] = date("Y-m-d h:i:s");
                 header("Location: /dashboard");

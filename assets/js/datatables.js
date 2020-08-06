@@ -26,36 +26,62 @@ $(document).ready(function() {
           }
       ]
     } );
+
+
+    $('#farmer_datatable').DataTable( {
+      "processing": true,
+      "serverSide": true,
+      "ajax": {
+        "url": $("#farmer_datatable").attr("url"),
+        "type": "POST"
+      },
+      "columns": [
+        { "data": "id" },
+        { "data": "name" },
+        { "data": "nic_no" },
+        { "data": "phone_number" },
+        { "data": "land_size" },
+        { "data": "modified_at" },
+        { "data": null, 
+          className: "center", 
+          render: function(data, type) {
+            let content = "";
+            content = '<div class="btn-group" role="group" aria-label="Action Button">';
+            content += '<a href="/farmers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+            content += '<a href="/farmers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+            content += '</div>';
+            return content;
+          }
+        }
+    ]
   } );
 
 
-
-  $(document).ready(function() {
-    $('#farmer_datatable').DataTable( {
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-          "url": $("#farmer_datatable").attr("url"),
-          "type": "POST"
-        },
-        "columns": [
-          { "data": "id" },
-          { "data": "name" },
-          { "data": "nic_no" },
-          { "data": "phone_number" },
-          { "data": "land_size" },
-          { "data": "modified_at" },
-          { "data": null, 
-            className: "center", 
-            render: function(data, type) {
-              let content = "";
-              content = '<div class="btn-group" role="group" aria-label="Action Button">';
-              content += '<a href="/farmers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
-              content += '<a href="/farmers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
-              content += '</div>';
-              return content;
-            }
-          }
-      ]
-    } );
+  $('#users_datatable').DataTable( {
+    "processing": true,
+    "serverSide": true,
+    "ajax": {
+      "url": $("#users_datatable").attr("url"),
+      "type": "POST"
+    },
+    "columns": [
+      { "data": "id" },
+      { "data": "name" },
+      { "data": "email" },
+      { "data": "user_role" },
+      { "data": "collection_center" },
+      { "data": "modified_at" },
+      { "data": null, 
+        className: "center", 
+        render: function(data, type) {
+          let content = "";
+          content = '<div class="btn-group" role="group" aria-label="Action Button">';
+          content += '<a href="/users/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+          content += '<a href="/users/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+          content += '</div>';
+          return content;
+        }
+      }
+  ]
+} );
   } );

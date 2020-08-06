@@ -22,7 +22,7 @@ Class App {
         if(!empty($routes[3])) {
             $params = $routes[3];
         }
-        
+        $url_ctrl = $controller;
         $controller = str_replace(" ","",ucwords(str_replace('-', ' ', $controller)));
 
         $ctrlFile = $controller.".php";
@@ -39,10 +39,15 @@ Class App {
         $ctrl = new $controller;
         
         if(method_exists($ctrl, $method)) {
-            $ctrl->$method($params);
+            if(is_permitted($url_ctrl.'-'.$method) || $url_ctrl === "dashboard") {
+                $ctrl->$method($params);
+            } else {
+                App::ErrorPage("No Permission for ".$ctrl." ".$method);
+            }
+            
         } else {
             // Redirect to error page if method not found
-            App::ErrorPage("No Method Found".$method);
+            App::ErrorPage("No Method Found ".ucfirst($method));
         }
     }
 

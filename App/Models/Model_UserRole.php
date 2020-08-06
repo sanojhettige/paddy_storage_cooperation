@@ -1,12 +1,12 @@
 <?php
 if ( ! defined('APP_PATH')) exit("Access denied");
 
-Class UserRole extends Model {
+Class Model_UserRole extends Model {
     private $table = "user_roles";
 
-    function getUserRoles($limit=20, $offset=0) {
+    function getUserRoles() {
         $query = $this->db->prepare("SELECT * from ".$this->table);
-        $query->execute(array(":limit" => $limit));
+        $query->execute();
 
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
