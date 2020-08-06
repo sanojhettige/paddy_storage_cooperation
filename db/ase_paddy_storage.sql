@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 05, 2020 at 10:51 AM
+-- Generation Time: Aug 06, 2020 at 11:01 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -162,6 +162,58 @@ CREATE TABLE `payments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `permissions`
+--
+
+CREATE TABLE `permissions` (
+  `role_id` int(11) NOT NULL,
+  `collection-centers-index` int(1) NOT NULL,
+  `collection-centers-add` int(1) NOT NULL,
+  `collection-centers-edit` int(1) NOT NULL,
+  `collection-centers-delete` int(1) NOT NULL,
+  `farmers-index` int(1) NOT NULL,
+  `farmers-add` int(1) NOT NULL,
+  `farmers-edit` int(1) NOT NULL,
+  `farmers-delete` int(1) NOT NULL,
+  `purchases-index` int(1) NOT NULL,
+  `purchases-add` int(1) NOT NULL,
+  `purchases-edit` int(1) NOT NULL,
+  `purchases-delete` int(1) NOT NULL,
+  `sales-index` int(1) NOT NULL,
+  `sales-add` int(1) NOT NULL,
+  `sales-edit` int(1) NOT NULL,
+  `sales-delete` int(1) NOT NULL,
+  `transfers-index` int(1) NOT NULL,
+  `transfers-add` int(1) NOT NULL,
+  `transfers-edit` int(1) NOT NULL,
+  `transfers-delete` int(1) NOT NULL,
+  `vehicles-index` int(1) NOT NULL,
+  `vehicles-add` int(1) NOT NULL,
+  `vehicles-edit` int(1) NOT NULL,
+  `vehicles-delete` int(1) NOT NULL,
+  `users-index` int(1) NOT NULL,
+  `users-add` int(1) NOT NULL,
+  `users-edit` int(1) NOT NULL,
+  `users-delete` int(1) NOT NULL,
+  `collection-centers-get_collection_centers` int(1) NOT NULL,
+  `users-get_users` int(1) NOT NULL,
+  `vehicles-get_vehicles` int(1) NOT NULL,
+  `farmers-get_farmers` int(1) NOT NULL,
+  `sales-get_sales` int(1) NOT NULL,
+  `purchases-get_purchases` int(1) NOT NULL,
+  `transfers-get_transfers` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `permissions`
+--
+
+INSERT INTO `permissions` (`role_id`, `collection-centers-index`, `collection-centers-add`, `collection-centers-edit`, `collection-centers-delete`, `farmers-index`, `farmers-add`, `farmers-edit`, `farmers-delete`, `purchases-index`, `purchases-add`, `purchases-edit`, `purchases-delete`, `sales-index`, `sales-add`, `sales-edit`, `sales-delete`, `transfers-index`, `transfers-add`, `transfers-edit`, `transfers-delete`, `vehicles-index`, `vehicles-add`, `vehicles-edit`, `vehicles-delete`, `users-index`, `users-add`, `users-edit`, `users-delete`, `collection-centers-get_collection_centers`, `users-get_users`, `vehicles-get_vehicles`, `farmers-get_farmers`, `sales-get_sales`, `purchases-get_purchases`, `transfers-get_transfers`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `purchases`
 --
 
@@ -242,7 +294,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `collection_center_id`, `name`, `email`, `password`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 1, 0, 'Sanoj Hettige', 'sanojhettige@gmail.com', '123', '2020-08-02 15:10:38', 1, '2020-08-02 09:40:38', 1, 1);
+(1, 1, 0, 'Sanoj Hettige', 'sanojhettige@gmail.com', '123', '2020-08-02 15:10:38', 1, '2020-08-02 09:40:38', 1, 1),
+(2, 2, 2, 'Test', 'test@jadf.sdfdf', '12345', '2020-08-06 07:46:28', 1, '2020-08-06 14:16:28', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -260,12 +313,13 @@ CREATE TABLE `user_roles` (
 --
 
 INSERT INTO `user_roles` (`id`, `name`) VALUES
-(5, 'Clerk'),
-(3, 'Collection Officer'),
-(6, 'Farmer'),
-(2, 'Finance Officer'),
-(1, 'Manager'),
-(4, 'Storekeeper');
+(1, 'Admin'),
+(6, 'Clerk'),
+(4, 'Collection Officer'),
+(7, 'Farmer'),
+(3, 'Finance Officer'),
+(2, 'Manager'),
+(5, 'Storekeeper');
 
 -- --------------------------------------------------------
 
@@ -330,6 +384,12 @@ ALTER TABLE `paddy_prices`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD UNIQUE KEY `role_id` (`role_id`);
 
 --
 -- Indexes for table `purchases`
@@ -438,13 +498,13 @@ ALTER TABLE `transfers`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_roles`
 --
 ALTER TABLE `user_roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `vehicles`
