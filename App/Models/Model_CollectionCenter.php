@@ -56,7 +56,7 @@ Class Model_CollectionCenter extends Model {
             $sql = "UPDATE `".$this->table."` SET `name`= '".$data['name']."' , `address` = '".$data['address']."' , `city` = '".$data['city']."', `phone_number` = '".$data['phone']."', `capacity` = '".$data['capacity']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
-            $stm = $this->db->prepare("INSERT INTO ".$this->table." (name,address,city,phone_number,capacity,created_by,created_at,modified_by,status) VALUES (:collection_center, :name, :address, :city, :phone_number, :capacity, :created_by, :created_at, :modified_by, :status)") ;
+            $stm = $this->db->prepare("INSERT INTO ".$this->table." (name,address,city,phone_number,capacity,created_by,created_at,modified_by,status) VALUES (:name, :address, :city, :phone_number, :capacity, :created_by, :created_at, :modified_by, :status)") ;
             return $stm->execute(array(
                 ':name' => $data['name'],
                 ':address' => $data['address'], 

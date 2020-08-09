@@ -5,7 +5,17 @@ Class CollectionCenters extends Controller {
 
     public function index($param=null) {
         $this->data['title'] = "Collection centers";
+        $this->data['assets'] = array(
+            'css'=>array(
+                '/assets/css/datatables.min.css'
+            ),
+            'js'=>array(
+                '/assets/js/datatables.min.js',
+                '/assets/js/datatables.js'
+            )
+        );
         $this->view->render("collection_centers/index", "template", $this->data);
+        clear_messages();
     }
 
     public function get_collection_centers() {
@@ -62,9 +72,13 @@ Class CollectionCenters extends Controller {
             } else {
                 $res = $model->createOrUpdateRecord($_POST["_id"], $_POST);
                 if($res) {
-                    $this->data['success_message'] = "Collection Center Successfully saved.";
+                    $message = "Collection Center Successfully saved.";
+                    $this->data['success_message'] = $message;
+                    $_SESSION['success_message'] = $message;
+                    header("Location: /collection-centers");
                 } else {
-                    $this->data['error_message'] = "Unable to save Collection Center data, please try again.";
+                    $message = "Unable to save Collection Center data, please try again.";
+                    $this->data['error_message'] = $message;
                 }
             }
         } catch(Exception $e) {
@@ -90,7 +104,10 @@ Class CollectionCenters extends Controller {
         try {
             $res = $model->deleteCollectionCenterById($id);
             if($res) {
-                $this->data['success_message'] = "Collection Center Successfully deleted.";
+                $message = "Collection Center Successfully deleted.";
+                $this->data['success_message'] = $message;
+                $_SESSION['success_message'] = $message;
+                header("Location: /collection-centers");
             } else {
                 $this->data['error_message'] = "Unable to delete Collection Center data, please try again.";
             }

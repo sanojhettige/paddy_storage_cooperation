@@ -22,6 +22,16 @@ Class Model_Farmer extends Model {
         return array("count"=>$count, "data"=>$records);
     }
 
+    function getFarmerDropdownData() {
+        $sql = "SELECT id,name from ".$this->table." where status = 1";
+        $sql .=" order by name desc";
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
     function getFarmerById($id=null) {
         $query = $this->db->prepare("SELECT * from ".$this->table." where id='".$id."'");
         $query->execute(); 

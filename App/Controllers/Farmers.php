@@ -5,7 +5,17 @@ Class Farmers extends Controller {
 
     public function index($param=null) {
         $this->data['title'] = "Farmers";
+        $this->data['assets'] = array(
+            'css'=>array(
+                '/assets/css/datatables.min.css'
+            ),
+            'js'=>array(
+                '/assets/js/datatables.min.js',
+                '/assets/js/datatables.js'
+            )
+        );
         $this->view->render("farmers/index", "template", $this->data);
+        clear_messages();
     }
 
     public function get_farmers() {
@@ -70,7 +80,10 @@ Class Farmers extends Controller {
             } else {
                 $res = $model->createOrUpdateRecord($_POST["_id"], $_POST);
                 if($res) {
-                    $this->data['success_message'] = "Farmer Successfully saved.";
+                    $message = "Farmer Successfully saved.";
+                    $this->data['success_message'] = $message;
+                    $_SESSION['success_message'] = $message;
+                    header("Location: /farmers");
                 } else {
                     $this->data['error_message'] = "Unable to save Farmer data, please try again.";
                 }
@@ -98,7 +111,10 @@ Class Farmers extends Controller {
         try {
             $res = $model->deleteFarmerById($id);
             if($res) {
-                $this->data['success_message'] = "Farmer successfully deleted.";
+                $message = "Farmer successfully deleted.";
+                $this->data['success_message'] = $message;
+                $_SESSION['success_message'] = $message;
+                header("Location: /farmers");
             } else {
                 $this->data['error_message'] = "Unable to delete Farmer data, please try again.";
             }

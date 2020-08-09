@@ -39,15 +39,15 @@ Class App {
         $ctrl = new $controller;
         
         if(method_exists($ctrl, $method)) {
-            if(is_permitted($url_ctrl.'-'.$method) || $url_ctrl === "dashboard") {
+            if(is_permitted($url_ctrl.'-'.$method) || $url_ctrl === "dashboard" || ($url_ctrl === "Auth" || $url_ctrl === "auth")) {
                 $ctrl->$method($params);
             } else {
-                App::ErrorPage("No Permission for ".$ctrl." ".$method);
+                App::ErrorPage("No Permission");
             }
             
         } else {
             // Redirect to error page if method not found
-            App::ErrorPage("No Method Found ".ucfirst($method));
+            App::ErrorPage("No Method Found ".($method));
         }
     }
 

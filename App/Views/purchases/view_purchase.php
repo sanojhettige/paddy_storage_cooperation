@@ -3,16 +3,12 @@
 <form method="post" action="">
     <table class="table table-bordered">
     <tr>
-        <td>Name</td>
-        <td><?= ($record ? $record['name'] : ''); ?></td>
+        <td>Vehicle Reg. Number</td>
+        <td><?= ($record ? $record['registration_number'] : ''); ?></td>
     </tr>
     <tr>
-        <td>Email</td>
-        <td><?= ($record ? $record['email'] : ''); ?></td>
-    </tr>
-    <tr>
-        <td>Collection Center</td>
-        <td><?= ($record ? $record['collection_center']['name'] : ''); ?></td>
+        <td>Vehicle Type</td>
+        <td><?= ($record ? $record['vehicle_type'] : ''); ?></td>
     </tr>
 </table>
 
@@ -21,6 +17,6 @@
   <?php if($record['id'] > 0 && $canDelete) { ?>
   <button type="submit" name="submit" value="1" class="btn btn-danger">Delete</button>
   <?php } ?>
-  <a href="/users" class="btn btn-default">Back To List</a>
+  <a href="/vehicles" class="btn btn-default">Back To List</a>
   
 </form>

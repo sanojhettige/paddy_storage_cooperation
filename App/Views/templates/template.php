@@ -8,13 +8,18 @@
     <meta name="author" content="">
 
      <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
-
-    <!-- Datatables styles -->
-    <link rel="stylesheet" type="text/css" href="/assets/css/datatables.min.css"/>
-
+    <link href="/assets/css/bootstrap.css" rel="stylesheet" />
+    <link ref="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" />
+    <link ref="stylesheet" href="/assets/css/jquery.toast.min.css" />
     <!-- App style CSS -->
     <link href="/assets/css/style.css" rel="stylesheet" >
+
+    <!-- Page Specific Style -->
+    <?php if(isset($assets['css'])) { 
+        foreach($assets['css'] as $css) {
+            echo "<link rel='stylesheet' href='".$css."' />\r\n\t";
+        }
+    } ?>
 
 </head>
 <body>
@@ -28,12 +33,14 @@
 
                 <!-- Flush Message Section -->
                 <?php
-                if(isset($success_message)) {
-                    echo '<div class="alert alert-success" role="alert">'.$success_message.'</div>';
+                if(isset($success_message) || isset($_SESSION['success_message'])) {
+                    $s_message = $success_message ? $success_message : $_SESSION['success_message'];
+                    echo '<div class="alert alert-success" role="alert">'.$s_message.'</div>';
                 }
 
-                if(isset($error_message)) {
-                    echo '<div class="alert alert-danger" role="alert">'.$error_message.'</div>';
+                if(isset($error_message) || isset($_SESSION['error_message'])) {
+                    $e_message = $error_message ? $error_message : $_SESSION['error_message'];
+                    echo '<div class="alert alert-danger" role="alert">'.$e_message.'</div>';
                 }
                 ?>
                 <div class="main-container">
@@ -44,8 +51,16 @@
         </div>
     </div>
     <script src="/assets/js/jquery-3.5.1.min.js"></script>
-    <script type="text/javascript" src="/assets/js/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="/assets/js/app.js"></script>
-    <script src="/assets/js/datatables.js"></script>
+    <script src="/assets/js/jquery.toast.min.js"></script>
+    <!-- Page Specific Js -->
+    <?php if(isset($assets['js'])) { 
+        foreach($assets['js'] as $js) {
+            echo "<script src='".$js."' ></script>\r\n\t";
+        }
+    } ?>
+
 </body>
 </html>

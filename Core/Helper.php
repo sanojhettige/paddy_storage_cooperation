@@ -21,14 +21,27 @@ function get_post($name, $defVal = null) {
 
 function is_permitted($module=null) {
     $model = new Model();
-    $role = $_SESSION['role_id'];
-    $user = $_SESSION['user_id'];
+    $role = isset($_SESSION['role_id']) ? $_SESSION['role_id']: 0;
+    $user = isset($_SESSION['user_id']) ? $_SESSION['user_id']: 0;
     $per_model = $model->load('permission');
     $permission = false;
     try {
-        $permission = $per_model->getIsPermittedByRole($module, $role);
+        if($user && $role) {
+            $permission = $per_model->getIsPermittedByRole($module, $role);
+        } else {
+            $permission = false;
+        }
     } catch(Exception $e) {
         $permission = false;
     }
     return $permission;
+}
+
+function clear_messages() {
+    $_SESSION['success_message'] = null;
+    $_SESSION['error_message'] = null;
+}
+
+function passwor_encrypt($password=NULL) {
+    return $password;
 }

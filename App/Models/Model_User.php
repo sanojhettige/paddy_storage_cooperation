@@ -46,7 +46,17 @@ Class Model_User extends Model {
     }
 
     function deleteUserById($id=NULL) {
+        $sql = "DELETE FROM ".$this->table." WHERE id = :id";
+        $stm = $this->db->prepare($sql);
+        $idToDelete = $id;
+        $stm->bindParam(':id', $idToDelete);
+        $stm->execute();
 
+        if(!$stm->rowCount()) {
+            return false;
+        }
+
+        return true;
     }
 
     function createOrUpdateRecord($id=NULL, $data=[]) {

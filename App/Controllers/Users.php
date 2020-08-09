@@ -5,7 +5,17 @@ Class Users extends Controller {
 
     public function index($param=null) {
         $this->data['title'] = "Users";
+        $this->data['assets'] = array(
+            'css'=>array(
+                '/assets/css/datatables.min.css'
+            ),
+            'js'=>array(
+                '/assets/js/datatables.min.js',
+                '/assets/js/datatables.js'
+            )
+        );
         $this->view->render("users/index", "template", $this->data);
+        clear_messages();
     }
 
     public function get_users() {
@@ -72,7 +82,10 @@ Class Users extends Controller {
             }  else {
                 $res = $model->createOrUpdateRecord($_POST["_id"], $_POST);
                 if($res) {
-                    $this->data['success_message'] = "User Successfully saved.";
+                    $message = "User Successfully saved.";
+                    $this->data['success_message'] = $message;
+                    $_SESSION['success_message'] = $message;
+                    header("Location: /users");
                 } else {
                     $this->data['error_message'] = "Unable to save user data, please try again.";
                 }
@@ -86,8 +99,13 @@ Class Users extends Controller {
     public function delete($id=NULL) {
         $this->data['title'] = "Delete User";
         $user_model = $this->model->load('user');
+        $center_model = $this->model->load('collectionCenter');
+        
         if($id > 0) {
             $this->data['record'] = $user_model->getUserById($id);
+            if($this->data['record']['collection_center_id'] > 0) {
+                $this->data['record']['collection_center'] = $center_model->getCollectionCenterById($this->data['record']['collection_center_id']);
+            }
         }
         if(isset($_POST['submit']) && $this->data['record']) {
             $this->doDelete($user_model, $id);
@@ -100,7 +118,10 @@ Class Users extends Controller {
         try {
             $res = $model->deleteUserById($id);
             if($res) {
-                $this->data['success_message'] = "User successfully deleted.";
+                $message = "User successfully deleted.";
+                $this->data['success_message'] = $message;
+                $_SESSION['success_message'] = $message;
+                header("Location: /users");
             } else {
                 $this->data['error_message'] = "Unable to delete user data, please try again.";
             }
