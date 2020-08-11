@@ -230,5 +230,61 @@ Class Model_Settings extends Model {
         $row = $query->fetch();
         return $row ? $row : $def_price;
     }
+
+    function getCashRecordTypeById($id=NULL) {
+        $query = $this->db->prepare("SELECT * from collection_center_cash_book where id='".$id."'");
+        $query->execute(); 
+        return $query->fetch();
+    }
+
+    function createOrUpdateCashRecord($id=NULL, $data=[]) {
+        if($id > 0) {
+            $sql = "UPDATE `collection_center_cash_book` SET `collection_center_id`='".$data['collection_center_id']."', `amount`= '".$data['amount']."', `notes`='".$data['notes']."'  WHERE `id` = ".$id ;
+            return $this->db->exec($sql);
+        } else {
+            $stm = $this->db->prepare("INSERT INTO collection_center_cash_book (collection_center_id,amount, received_date, notes, created_at,created_by,modified_by, status) VALUES (:collection_center_id, :amount, :received_date, :notes, :created_at, :created_by, :modified_by, :status)") ;
+            return $stm->execute(array(
+                ':collection_center_id' => $data['collection_center_id'],
+                ':amount' => $data['amount'],
+                // ':received_date' => $data['received_date'],
+                ':notes' => $data['notes'],
+                ':created_at' => date("Y-m-d h:i:s"),
+                ':created_by' => get_user_id(),
+                ':modified_by' => get_user_id(),
+                ':status' => 0
+            ));
+        }
+    }
+
+    function getCashRecords($limit=20, $offset=0, $search=null) {
+        $sql = "SELECT c.name as collection_center,cc.id,cc.amount,cc.collection_center_id,cc.received_date,cc.modified_at,cc.status from collection_center_cash_book cc left join collection_centers c on c.id = cc.collection_center_id where cc.status != 4";
+
+        if($search) {
+            $sql .=" and amount like '%".$search."%'";
+        }
+
+        $sql .=" order by id desc";
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $count = $query->rowCount();
+        $query->execute(array(":limit" => $limit));
+        $records = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        return array("count"=>$count, "data"=>$records);
+    }
+
+    function deleteCashRecordById($id=NULL) {
+        $sql = "DELETE FROM collection_center_cash_book WHERE id = :id and status <= 0";
+        $stm = $this->db->prepare($sql);
+        $stm->bindParam(':id', $id);
+        $stm->execute();
+
+        if(!$stm->rowCount()) {
+            return false;
+        }
+
+        return true;
+    }
     
 }

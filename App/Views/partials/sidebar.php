@@ -75,6 +75,11 @@
             </a>
             <ul class="nav-second-level collapse" id="settings">
             <li class="nav-item">
+                <a class="nav-link" href="/settings/money_allocation">
+                  <span class="nav-link-text">Money Allocation</span>
+                </a>
+              </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/settings/paddy_seasons">
                   <span class="nav-link-text">Seasons</span>
                 </a>

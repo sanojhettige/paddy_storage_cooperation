@@ -285,4 +285,43 @@ $('#transfer_datatable').DataTable( {
 } );
 
 
+
+$('#money_datatable').DataTable( {
+  "processing": true,
+  "serverSide": true,
+  "ajax": {
+    "url": $("#money_datatable").attr("url"),
+    "type": "POST"
+  },
+  "columns": [
+    { "data": "id" },
+    { "data": "collection_center" },
+    { "data": "amount" },
+    { "data": null, render: function(data, type) {
+      if(data.status === 1) {
+        return "Collected";
+      }
+      return "Pending";
+    } },
+    { "data": "modified_at" },
+    { "data": null, 
+      className: "center", 
+      render: function(data, type) {
+        let content = "";
+        content = '<div class="btn-group" role="group" aria-label="Action Button">';
+        if(data.status <= 0) {
+          content += '<a href="/settings/money_allocation/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+        
+          content += '<a href="/settings/delete_money_allocation/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+        
+        }
+        content += '</div>';
+        return content;
+      }
+    }
+]
+} );
+
+
+
   } );

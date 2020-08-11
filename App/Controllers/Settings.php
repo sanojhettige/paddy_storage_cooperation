@@ -338,4 +338,86 @@ Class Settings extends Controller {
         }
         header("Location: ".BASE_URL."/settings/vehicle_types");
     }
+
+    // Money allocation
+    
+    public function money_allocation($id=null) {
+        $this->data['title'] = "Money Allocation";
+        $settings_model = $this->model->load('settings');
+        $cc_model = $this->model->load('collectionCenter');
+        $this->data['assets'] = array(
+            'css'=>array(
+                BASE_URL.'/assets/css/datatables.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css',
+            ),
+            'js'=>array(
+                BASE_URL.'/assets/js/datatables.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js',
+                BASE_URL.'/assets/js/datatables.js'
+            )
+        );
+        if($id > 0) {
+            $this->data['record'] = $settings_model->getCashRecordTypeById($id);
+        }
+
+        if(get_post('submit')) {
+            $this->createOrUpdateCashRecord($settings_model);
+        }
+        $this->data['collection_centers'] = $cc_model->getCollectionCentersDropdownData();
+        $this->view->render("settings/money_allocation", "template", $this->data);
+        clear_messages();
+    }
+
+    private function createOrUpdateCashRecord($model=null) {
+        $this->data['errors'] = array();
+        try {
+            if(empty(get_post("collection_center_id"))) {
+                $this->data['errors']["collection_center_id"] = "Collection center is required";
+            } elseif(empty(get_post("amount"))) {
+                $this->data['errors']["amount"] = "Amount is required";
+            } else {
+                $res = $model->createOrUpdateCashRecord(get_post("_id"), $_POST);
+                if($res) {
+                    $this->data['success_message'] = "Cash record Successfully saved.";
+                } else {
+                    $this->data['error_message'] = "Unable to save record, please try again.";
+                }
+            }
+        } catch(Exception $e) {
+            $this->data['error_message'] = $e;
+        }
+    }
+
+    public function get_money_allocations() {
+        $data = array();
+        $offset = get_post('start');
+        $limit = get_post('length');
+        $search = get_post('search')['value'];
+        $settings_model = $this->model->load('settings');
+
+        $res = $settings_model->getCashRecords($limit,$offset, $search);
+        $data["draw"] = get_post("draw");
+        $data["recordsTotal"] = $res["count"];
+        $data["recordsFiltered"] = 0;
+        $data["data"] = $res["data"];
+        $data['search'] = $search;
+        echo json_encode($data);
+    }
+
+    public function delete_money_allocation($id=NULL) {
+        $settings_model = $this->model->load('settings');
+        try {
+            $res = $settings_model->deleteCashRecordById($id);
+            if($res) {
+                $_SESSION['success_message'] = "Record successfully deleted.";
+            } else {
+                $_SESSION['error_message'] = "Unable to delete record, please try again.";
+            }
+        } catch(Exception $e) {
+            $_SESSION['error_message'] = $e;
+        }
+        header("Location: ".BASE_URL."/settings/money_allocation");
+    }
 }
