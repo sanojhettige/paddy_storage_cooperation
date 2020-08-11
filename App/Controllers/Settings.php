@@ -15,11 +15,11 @@ Class Settings extends Controller {
                 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js',
-                '/assets/js/dailyPrices.js'
+                BASE_URL.'/assets/js/dailyPrices.js'
             ),
             'css'=>array(
                 'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css',
-                '/assets/css/fullcalendar.css'
+                BASE_URL.'/assets/css/fullcalendar.css'
             )
         );
         $this->data['categories'] = $settings_model->getPaddyCategories(100,0)['data'];
@@ -28,8 +28,8 @@ Class Settings extends Controller {
 
     public function get_daily_prices() {
         $data = array();
-        $start = $_POST['start'];
-        $ends = $_POST['end'];
+        $start = get_post('start');
+        $ends = get_post('end');
         $settings_model = $this->model->load('settings');
 
         $prices = $settings_model->getDailyPrices($start, $ends);
@@ -53,13 +53,13 @@ Class Settings extends Controller {
         $settings_model = $this->model->load('settings');
         $this->data['errors'] = array();
         try {
-            if(empty($_POST["date"])) {
+            if(empty(get_post("date"))) {
                 $this->data['errors']["date"] = "Date is required";
-            } elseif(empty($_POST["paddy_category_id"])) {
+            } elseif(empty(get_post("paddy_category_id"))) {
                 $this->data['errors']["paddy_category_id"] = "Category is required";
-            } elseif(empty($_POST["selling_price"])) {
+            } elseif(empty(get_post("selling_price"))) {
                 $this->data['errors']["selling_price"] = "Selling price is required";
-            } elseif(empty($_POST["buying_price"])) {
+            } elseif(empty(get_post("buying_price"))) {
                 $this->data['errors']["buying_price"] = "buying_price is required";
             } else {
                 $_POST['date'] = date("Y-m-d", strtotime($_POST['date']));
@@ -69,7 +69,7 @@ Class Settings extends Controller {
                     $this->data['success'] = 0;
                     $this->data['error'] = 1;
                 } else {
-                    $res = $settings_model->createOrUpdatePrice($_POST["_id"], $_POST);
+                    $res = $settings_model->createOrUpdatePrice(get_post("_id"), $_POST);
 
                     if($res) {
                         $this->data['message'] = "Price Successfully saved.";
@@ -101,19 +101,33 @@ Class Settings extends Controller {
 
     }
 
+    public function get_paddy_rate() {
+        $date = get_post('date');
+        $category = get_post('paddy_type');
+        $settings_model = $this->model->load('settings');
+        $rate = $settings_model->getPaddyRateByCategoryAndDate($date, $category);
+
+        echo json_encode($rate);
+    }
+
     // Paddy Seasons
     public function paddy_seasons($id=null) {
-        $this->data['title'] = "Paddy Categories";
+        $this->data['title'] = "Paddy Seasons";
         $settings_model = $this->model->load('settings');
         $this->data['assets'] = array(
             'css'=>array(
-                '/assets/css/datatables.min.css'
+                BASE_URL.'/assets/css/datatables.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css',
             ),
             'js'=>array(
                 '/assets/js/datatables.min.js',
-                '/assets/js/datatables.js'
+                'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js',
+                BASE_URL.'/assets/js/datatables.js'
             )
         );
+
         if($id > 0) {
             $this->data['record'] = $settings_model->getSeasonById($id);
         }
@@ -129,10 +143,12 @@ Class Settings extends Controller {
     private function createOrUpdateSeason($model=null) {
         $this->data['errors'] = array();
         try {
-            if(empty($_POST["name"])) {
+            if(empty(get_post("name"))) {
                 $this->data['errors']["name"] = "Name is required";
+            } elseif(empty(get_post("period"))) {
+                $this->data['errors']["period"] = "Period is required";
             } else {
-                $res = $model->createOrUpdateSeason($_POST["_id"], $_POST);
+                $res = $model->createOrUpdateSeason(get_post("_id"), $_POST);
                 if($res) {
                     $this->data['success_message'] = "Season Successfully saved.";
                 } else {
@@ -146,13 +162,13 @@ Class Settings extends Controller {
 
     public function get_paddy_seasons() {
         $data = array();
-        $offset = $_POST['start'];
-        $limit = $_POST['length'];
-        $search = $_POST['search']['value'];
+        $offset = get_post('start');
+        $limit = get_post('length');
+        $search = get_post('search')['value'];
         $settings_model = $this->model->load('settings');
 
         $res = $settings_model->getPaddySeasons($limit,$offset, $search);
-        $data["draw"] = $_POST["draw"];
+        $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
         $data["data"] = $res["data"];
@@ -172,7 +188,7 @@ Class Settings extends Controller {
         } catch(Exception $e) {
             $_SESSION['error_message'] = $e;
         }
-        header("Location: /settings/paddy_seasons");
+        header("Location: ".BASE_URL."/settings/paddy_seasons");
     }
 
     // Paddy Types
@@ -181,18 +197,18 @@ Class Settings extends Controller {
         $settings_model = $this->model->load('settings');
         $this->data['assets'] = array(
             'css'=>array(
-                '/assets/css/datatables.min.css'
+                BASE_URL.'/assets/css/datatables.min.css'
             ),
             'js'=>array(
-                '/assets/js/datatables.min.js',
-                '/assets/js/datatables.js'
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
             )
         );
         if($id > 0) {
             $this->data['record'] = $settings_model->getCategoryById($id);
         }
 
-        if(isset($_POST['submit'])) {
+        if(get_post('submit')) {
             $this->createOrUpdateCategory($settings_model);
         }
 
@@ -203,10 +219,10 @@ Class Settings extends Controller {
     private function createOrUpdateCategory($model=null) {
         $this->data['errors'] = array();
         try {
-            if(empty($_POST["name"])) {
+            if(empty(get_post("name"))) {
                 $this->data['errors']["name"] = "Name is required";
             } else {
-                $res = $model->createOrUpdateCategory($_POST["_id"], $_POST);
+                $res = $model->createOrUpdateCategory(get_post("_id"), $_POST);
                 if($res) {
                     $this->data['success_message'] = "Category Successfully saved.";
                 } else {
@@ -220,13 +236,13 @@ Class Settings extends Controller {
 
     public function get_paddy_categories() {
         $data = array();
-        $offset = $_POST['start'];
-        $limit = $_POST['length'];
-        $search = $_POST['search']['value'];
+        $offset = get_post('start');
+        $limit = get_post('length');
+        $search = get_post('search')['value'];
         $settings_model = $this->model->load('settings');
 
         $res = $settings_model->getPaddyCategories($limit,$offset, $search);
-        $data["draw"] = $_POST["draw"];
+        $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
         $data["data"] = $res["data"];
@@ -246,7 +262,7 @@ Class Settings extends Controller {
         } catch(Exception $e) {
             $_SESSION['error_message'] = $e;
         }
-        header("Location: /settings/paddy_categories");
+        header("Location: ".BASE_URL."/settings/paddy_categories");
     }
 
     // Vehicle Types
@@ -255,18 +271,18 @@ Class Settings extends Controller {
         $settings_model = $this->model->load('settings');
         $this->data['assets'] = array(
             'css'=>array(
-                '/assets/css/datatables.min.css'
+                BASE_URL.'/assets/css/datatables.min.css'
             ),
             'js'=>array(
-                '/assets/js/datatables.min.js',
-                '/assets/js/datatables.js'
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
             )
         );
         if($id > 0) {
             $this->data['record'] = $settings_model->getVehicleTypeById($id);
         }
 
-        if(isset($_POST['submit'])) {
+        if(get_post('submit')) {
             $this->createOrUpdateVehicleType($settings_model);
         }
 
@@ -277,10 +293,10 @@ Class Settings extends Controller {
     private function createOrUpdateVehicleType($model=null) {
         $this->data['errors'] = array();
         try {
-            if(empty($_POST["name"])) {
+            if(empty(get_post("name"))) {
                 $this->data['errors']["name"] = "Name is required";
             } else {
-                $res = $model->createOrUpdateVehicleType($_POST["_id"], $_POST);
+                $res = $model->createOrUpdateVehicleType(get_post("_id"), $_POST);
                 if($res) {
                     $this->data['success_message'] = "Vehicle type Successfully saved.";
                 } else {
@@ -294,13 +310,13 @@ Class Settings extends Controller {
 
     public function get_vehicle_types() {
         $data = array();
-        $offset = $_POST['start'];
-        $limit = $_POST['length'];
-        $search = $_POST['search']['value'];
+        $offset = get_post('start');
+        $limit = get_post('length');
+        $search = get_post('search')['value'];
         $settings_model = $this->model->load('settings');
 
         $res = $settings_model->getVehicleTypes($limit,$offset, $search);
-        $data["draw"] = $_POST["draw"];
+        $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
         $data["data"] = $res["data"];
@@ -320,6 +336,6 @@ Class Settings extends Controller {
         } catch(Exception $e) {
             $_SESSION['error_message'] = $e;
         }
-        header("Location: /settings/vehicle_types");
+        header("Location: ".BASE_URL."/settings/vehicle_types");
     }
 }

@@ -3,7 +3,7 @@
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
       <div class="sidebar-sticky pt-3">
 
-      
+      <?php $userRole = get_user_role(); ?>
         <ul class="nav nav-list flex-column">
           <li class="nav-item">
             <a class="nav-link active" href="/dashboard">
@@ -11,42 +11,63 @@
               Dashboard
             </a>
           </li>
+          <?php if(in_array($userRole, array(1,2))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/collection-centers">
               <span data-feather="file"></span>
               Collection Centers
             </a>
           </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(1,2,4))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/farmers">
               <span data-feather="layers"></span>
               Farmers
             </a>
           </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(1,2,4,3))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/purchases">
               <span data-feather="shopping-cart"></span>
               Purchases
             </a>
           </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(4,3))) { ?>
+          <li class="nav-item">
+            <a class="nav-link" href="/purchases/daily_prices">
+              <span data-feather="shopping-cart"></span>
+              Daily Prices
+            </a>
+          </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(1,2))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/sales">
               <span data-feather="users"></span>
               Sales
             </a>
           </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(1,2))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/transfers">
               <span data-feather="bar-chart-2"></span>
               Transfers
             </a>
           </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(1,2))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/vehicles">
               <span data-feather="layers"></span>
               Vehicles
             </a>
           </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(1,2))) { ?>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" data-target="#settings">
               <span data-feather="layers"></span>
@@ -77,12 +98,15 @@
             </ul>
 
           </li>
+          <?php } ?>
+          <?php if(in_array($userRole, array(1,2))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/users">
               <span data-feather="layers"></span>
               Users
             </a>
           </li>
+          <?php } ?>
 
         </ul>
 

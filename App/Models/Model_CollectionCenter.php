@@ -11,6 +11,10 @@ Class Model_CollectionCenter extends Model {
             $sql .=" and name like '%".$search."%' or address like '%".$search."%' or city like '%".$search."%'";
         }
 
+        if(get_user_role() === 4) {
+            $sql .=" and id = ".get_assigned_center();
+        }
+
         $sql .=" order by modified_at desc";
 
         $query = $this->db->prepare($sql);
@@ -24,6 +28,11 @@ Class Model_CollectionCenter extends Model {
 
     public function getCollectionCentersDropdownData() {
         $sql = "SELECT id,name from ".$this->table." where status = 1";
+
+        if(get_user_role() === 4) {
+            $sql .=" and id = ".get_assigned_center();
+        }
+
         $sql .=" order by name asc";
         $query = $this->db->prepare($sql);
         $query->execute();
@@ -38,17 +47,9 @@ Class Model_CollectionCenter extends Model {
     }
 
     function deleteCollectionCenterById($id=NULL) {
-        $sql = "DELETE FROM ".$this->table." WHERE id = :id";
-        $stm = $this->db->prepare($sql);
-        $idToDelete = $id;
-        $stm->bindParam(':id', $idToDelete);
-        $stm->execute();
-
-        if(!$stm->rowCount()) {
-            return false;
-        }
-
-        return true;
+        $date = date("Y-m-d h:i:s");
+        $sql = "UPDATE `".$this->table."` SET `status`='4', `modified_at`= '".$date."'  WHERE `id` = ".$id ;
+        return $this->db->exec($sql);
     } 
 
     function createOrUpdateRecord($id=NULL, $data=[]) {

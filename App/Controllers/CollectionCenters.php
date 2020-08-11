@@ -7,11 +7,11 @@ Class CollectionCenters extends Controller {
         $this->data['title'] = "Collection centers";
         $this->data['assets'] = array(
             'css'=>array(
-                '/assets/css/datatables.min.css'
+                BASE_URL.'/assets/css/datatables.min.css'
             ),
             'js'=>array(
-                '/assets/js/datatables.min.js',
-                '/assets/js/datatables.js'
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
             )
         );
         $this->view->render("collection_centers/index", "template", $this->data);
@@ -20,13 +20,13 @@ Class CollectionCenters extends Controller {
 
     public function get_collection_centers() {
         $data = array();
-        $offset = $_POST['start'];
-        $limit = $_POST['length'];
-        $search = $_POST['search']['value'];
+        $offset = get_post('start');
+        $limit = get_post('length');
+        $search = get_post('search')['value'];
         $center_model = $this->model->load('collectionCenter');
 
         $res = $center_model->getCollectionCenters($limit,$offset, $search);
-        $data["draw"] = $_POST["draw"];
+        $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
         $data["data"] = $res["data"];
@@ -38,7 +38,7 @@ Class CollectionCenters extends Controller {
         $this->data['record'] = array();
         $this->data['title'] = "Add collection center";
         $center_model = $this->model->load('collectionCenter');
-        if(isset($_POST['submit'])) {
+        if(get_post('submit')) {
             $this->createOrUpdateCC($center_model);
         }
         $this->view->render("collection_centers/cc_form", "template", $this->data);
@@ -50,7 +50,7 @@ Class CollectionCenters extends Controller {
         if($id > 0) {
             $this->data['record'] = $center_model->getCollectionCenterById($id);
         }
-        if(isset($_POST['submit'])) {
+        if(get_post('submit')) {
             $this->createOrUpdateCC($center_model);
         }
         $this->view->render("collection_centers/cc_form", "template", $this->data);
@@ -59,23 +59,23 @@ Class CollectionCenters extends Controller {
     private function createOrUpdateCC($model=null) {
         $this->data['errors'] = array();
         try {
-            if(empty($_POST["name"])) {
+            if(empty(get_post("name"))) {
                 $this->data['errors']["name"] = "Name is required";
-            } elseif(empty($_POST["address"])) {
+            } elseif(empty(get_post("address"))) {
                 $this->data['errors']["address"] = "Address is required";
-            } elseif(empty($_POST["city"])) {
+            } elseif(empty(get_post("city"))) {
                 $this->data['errors']["city"] = "City is required";
-            } elseif(empty($_POST["phone"])) {
+            } elseif(empty(get_post("phone"))) {
                 $this->data['errors']["phone"] = "Phone Number is required";
-            } elseif(empty($_POST["capacity"])) {
+            } elseif(empty(get_post("capacity"))) {
                 $this->data['errors']["capacity"] = "Capacity is required";
             } else {
-                $res = $model->createOrUpdateRecord($_POST["_id"], $_POST);
+                $res = $model->createOrUpdateRecord(get_post("_id"), $_POST);
                 if($res) {
                     $message = "Collection Center Successfully saved.";
                     $this->data['success_message'] = $message;
                     $_SESSION['success_message'] = $message;
-                    header("Location: /collection-centers");
+                    header("Location: ".BASE_URL."/collection-centers");
                 } else {
                     $message = "Unable to save Collection Center data, please try again.";
                     $this->data['error_message'] = $message;
@@ -93,7 +93,7 @@ Class CollectionCenters extends Controller {
         if($id > 0) {
             $this->data['record'] = $center_model->getCollectionCenterById($id);
         }
-        if(isset($_POST['submit']) && $this->data['record']) {
+        if(get_post('submit') && $this->data['record']) {
             $this->doDelete($center_model, $id);
         }
         $this->data['canDelete'] = true;
@@ -107,7 +107,7 @@ Class CollectionCenters extends Controller {
                 $message = "Collection Center Successfully deleted.";
                 $this->data['success_message'] = $message;
                 $_SESSION['success_message'] = $message;
-                header("Location: /collection-centers");
+                header("Location: ".BASE_URL."/collection-centers");
             } else {
                 $this->data['error_message'] = "Unable to delete Collection Center data, please try again.";
             }

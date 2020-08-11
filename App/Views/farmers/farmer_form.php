@@ -6,7 +6,7 @@
     <select class="form-control" name="collection_center" id="collection_center">
       <option value="">Select Collection Center</option>
       <?php foreach($collection_centers as $item) { ?>
-        <?php if($_POST['collection_center'] === $item['id'] || $record['collection_center_id'] === $item['id']) { ?>
+        <?php if(get_post('collection_center') === $item['id'] || $record['collection_center_id'] === $item['id']) { ?>
             <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
         <?php } else { ?>
             <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
@@ -18,27 +18,27 @@
   </div>
   <div class="form-group">
     <label for="name">Farmer Name</label>
-    <input value="<?= isset($_POST['name']) ? $_POST['name'] : ($record ? $record['name'] : ''); ?>" type="text" class="form-control" required id="name" name="name" placeholder="">
+    <input value="<?= get_post('name') ? get_post('name') : ($record ? $record['name'] : ''); ?>" type="text" class="form-control" required id="name" name="name" placeholder="">
     <span class="error-message"><?= isset($errors["name"]) ? $errors["name"]: ""; ?></span>
   </div>
   <div class="form-group">
     <label for="address">Address</label>
-    <textarea class="form-control" required id="address" name="address" rows="2"><?= isset($_POST['address']) ? $_POST['address'] : ($record ? $record['address'] : ''); ?></textarea>
+    <textarea class="form-control" required id="address" name="address" rows="2"><?= get_post('address') ? get_post('address') : ($record ? $record['address'] : ''); ?></textarea>
     <span class="error-message"><?= isset($errors["address"]) ? $errors["address"]: ""; ?></span>
   </div>
   <div class="form-group">
     <label for="name">NIC No</label>
-    <input value="<?= isset($_POST['nic_no']) ? $_POST['nic_no'] : ($record ? $record['nic_no'] : ''); ?>" type="text" class="form-control" required id="nic_no" name="nic_no" placeholder="">
+    <input value="<?= get_post('nic_no') ? get_post('nic_no') : ($record ? $record['nic_no'] : ''); ?>" type="text" class="form-control" required id="nic_no" name="nic_no" placeholder="">
     <span class="error-message"><?= isset($errors["nic_no"]) ? $errors["nic_no"]: ""; ?></span>
   </div>
   <div class="form-group">
     <label for="name">Phone Number</label>
-    <input value="<?= isset($_POST['phone']) ? $_POST['phone'] : ($record ? $record['phone_number'] : ''); ?>" type="text" class="form-control" required id="phone" name="phone" placeholder="">
+    <input value="<?= get_post('phone') ? get_post('phone') : ($record ? $record['phone_number'] : ''); ?>" type="text" class="form-control" required id="phone" name="phone" placeholder="">
     <span class="error-message"><?= isset($errors["phone"]) ? $errors["phone"]: ""; ?></span>
   </div>
   <div class="form-group">
     <label for="name">Land Size</label>
-    <input value="<?= isset($_POST['land_size']) ? $_POST['land_size'] : ($record ? $record['land_size'] : ''); ?>" type="text" class="form-control" required id="land_size" name="land_size" placeholder="">
+    <input value="<?= get_post('land_size') ? get_post('land_size') : ($record ? $record['land_size'] : ''); ?>" type="text" class="form-control" required id="land_size" name="land_size" placeholder="">
     <span class="error-message"><?= isset($errors["land_size"]) ? $errors["land_size"]: ""; ?></span>
   </div>
 

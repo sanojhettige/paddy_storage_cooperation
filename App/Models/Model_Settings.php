@@ -120,7 +120,7 @@ Class Model_Settings extends Model {
     }
 
     function getPaddySeasons($limit=20, $offset=0, $search=null) {
-        $sql = "SELECT id,name,description from paddy_seasons";
+        $sql = "SELECT id,name,description,period from paddy_seasons";
 
         if($search) {
             $sql .=" and name like '%".$search."%'";
@@ -145,12 +145,13 @@ Class Model_Settings extends Model {
 
     public function createOrUpdateSeason($id=NULL, $data=[]) {
         if($id > 0) {
-            $sql = "UPDATE `paddy_seasons` SET `name`='".$data['name']."', `description`= '".$data['description']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `paddy_seasons` SET `name`='".$data['name']."', `period`='".$data['period']."', `description`= '".$data['description']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
-            $stm = $this->db->prepare("INSERT INTO paddy_seasons (name,description) VALUES (:name, :description)") ;
+            $stm = $this->db->prepare("INSERT INTO paddy_seasons (name,period,description) VALUES (:name, :period, :description)") ;
             return $stm->execute(array(
                 ':name' => $data['name'],
+                ':period' => $data['period'],
                 ':description' => $data['description']
             ));
         }
@@ -219,6 +220,15 @@ Class Model_Settings extends Model {
         }
 
         return true;
+    }
+
+    function getPaddyRateByCategoryAndDate($date=NULL, $category=NULL) {
+        $def_price = array("buying_price" => 0,"selling_price" => 0);
+        $sql = "SELECT buying_price,selling_price from paddy_prices where paddy_category_id='".$category."' and date='".$date."'";
+        $query = $this->db->prepare($sql);
+        $query->execute(); 
+        $row = $query->fetch();
+        return $row ? $row : $def_price;
     }
     
 }

@@ -13,16 +13,17 @@ Class Auth extends Controller {
             if($res) {
                 $_SESSION['user_id'] = $res['id'];
                 $_SESSION['role_id'] = $res['role_id'];
+                $_SESSION['assigned_center'] = $res['collection_center_id'];
                 $_SESSION['logged_in'] = true;
                 $_SESSION['logged_in_time'] = date("Y-m-d h:i:s");
-                header("Location: /dashboard");
+                header("Location: ".BASE_URL."/dashboard");
             } else {
                 $this->data['message'] = "Invalid username or password";
             }
         }
 
         if($_SESSION['logged_in'] && $user_model->getUserById($_SESSION['user_id'])) {
-            header("Location: /dashboard");
+            header("Location: ".BASE_URL."/dashboard");
         }
         
         $this->view->render("auth/login", "auth", $this->data);
@@ -31,6 +32,6 @@ Class Auth extends Controller {
     public function logout() {
         session_start();
         session_destroy();
-        header("Location: /");
+        header("Location: ".BASE_URL);
     }
 }

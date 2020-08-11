@@ -24,6 +24,7 @@ $(document).ready(function(){
               editable: false,
               header: {
                   left: 'title',
+                  center: 'month,agendaWeek',
                   right: 'today prev,next'
               },
               events: {
@@ -39,7 +40,11 @@ $(document).ready(function(){
               },
               eventRender: function(event, element) {
                 },
-              dayClick: function() {
+              dayClick: function(event) {
+                $('#dailyPriceForm').trigger("reset");
+                if(event._d) {
+                  $('#date').val(moment(event._d).format("YYYY-MM-DD"));
+                }
                   $('#modal-add-price').modal();
               },
               eventClick: function(row, jsEvent, view) {
@@ -48,7 +53,7 @@ $(document).ready(function(){
                   } else {
                     $("#price_title").html("Add Price");
                   }
-                      $('#date').val(row.start);
+                      $('#date').val(moment(event.start).format("YYYY-MM-DD"));
                       $('#selling_price').val(row.selling_price);
                       $('#buying_price').val(row.buying_price);
                       $('#_id').val(row.id);

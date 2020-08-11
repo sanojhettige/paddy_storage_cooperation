@@ -14,7 +14,7 @@
                 <th>Name</th>
                 <th>City</th>
                 <th>Address</th>
-                <th>Capacity</th>
+                <th>Capacity(Mt.)</th>
                 <th>Last Update Date</th>
                 <th>Actions</th>
             </tr>
@@ -25,7 +25,7 @@
                 <th>Name</th>
                 <th>City</th>
                 <th>Address</th>
-                <th>Capacity</th>
+                <th>Capacity(Mt.)</th>
                 <th>Last Update Date</th>
                 <th>Actions</th>
             </tr>

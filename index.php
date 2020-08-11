@@ -3,6 +3,7 @@ if(!isset($_SESSION)) {
     session_start();
 }
 define("APP_PATH", "App");
+define("BASE_URL", "http://esoft-paddy.local:8888");
 
 require_once "App/Config/config.php";
 require_once "Core/Controller.php";

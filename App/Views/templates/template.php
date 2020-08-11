@@ -9,7 +9,7 @@
 
      <!-- Bootstrap core CSS -->
     <link href="/assets/css/bootstrap.css" rel="stylesheet" />
-    <link ref="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" />
+    <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.min.css">
     <link ref="stylesheet" href="/assets/css/jquery.toast.min.css" />
     <!-- App style CSS -->
     <link href="/assets/css/style.css" rel="stylesheet" >

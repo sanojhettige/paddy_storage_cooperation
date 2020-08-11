@@ -21,8 +21,8 @@ function get_post($name, $defVal = null) {
 
 function is_permitted($module=null) {
     $model = new Model();
-    $role = isset($_SESSION['role_id']) ? $_SESSION['role_id']: 0;
-    $user = isset($_SESSION['user_id']) ? $_SESSION['user_id']: 0;
+    $role = get_user_role();
+    $user = get_user_id();
     $per_model = $model->load('permission');
     $permission = false;
     try {
@@ -45,3 +45,29 @@ function clear_messages() {
 function passwor_encrypt($password=NULL) {
     return $password;
 }
+
+function sale_status() {
+    return array(
+        array(
+            "id"=>1,
+            "name"=>"Pending",
+        ),
+        array(
+            "id"=>2,
+            "name"=>"Completed",
+        )
+    );
+}
+
+function get_user_role() {
+    return ($_SESSION['role_id']) ? $_SESSION['role_id']: null;
+}
+function get_assigned_center() {
+    return ($_SESSION['assigned_center']) ? $_SESSION['assigned_center']: null;
+}
+function get_user_id() {
+    return ($_SESSION['user_id']) ? $_SESSION['user_id']: null;
+}
+function formatCurrency($dollars){
+    return 'Rs '.sprintf('%0.2f', $dollars);
+  }

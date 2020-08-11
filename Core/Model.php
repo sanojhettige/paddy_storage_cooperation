@@ -25,7 +25,7 @@ class Model {
         $modelPath = MODEL_PATH . $modelFile;
 
         if(file_exists($modelPath)) {
-            include $modelPath;
+            require_once $modelPath;
 
             return new $modelName;
         } else {

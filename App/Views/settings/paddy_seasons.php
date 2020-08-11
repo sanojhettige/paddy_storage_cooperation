@@ -16,6 +16,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Period</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -23,6 +24,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Period</th>
                     <th>Actions</th>
                 </tr>
             </tfoot>
@@ -35,12 +37,17 @@
 <form method="post" action="">
   <div class="form-group">
     <label for="name">Name</label>
-    <input value="<?= isset($_POST['name']) ? $_POST['name'] : ($record ? $record['name'] : ''); ?>" type="text" class="form-control" required id="name" name="name" placeholder="">
+    <input value="<?= get_post('name') ? get_post('name') : ($record ? $record['name'] : ''); ?>" type="text" class="form-control" required id="name" name="name" placeholder="">
     <span class="error-message"><?= isset($errors["name"]) ? $errors["name"]: ""; ?></span>
   </div>
   <div class="form-group">
+    <label for="name">Period</label>
+    <input value="<?= get_post('period') ? get_post('period') : ($record ? $record['period'] : ''); ?>" type="text" class="form-control datetimepicker" data-date-format="MM" required id="period" name="period" placeholder="">
+    <span class="error-message"><?= isset($errors["period"]) ? $errors["period"]: ""; ?></span>
+  </div>
+  <div class="form-group">
     <label for="description">Description</label>
-    <textarea class="form-control" id="description" name="description" rows="2"><?= isset($_POST['description']) ? $_POST['description'] : ($record ? $record['description'] : ''); ?></textarea>
+    <textarea class="form-control" id="description" name="description" rows="2"><?= get_post('description') ? get_post('description') : ($record ? $record['description'] : ''); ?></textarea>
     <span class="error-message"><?= isset($errors["description"]) ? $errors["description"]: ""; ?></span>
   </div>
 

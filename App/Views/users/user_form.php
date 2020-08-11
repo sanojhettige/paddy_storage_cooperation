@@ -6,7 +6,7 @@
     <select class="form-control" name="collection_center" id="collection_center">
       <option value="">Select Collection Center</option>
       <?php foreach($collection_centers as $item) { ?>
-        <?php if($_POST['collection_center'] === $item['id'] || $record['collection_center_id'] === $item['id']) { ?>
+        <?php if(get_post('collection_center') === $item['id'] || $record['collection_center_id'] === $item['id']) { ?>
             <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
         <?php } else { ?>
             <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
@@ -21,7 +21,7 @@
     <select class="form-control" name="role_id" id="role_id">
       <option value="">Select Role</option>
       <?php foreach($user_roles as $item) { ?>
-        <?php if($_POST['role_id'] === $item['id'] || $record['role_id'] === $item['id']) { ?>
+        <?php if(get_post('role_id') === $item['id'] || $record['role_id'] === $item['id']) { ?>
             <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
         <?php } else { ?>
             <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
@@ -33,12 +33,12 @@
   </div>
   <div class="form-group">
     <label for="name">Full Name</label>
-    <input value="<?= isset($_POST['name']) ? $_POST['name'] : ($record ? $record['name'] : ''); ?>" type="text" class="form-control" required id="name" name="name" placeholder="">
+    <input value="<?= get_post('name') ? get_post('name') : ($record ? $record['name'] : ''); ?>" type="text" class="form-control" required id="name" name="name" placeholder="">
     <span class="error-message"><?= isset($errors["name"]) ? $errors["name"]: ""; ?></span>
   </div>
   <div class="form-group">
     <label for="name">Email Address</label>
-    <input value="<?= isset($_POST['email']) ? $_POST['email'] : ($record ? $record['email'] : ''); ?>" type="email" class="form-control" required id="email" name="email" placeholder="">
+    <input value="<?= get_post('email') ? get_post('email') : ($record ? $record['email'] : ''); ?>" type="email" class="form-control" required id="email" name="email" placeholder="">
     <span class="error-message"><?= isset($errors["email"]) ? $errors["email"]: ""; ?></span>
   </div>
   <div class="form-group">

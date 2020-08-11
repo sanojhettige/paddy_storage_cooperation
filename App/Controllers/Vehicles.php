@@ -7,11 +7,11 @@ Class Vehicles extends Controller {
         $this->data['title'] = "Vehicles";
         $this->data['assets'] = array(
             'css'=>array(
-                '/assets/css/datatables.min.css'
+                BASE_URL.'/assets/css/datatables.min.css'
             ),
             'js'=>array(
-                '/assets/js/datatables.min.js',
-                '/assets/js/datatables.js'
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
             )
         );
         $this->view->render("vehicles/index", "template", $this->data);
@@ -73,7 +73,7 @@ Class Vehicles extends Controller {
                     $message = "Vehicle Successfully saved.";
                     $this->data['success_message'] = $message;
                     $_SESSION['success_message'] = $message;
-                    header("Location: /vehicles");
+                    header("Location: ".BASE_URL."/vehicles");
                 } else {
                     $this->data['error_message'] = "Unable to save vehicle data, please try again.";
                 }
@@ -104,7 +104,7 @@ Class Vehicles extends Controller {
                 $message = "Vehicle successfully deleted.";
                 $this->data['success_message'] = $message;
                 $_SESSION['success_message'] = $message;
-                header("Location: /vehicles");
+                header("Location: ".BASE_URL."/vehicles");
             } else {
                 $this->data['error_message'] = "Unable to delete vehicle data, please try again.";
             }

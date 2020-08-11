@@ -7,11 +7,11 @@ Class Users extends Controller {
         $this->data['title'] = "Users";
         $this->data['assets'] = array(
             'css'=>array(
-                '/assets/css/datatables.min.css'
+                BASE_URL.'/assets/css/datatables.min.css'
             ),
             'js'=>array(
-                '/assets/js/datatables.min.js',
-                '/assets/js/datatables.js'
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
             )
         );
         $this->view->render("users/index", "template", $this->data);
@@ -20,13 +20,13 @@ Class Users extends Controller {
 
     public function get_users() {
         $data = array();
-        $offset = $_POST['start'];
-        $limit = $_POST['length'];
-        $search = $_POST['search']['value'];
+        $offset = get_post('start');
+        $limit = get_post('length');
+        $search = get_post('search')['value'];
         $user_model = $this->model->load('user');
 
         $res = $user_model->getUsers($limit,$offset, $search);
-        $data["draw"] = $_POST["draw"];
+        $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
         $data["data"] = $res["data"];
@@ -40,7 +40,7 @@ Class Users extends Controller {
         $user_model = $this->model->load('user');
         $role_model = $this->model->load('userRole');
         $cc_model = $this->model->load("collectionCenter");
-        if(isset($_POST['submit'])) {
+        if(get_post('submit')) {
             $this->createOrUpdateUser($user_model);
         }
         $this->data['user_roles'] = $role_model->getUserRoles();
@@ -56,7 +56,7 @@ Class Users extends Controller {
         if($id > 0) {
             $this->data['record'] = $user_model->getUserById($id);
         }
-        if(isset($_POST['submit'])) {
+        if(get_post('submit')) {
             $this->createOrUpdateUser($user_model);
         }
         $this->data['user_roles'] = $role_model->getUserRoles();
@@ -67,25 +67,25 @@ Class Users extends Controller {
     private function createOrUpdateUser($model=null) {
         $this->data['errors'] = array();
         try {
-            if(empty($_POST["name"])) {
+            if(empty(get_post("name"))) {
                 $this->data['errors']["name"] = "Name is required";
-            } elseif(empty($_POST["role_id"])) {
+            } elseif(empty(get_post("role_id"))) {
                 $this->data['errors']["address"] = "User role is required";
-            } elseif(empty($_POST["email"])) {
+            } elseif(empty(get_post("email"))) {
                 $this->data['errors']["email"] = "Email is required";
-            } elseif(empty($_POST["password"])) {
+            } elseif(empty(get_post("password"))) {
                 $this->data['errors']["password"] = "Password is required";
-            } elseif(empty($_POST["cpassword"])) {
+            } elseif(empty(get_post("cpassword"))) {
                 $this->data['errors']["cpassword"] = "Password confirmation is required";
-            } elseif($_POST["cpassword"] !== $_POST["password"]) {
+            } elseif(get_post("cpassword") !== get_post("password")) {
                 $this->data['errors']["cpassword"] = "Password confirmation not matched.";
             }  else {
-                $res = $model->createOrUpdateRecord($_POST["_id"], $_POST);
+                $res = $model->createOrUpdateRecord(get_post("_id"), $_POST);
                 if($res) {
                     $message = "User Successfully saved.";
                     $this->data['success_message'] = $message;
                     $_SESSION['success_message'] = $message;
-                    header("Location: /users");
+                    header("Location: ".BASE_URL."/users");
                 } else {
                     $this->data['error_message'] = "Unable to save user data, please try again.";
                 }
@@ -107,7 +107,7 @@ Class Users extends Controller {
                 $this->data['record']['collection_center'] = $center_model->getCollectionCenterById($this->data['record']['collection_center_id']);
             }
         }
-        if(isset($_POST['submit']) && $this->data['record']) {
+        if(get_post('submit') && $this->data['record']) {
             $this->doDelete($user_model, $id);
         }
         $this->data['canDelete'] = true;
@@ -121,7 +121,7 @@ Class Users extends Controller {
                 $message = "User successfully deleted.";
                 $this->data['success_message'] = $message;
                 $_SESSION['success_message'] = $message;
-                header("Location: /users");
+                header("Location: ".BASE_URL."/users");
             } else {
                 $this->data['error_message'] = "Unable to delete user data, please try again.";
             }

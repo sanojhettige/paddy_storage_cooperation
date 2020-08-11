@@ -47,8 +47,11 @@ $(document).ready(function() {
           render: function(data, type) {
             let content = "";
             content = '<div class="btn-group" role="group" aria-label="Action Button">';
-            content += '<a href="/farmers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
-            content += '<a href="/farmers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+            if(data.edit)
+              content += '<a href="/farmers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+            
+            if(data.delete)
+              content += '<a href="/farmers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
             content += '</div>';
             return content;
           }
@@ -121,6 +124,7 @@ $('#seasons_datatable').DataTable( {
   "columns": [
     { "data": "id" },
     { "data": "name" },
+    { "data": "period" },
     { "data": null, 
       className: "center", 
       render: function(data, type) {
@@ -208,8 +212,71 @@ $('#purchase_datatable').DataTable( {
       render: function(data, type) {
         let content = "";
         content = '<div class="btn-group" role="group" aria-label="Action Button">';
-        content += '<a href="/settings/vehicle_types/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
-        content += '<a href="/settings/delete_vehicle_type/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+        if(data.edit) {
+          content += '<a href="/purchases/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+        }
+        if(data.delete) {
+          content += '<a href="/purchases/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+        }
+        if(data.pay) {
+          content += '<a href="/purchases/pay/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm">Pay</a>';
+        }
+        content += '</div>';
+        return content;
+      }
+    }
+]
+} );
+
+
+$('#sale_datatable').DataTable( {
+  "processing": true,
+  "serverSide": true,
+  "ajax": {
+    "url": $("#sale_datatable").attr("url"),
+    "type": "POST"
+  },
+  "columns": [
+    { "data": "id" },
+    { "data": "buyer_name" },
+    { "data": "collection_center"},
+    { "data": "issue_date"},
+    { "data": null, 
+      className: "center", 
+      render: function(data, type) {
+        let content = "";
+        content = '<div class="btn-group" role="group" aria-label="Action Button">';
+        content += '<a href="/sales/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+        content += '<a href="/sales/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+        content += '</div>';
+        return content;
+      }
+    }
+]
+} );
+
+
+
+$('#transfer_datatable').DataTable( {
+  "processing": true,
+  "serverSide": true,
+  "ajax": {
+    "url": $("#transfer_datatable").attr("url"),
+    "type": "POST"
+  },
+  "columns": [
+    { "data": "id" },
+    { "data": "from_center" },
+    { "data": "to_center"},
+    { "data": "transfer_date"},
+    { "data": "transfer_status"},
+    { "data": null, 
+      className: "center", 
+      render: function(data, type) {
+        let content = "";
+        content = '<div class="btn-group" role="group" aria-label="Action Button">';
+        content += '<a href="/transfers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+        content += '<a href="/transfers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
         content += '</div>';
         return content;
       }
