@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 12, 2020 at 03:02 PM
+-- Generation Time: Aug 12, 2020 at 03:25 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -625,19 +625,29 @@ ALTER TABLE `collection_centers`
 -- Indexes for table `collection_center_cash_book`
 --
 ALTER TABLE `collection_center_cash_book`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `collection_center_id` (`collection_center_id`);
+
+--
+-- Indexes for table `collection_center_stocks`
+--
+ALTER TABLE `collection_center_stocks`
+  ADD KEY `collection_center_id` (`collection_center_id`),
+  ADD KEY `paddy_category_id` (`paddy_category_id`);
 
 --
 -- Indexes for table `farmers`
 --
 ALTER TABLE `farmers`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `collection_center_id` (`collection_center_id`);
 
 --
 -- Indexes for table `paddy_buying_allocations`
 --
 ALTER TABLE `paddy_buying_allocations`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `collection_center_id` (`collection_center_id`);
 
 --
 -- Indexes for table `paddy_categories`
@@ -649,14 +659,16 @@ ALTER TABLE `paddy_categories`
 -- Indexes for table `paddy_expections`
 --
 ALTER TABLE `paddy_expections`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `collection_center_id` (`collection_center_id`);
 
 --
 -- Indexes for table `paddy_prices`
 --
 ALTER TABLE `paddy_prices`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`);
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `paddy_category_id` (`paddy_category_id`);
 
 --
 -- Indexes for table `paddy_seasons`
@@ -668,56 +680,73 @@ ALTER TABLE `paddy_seasons`
 -- Indexes for table `pay_orders`
 --
 ALTER TABLE `pay_orders`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `purchase_id` (`purchase_id`),
+  ADD KEY `farmer_user_id` (`farmer_user_id`);
 
 --
 -- Indexes for table `permissions`
 --
 ALTER TABLE `permissions`
-  ADD UNIQUE KEY `role_id` (`role_id`);
+  ADD KEY `role_id` (`role_id`);
 
 --
 -- Indexes for table `purchases`
 --
 ALTER TABLE `purchases`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `farmer_id` (`farmer_id`),
+  ADD KEY `collection_center_id` (`collection_center_id`);
 
 --
 -- Indexes for table `purchase_items`
 --
 ALTER TABLE `purchase_items`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `purchase_id` (`purchase_id`),
+  ADD KEY `paddy_category_id` (`paddy_category_id`);
 
 --
 -- Indexes for table `sales`
 --
 ALTER TABLE `sales`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `buyer_id` (`buyer_id`),
+  ADD KEY `collection_center_id` (`collection_center_id`);
 
 --
 -- Indexes for table `sale_items`
 --
 ALTER TABLE `sale_items`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sale_id` (`sale_id`),
+  ADD KEY `paddy_category_id` (`paddy_category_id`);
 
 --
 -- Indexes for table `transfers`
 --
 ALTER TABLE `transfers`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `from_center_id` (`from_center_id`),
+  ADD KEY `to_center_id` (`to_center_id`),
+  ADD KEY `vehicle_id` (`vehicle_id`);
 
 --
 -- Indexes for table `transfer_items`
 --
 ALTER TABLE `transfer_items`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `transfer_id` (`transfer_id`),
+  ADD KEY `paddy_category_id` (`paddy_category_id`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `collection_center_id` (`collection_center_id`),
+  ADD KEY `role_id` (`role_id`);
 
 --
 -- Indexes for table `user_roles`
@@ -731,7 +760,8 @@ ALTER TABLE `user_roles`
 --
 ALTER TABLE `vehicles`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `registration_number` (`registration_number`);
+  ADD UNIQUE KEY `registration_number` (`registration_number`),
+  ADD KEY `vehicle_type` (`vehicle_type`);
 
 --
 -- Indexes for table `vehicle_types`
@@ -856,6 +886,114 @@ ALTER TABLE `vehicles`
 --
 ALTER TABLE `vehicle_types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `collection_center_cash_book`
+--
+ALTER TABLE `collection_center_cash_book`
+  ADD CONSTRAINT `collection_center_cash_book_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`);
+
+--
+-- Constraints for table `collection_center_stocks`
+--
+ALTER TABLE `collection_center_stocks`
+  ADD CONSTRAINT `collection_center_stocks_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`),
+  ADD CONSTRAINT `collection_center_stocks_ibfk_2` FOREIGN KEY (`paddy_category_id`) REFERENCES `paddy_categories` (`id`);
+
+--
+-- Constraints for table `farmers`
+--
+ALTER TABLE `farmers`
+  ADD CONSTRAINT `farmers_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`);
+
+--
+-- Constraints for table `paddy_buying_allocations`
+--
+ALTER TABLE `paddy_buying_allocations`
+  ADD CONSTRAINT `paddy_buying_allocations_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`);
+
+--
+-- Constraints for table `paddy_expections`
+--
+ALTER TABLE `paddy_expections`
+  ADD CONSTRAINT `paddy_expections_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`);
+
+--
+-- Constraints for table `paddy_prices`
+--
+ALTER TABLE `paddy_prices`
+  ADD CONSTRAINT `paddy_prices_ibfk_1` FOREIGN KEY (`paddy_category_id`) REFERENCES `paddy_categories` (`id`);
+
+--
+-- Constraints for table `pay_orders`
+--
+ALTER TABLE `pay_orders`
+  ADD CONSTRAINT `pay_orders_ibfk_1` FOREIGN KEY (`farmer_user_id`) REFERENCES `farmers` (`id`),
+  ADD CONSTRAINT `pay_orders_ibfk_2` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`);
+
+--
+-- Constraints for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD CONSTRAINT `permissions_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`id`);
+
+--
+-- Constraints for table `purchases`
+--
+ALTER TABLE `purchases`
+  ADD CONSTRAINT `purchases_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`),
+  ADD CONSTRAINT `purchases_ibfk_2` FOREIGN KEY (`farmer_id`) REFERENCES `farmers` (`id`);
+
+--
+-- Constraints for table `purchase_items`
+--
+ALTER TABLE `purchase_items`
+  ADD CONSTRAINT `purchase_items_ibfk_1` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`),
+  ADD CONSTRAINT `purchase_items_ibfk_2` FOREIGN KEY (`paddy_category_id`) REFERENCES `paddy_categories` (`id`);
+
+--
+-- Constraints for table `sales`
+--
+ALTER TABLE `sales`
+  ADD CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`);
+
+--
+-- Constraints for table `sale_items`
+--
+ALTER TABLE `sale_items`
+  ADD CONSTRAINT `sale_items_ibfk_1` FOREIGN KEY (`sale_id`) REFERENCES `sales` (`id`),
+  ADD CONSTRAINT `sale_items_ibfk_2` FOREIGN KEY (`paddy_category_id`) REFERENCES `paddy_categories` (`id`);
+
+--
+-- Constraints for table `transfers`
+--
+ALTER TABLE `transfers`
+  ADD CONSTRAINT `transfers_ibfk_1` FOREIGN KEY (`from_center_id`) REFERENCES `collection_centers` (`id`),
+  ADD CONSTRAINT `transfers_ibfk_2` FOREIGN KEY (`to_center_id`) REFERENCES `collection_centers` (`id`),
+  ADD CONSTRAINT `transfers_ibfk_3` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`id`);
+
+--
+-- Constraints for table `transfer_items`
+--
+ALTER TABLE `transfer_items`
+  ADD CONSTRAINT `transfer_items_ibfk_1` FOREIGN KEY (`transfer_id`) REFERENCES `transfers` (`id`),
+  ADD CONSTRAINT `transfer_items_ibfk_2` FOREIGN KEY (`paddy_category_id`) REFERENCES `paddy_categories` (`id`);
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`id`);
+
+--
+-- Constraints for table `vehicles`
+--
+ALTER TABLE `vehicles`
+  ADD CONSTRAINT `vehicles_ibfk_1` FOREIGN KEY (`vehicle_type`) REFERENCES `vehicle_types` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
