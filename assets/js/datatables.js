@@ -207,6 +207,7 @@ $('#purchase_datatable').DataTable( {
     { "data": "farmer_name" },
     { "data": "collection_center"},
     { "data": "collection_date"},
+    { "data": "is_paid"},
     { "data": null, 
       className: "center", 
       render: function(data, type) {
@@ -322,6 +323,33 @@ $('#money_datatable').DataTable( {
 ]
 } );
 
+
+$('#bank_datatable').DataTable( {
+  "processing": true,
+  "serverSide": true,
+  "ajax": {
+    "url": $("#bank_datatable").attr("url"),
+    "type": "POST"
+  },
+  "columns": [
+    { "data": "id" },
+    { "data": "collection_center" },
+    { "data": "bank_name" },
+    { "data": "account_name" },
+    { "data": "balance" },
+    { "data": null, 
+      className: "center", 
+      render: function(data, type) {
+        let content = "";
+        content = '<div class="btn-group" role="group" aria-label="Action Button">';
+        content += '<a href="/settings/bank_accounts/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+        content += '<a href="/settings/delete_bank_account/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+        content += '</div>';
+        return content;
+      }
+    }
+]
+} );
 
 
   } );

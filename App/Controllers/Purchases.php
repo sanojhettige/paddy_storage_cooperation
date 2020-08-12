@@ -36,13 +36,16 @@ Class Purchases extends Controller {
         $payable = is_permitted('purchases-pay');
 
         foreach($res["data"] as $index=>$item) {
+
+            $isPaid = $purchase_model->getPayOrderByPurchaseId($item['id']);
             $purchases[$index]['id'] = $item['id'];
             $purchases[$index]['farmer_name'] = $item['farmer_name'];
             $purchases[$index]['collection_center'] = $item['collection_center'];
             $purchases[$index]['collection_date'] = $item['collection_date'];
-            $purchases[$index]['delete'] = $deletable;
-            $purchases[$index]['edit'] = $editable;
-            $purchases[$index]['pay'] = $payable;
+            $purchases[$index]['is_paid'] = $isPaid ? "Yes": "No";
+            $purchases[$index]['delete'] = !$isPaid && $deletable;
+            $purchases[$index]['edit'] = !$isPaid && $editable;
+            $purchases[$index]['pay'] = !$isPaid && $payable;
         }
 
         $data["data"] = $purchases;

@@ -231,7 +231,7 @@ Class Model_Settings extends Model {
         return $row ? $row : $def_price;
     }
 
-    function getCashRecordTypeById($id=NULL) {
+    function getCashRecordById($id=NULL) {
         $query = $this->db->prepare("SELECT * from collection_center_cash_book where id='".$id."'");
         $query->execute(); 
         return $query->fetch();
@@ -239,14 +239,13 @@ Class Model_Settings extends Model {
 
     function createOrUpdateCashRecord($id=NULL, $data=[]) {
         if($id > 0) {
-            $sql = "UPDATE `collection_center_cash_book` SET `collection_center_id`='".$data['collection_center_id']."', `amount`= '".$data['amount']."', `notes`='".$data['notes']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `collection_center_cash_book` SET `bank_account_id`='".$data['bank_account_id']."', `amount`= '".$data['amount']."', `notes`='".$data['notes']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
-            $stm = $this->db->prepare("INSERT INTO collection_center_cash_book (collection_center_id,amount, received_date, notes, created_at,created_by,modified_by, status) VALUES (:collection_center_id, :amount, :received_date, :notes, :created_at, :created_by, :modified_by, :status)") ;
+            $stm = $this->db->prepare("INSERT INTO collection_center_cash_book (bank_account_id,amount, notes, created_at,created_by,modified_by, status) VALUES (:bank_account_id, :amount, :notes, :created_at, :created_by, :modified_by, :status)") ;
             return $stm->execute(array(
-                ':collection_center_id' => $data['collection_center_id'],
+                ':bank_account_id' => $data['bank_account_id'],
                 ':amount' => $data['amount'],
-                // ':received_date' => $data['received_date'],
                 ':notes' => $data['notes'],
                 ':created_at' => date("Y-m-d h:i:s"),
                 ':created_by' => get_user_id(),
@@ -257,13 +256,15 @@ Class Model_Settings extends Model {
     }
 
     function getCashRecords($limit=20, $offset=0, $search=null) {
-        $sql = "SELECT c.name as collection_center,cc.id,cc.amount,cc.collection_center_id,cc.received_date,cc.modified_at,cc.status from collection_center_cash_book cc left join collection_centers c on c.id = cc.collection_center_id where cc.status != 4";
+        $sql = "SELECT cc.name as collection_center,cb.id,cb.amount,cb.received_date,cb.modified_at,cb.status from collection_center_cash_book cb ";
+        $sql .="left join bank_accounts ba on ba.id = cb.bank_account_id ";
+        $sql .="left join collection_centers cc on cc.id = ba.collection_center_id where cb.status != 4";
 
         if($search) {
-            $sql .=" and amount like '%".$search."%'";
+            $sql .=" and cb.amount like '%".$search."%'";
         }
 
-        $sql .=" order by id desc";
+        $sql .=" order by cb.id desc";
 
         $query = $this->db->prepare($sql);
         $query->execute();
@@ -286,5 +287,65 @@ Class Model_Settings extends Model {
 
         return true;
     }
+
+
+
+    function getBankAccountById($id=NULL) {
+        $query = $this->db->prepare("SELECT * from bank_accounts where id='".$id."'");
+        $query->execute(); 
+        return $query->fetch();
+    }
+
+    function createOrUpdateBankAccount($id=NULL, $data=[]) {
+        if($id > 0) {
+            $sql = "UPDATE `bank_accounts` SET `collection_center_id`='".$data['collection_center_id']."', `bank_account_no`= '".$data['bank_account_no']."', `bank_account_name`='".$data['bank_account_name']."', `bank_and_branch`='".$data['bank_and_branch']."'  WHERE `id` = ".$id ;
+            return $this->db->exec($sql);
+        } else {
+            $stm = $this->db->prepare("INSERT INTO bank_accounts (collection_center_id,bank_account_no, bank_account_name, bank_and_branch, created_at,created_by,modified_by, status) VALUES (:collection_center_id, :bank_account_no, :bank_account_name, :bank_and_branch, :created_at, :created_by, :modified_by, :status)") ;
+            return $stm->execute(array(
+                ':collection_center_id' => $data['collection_center_id'],
+                ':bank_account_no' => $data['bank_account_no'],
+                ':bank_account_name' => $data['bank_account_name'],
+                ':bank_and_branch' => $data['bank_and_branch'],
+                ':created_at' => date("Y-m-d h:i:s"),
+                ':created_by' => get_user_id(),
+                ':modified_by' => get_user_id(),
+                ':status' => 0
+            ));
+        }
+    }
+
+    function getBankAccounts($limit=20, $offset=0, $search=null) {
+        $sql = "SELECT c.name as collection_center,ba.id,ba.bank_account_no,ba.bank_account_name,ba.bank_and_branch,ba.modified_at from bank_accounts ba ";
+        $sql .="left join collection_centers c on c.id = ba.collection_center_id where ba.status != 4";
+
+        if($search) {
+            $sql .=" and ba.bank_account_no like '%".$search."%'";
+        }
+
+        $sql .=" order by ba.id desc";
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $count = $query->rowCount();
+        $query->execute(array(":limit" => $limit));
+        $records = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        return array("count"=>$count, "data"=>$records);
+    }
+
+    function deleteBankAccountById($id=NULL) {
+        $sql = "DELETE FROM bank_accounts WHERE id = :id and status <= 0";
+        $stm = $this->db->prepare($sql);
+        $stm->bindParam(':id', $id);
+        $stm->execute();
+
+        if(!$stm->rowCount()) {
+            return false;
+        }
+
+        return true;
+    }
+
     
 }

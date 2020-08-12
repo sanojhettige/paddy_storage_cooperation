@@ -339,8 +339,102 @@ Class Settings extends Controller {
         header("Location: ".BASE_URL."/settings/vehicle_types");
     }
 
+    // Bank accounts
+    public function bank_accounts($id=null) {
+        $this->data['title'] = "Bank Account";
+        $settings_model = $this->model->load('settings');
+        $cc_model = $this->model->load('collectionCenter');
+        $this->data['assets'] = array(
+            'css'=>array(
+                BASE_URL.'/assets/css/datatables.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css',
+            ),
+            'js'=>array(
+                BASE_URL.'/assets/js/datatables.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js',
+                BASE_URL.'/assets/js/datatables.js'
+            )
+        );
+        if($id > 0) {
+            $this->data['record'] = $settings_model->getBankAccountById($id);
+        }
+
+        if(get_post('submit')) {
+            $this->createOrUpdateBankAccount($settings_model);
+        }
+        $this->data['collection_centers'] = $cc_model->getCollectionCentersDropdownData();
+        $this->view->render("settings/bank_accounts", "template", $this->data);
+        clear_messages();
+    }
+
+    private function createOrUpdateBankAccount($model=null) {
+        $this->data['errors'] = array();
+        try {
+            if(empty(get_post("collection_center_id"))) {
+                $this->data['errors']["collection_center_id"] = "Collection center is required";
+            } elseif(empty(get_post("bank_account_no"))) {
+                $this->data['errors']["bank_account_no"] = "Account No is required";
+            } elseif(empty(get_post("bank_account_name"))) {
+                $this->data['errors']["bank_account_name"] = "Account name is required";
+            } elseif(empty(get_post("bank_and_branch"))) {
+                $this->data['errors']["bank_and_branch"] = "Bank name is required";
+            } else {
+                $res = $model->createOrUpdateBankAccount(get_post("_id"), $_POST);
+                if($res) {
+                    $this->data['success_message'] = "Bank  Successfully saved.";
+                } else {
+                    $this->data['error_message'] = "Unable to save bank account, please try again.";
+                }
+            }
+        } catch(Exception $e) {
+            $this->data['error_message'] = $e;
+        }
+    }
+
+    public function get_bank_accounts() {
+        $data = array();
+        $accounts = array();
+        $offset = get_post('start');
+        $limit = get_post('length');
+        $search = get_post('search')['value'];
+        $settings_model = $this->model->load('settings');
+
+        $res = $settings_model->getBankAccounts($limit,$offset, $search);
+        $data["draw"] = get_post("draw");
+        $data["recordsTotal"] = $res["count"];
+        $data["recordsFiltered"] = 0;
+
+        foreach($res["data"] as $index=>$account) {
+            $accounts[$index]['id'] = $account['id'];
+            $accounts[$index]['collection_center'] = $account['collection_center'];
+            $accounts[$index]['account_name'] = $account['bank_account_name'];
+            $accounts[$index]['bank_name'] = $account['bank_and_branch'];
+            $accounts[$index]['balance'] = 0;
+        }
+        $data["data"] = $accounts;
+
+        $data['search'] = $search;
+        echo json_encode($data);
+    }
+
+    public function delete_bank_account($id=NULL) {
+        $settings_model = $this->model->load('settings');
+        try {
+            $res = $settings_model->deleteBankAccountById($id);
+            if($res) {
+                $_SESSION['success_message'] = "Bank account successfully deleted.";
+            } else {
+                $_SESSION['error_message'] = "Unable to delete record, please try again.";
+            }
+        } catch(Exception $e) {
+            $_SESSION['error_message'] = $e;
+        }
+        header("Location: ".BASE_URL."/settings/bank_accounts");
+    }
+
     // Money allocation
-    
     public function money_allocation($id=null) {
         $this->data['title'] = "Money Allocation";
         $settings_model = $this->model->load('settings');
@@ -359,13 +453,14 @@ Class Settings extends Controller {
             )
         );
         if($id > 0) {
-            $this->data['record'] = $settings_model->getCashRecordTypeById($id);
+            $this->data['record'] = $settings_model->getCashRecordById($id);
         }
 
         if(get_post('submit')) {
             $this->createOrUpdateCashRecord($settings_model);
         }
-        $this->data['collection_centers'] = $cc_model->getCollectionCentersDropdownData();
+        $this->data['bank_accounts'] = $settings_model->getBankAccounts(100,0)['data'];
+        
         $this->view->render("settings/money_allocation", "template", $this->data);
         clear_messages();
     }
@@ -373,8 +468,8 @@ Class Settings extends Controller {
     private function createOrUpdateCashRecord($model=null) {
         $this->data['errors'] = array();
         try {
-            if(empty(get_post("collection_center_id"))) {
-                $this->data['errors']["collection_center_id"] = "Collection center is required";
+            if(empty(get_post("bank_account_id"))) {
+                $this->data['errors']["bank_account_id"] = "Collection center is required";
             } elseif(empty(get_post("amount"))) {
                 $this->data['errors']["amount"] = "Amount is required";
             } else {

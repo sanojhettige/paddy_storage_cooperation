@@ -69,11 +69,37 @@
           <?php } ?>
           <?php if(in_array($userRole, array(1,2))) { ?>
           <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" data-target="#reports">
+              <span data-feather="layers"></span>
+              Reports <span class="pull-right"><b class="caret"></b>
+            </a>
+            <ul class="nav-second-level collapse" id="reports">
+            <li class="nav-item">
+                <a class="nav-link" href="/reports/paddy_collection">
+                  <span class="nav-link-text">Paddy Collection</span>
+                </a>
+              </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reports/cash_book">
+                  <span class="nav-link-text">Cash Book</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($userRole, array(1,2))) { ?>
+          <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" data-target="#settings">
               <span data-feather="layers"></span>
               Settings <span class="pull-right"><b class="caret"></b>
             </a>
             <ul class="nav-second-level collapse" id="settings">
+            <li class="nav-item">
+                <a class="nav-link" href="/settings/bank_accounts">
+                  <span class="nav-link-text">Bank Accounts</span>
+                </a>
+              </li>
             <li class="nav-item">
                 <a class="nav-link" href="/settings/money_allocation">
                   <span class="nav-link-text">Money Allocation</span>

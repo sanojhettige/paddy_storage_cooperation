@@ -16,6 +16,7 @@
                 <th>Farmer Name</th>
                 <th>Collection Center</th>
                 <th>Date</th>
+                <th>Pay Order Issued</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -25,6 +26,7 @@
                 <th>Farmer Name</th>
                 <th>Collection Center</th>
                 <th>Date</th>
+                <th>Pay Order Issued</th>
                 <th>Actions</th>
             </tr>
         </tfoot>

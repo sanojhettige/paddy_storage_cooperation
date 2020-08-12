@@ -40,19 +40,19 @@
 
 <form method="post" action="">
 <div class="form-group">
-    <label for="name">Collection Center</label>
-    <select class="form-control" name="collection_center_id" id="collection_center_id">
+    <label for="bank_account_id">Collection Center</label>
+    <select class="form-control" name="bank_account_id" id="bank_account_id">
       <option value="">Select Type</option>
-      <?php foreach($collection_centers as $item) { ?>
-        <?php if(get_post('collection_center_id') === $item['id'] || $record['collection_center_id'] === $item['id']) { ?>
-            <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
+      <?php foreach($bank_accounts as $item) { ?>
+        <?php if(get_post('bank_account_id') === $item['id'] || $record['bank_account_id'] === $item['id']) { ?>
+            <option selected value="<?= $item['id']; ?>"><?= $item['bank_account_no']."(".$item['collection_center'].")"; ?></option>
         <?php } else { ?>
-            <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
+            <option value="<?= $item['id']; ?>"><?= $item['bank_account_no']."(".$item['collection_center'].")"; ?></option>
         <?php } ?>
       <?php } ?>
       
     </select>
-    <span class="error-message collection_center_id"><?= isset($errors["collection_center_id"]) ? $errors["collection_center_id"]: ""; ?></span>
+    <span class="error-message bank_account_id"><?= isset($errors["bank_account_id"]) ? $errors["collection_center_id"]: ""; ?></span>
   </div>
   <div class="form-group">
     <label for="name">Amount</label>
