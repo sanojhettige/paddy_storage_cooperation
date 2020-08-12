@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 12, 2020 at 03:25 PM
+-- Generation Time: Aug 12, 2020 at 08:41 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -19,6 +19,34 @@ SET time_zone = "+00:00";
 --
 -- Database: `ase_paddy_storage`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bank_accounts`
+--
+
+CREATE TABLE `bank_accounts` (
+  `id` int(11) NOT NULL,
+  `collection_center_id` int(11) NOT NULL,
+  `bank_account_no` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `bank_account_name` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `bank_and_branch` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `bank_accounts`
+--
+
+INSERT INTO `bank_accounts` (`id`, `collection_center_id`, `bank_account_no`, `bank_account_name`, `bank_and_branch`, `created_by`, `created_at`, `modified_by`, `modified_at`, `status`) VALUES
+(1, 8, '8763243', 'khsdh', 'jhsdf', 1, '2020-08-12 07:05:25', 1, '2020-08-12 13:35:25', 0),
+(2, 6, '47652723', 'khsdh', 'jhsdf', 1, '2020-08-12 07:07:45', 1, '2020-08-12 13:37:45', 0),
+(3, 5, '73458345', 'khsdh', 'jhsdf', 1, '2020-08-12 07:08:12', 1, '2020-08-12 13:38:12', 0);
 
 -- --------------------------------------------------------
 
@@ -61,7 +89,7 @@ INSERT INTO `collection_centers` (`id`, `name`, `city`, `address`, `phone_number
 
 CREATE TABLE `collection_center_cash_book` (
   `id` int(11) NOT NULL,
-  `collection_center_id` int(11) NOT NULL,
+  `bank_account_id` int(11) NOT NULL,
   `amount` decimal(11,2) NOT NULL,
   `received_date` datetime DEFAULT NULL,
   `notes` text COLLATE utf8_unicode_ci,
@@ -76,8 +104,9 @@ CREATE TABLE `collection_center_cash_book` (
 -- Dumping data for table `collection_center_cash_book`
 --
 
-INSERT INTO `collection_center_cash_book` (`id`, `collection_center_id`, `amount`, `received_date`, `notes`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 5, '100000.00', NULL, '', '2020-08-12 12:48:48', 1, '2020-08-11 19:18:48', 1, 1);
+INSERT INTO `collection_center_cash_book` (`id`, `bank_account_id`, `amount`, `received_date`, `notes`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
+(1, 1, '100000.00', NULL, '', '2020-08-12 12:48:48', 1, '2020-08-11 19:18:48', 1, 1),
+(2, 3, '1000.00', NULL, '', '2020-08-12 07:41:46', 1, '2020-08-12 14:11:46', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -98,7 +127,7 @@ CREATE TABLE `collection_center_stocks` (
 INSERT INTO `collection_center_stocks` (`collection_center_id`, `paddy_category_id`, `available_stock`) VALUES
 (2, 2, '100000.0000'),
 (3, 2, '0.0000'),
-(6, 2, '105000.0000');
+(6, 2, '110000.0000');
 
 -- --------------------------------------------------------
 
@@ -170,7 +199,7 @@ CREATE TABLE `paddy_categories` (
 
 INSERT INTO `paddy_categories` (`id`, `name`, `description`, `available_stock`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
 (1, 'Suwandel', '', '0.0000', '2020-08-09 19:18:36', 1, '2020-08-09 13:48:46', 1, 1),
-(2, 'Kalu Heenati', '', '105000.0000', '2020-08-09 07:28:56', 2, '2020-08-11 04:59:42', 2, 1);
+(2, 'Kalu Heenati', '', '110000.0000', '2020-08-09 07:28:56', 2, '2020-08-12 02:57:17', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -245,7 +274,7 @@ INSERT INTO `paddy_prices` (`id`, `date`, `paddy_category_id`, `buying_price`, `
 (28, '2020-08-03', 2, '10.00', '12.00', '2020-08-10 08:16:14', 2, '2020-08-10 14:46:14', 2, 1),
 (29, '2020-08-06', 2, '10.00', '12.00', '2020-08-10 08:16:22', 2, '2020-08-10 14:46:22', 2, 1),
 (30, '2020-08-07', 2, '10.00', '12.00', '2020-08-10 08:16:26', 2, '2020-08-10 14:46:26', 2, 1),
-(31, '2020-08-01', 2, '10.00', '12.00', '2020-08-10 08:16:31', 2, '2020-08-10 14:46:31', 2, 1),
+(31, '2020-07-31', 1, '34.00', '45.00', '2020-08-10 08:16:31', 2, '2020-08-10 14:46:31', 2, 1),
 (32, '2020-08-01', 1, '20.00', '22.00', '2020-08-10 08:16:45', 2, '2020-08-10 14:46:45', 2, 1);
 
 -- --------------------------------------------------------
@@ -295,7 +324,8 @@ CREATE TABLE `pay_orders` (
 --
 
 INSERT INTO `pay_orders` (`id`, `purchase_id`, `farmer_user_id`, `paid_amount`, `paid_date`, `pay_notes`, `issued_from_bank`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 2, 5, '50000.00', '2020-08-11 00:00:00', 'hjsgdfsdfsdfsdf', 0, '2020-08-11 11:23:36', 4, '2020-08-11 06:29:07', 4, 1);
+(1, 2, 5, '50000.00', '2020-08-11 00:00:00', 'hjsgdfsdfsdfsdf', 0, '2020-08-11 11:23:36', 4, '2020-08-11 06:29:07', 4, 1),
+(2, 3, 5, '50000.00', '2020-08-12 00:00:00', 'to bank note', 0, '2020-08-12 08:32:21', 4, '2020-08-12 15:02:21', 4, 1);
 
 -- --------------------------------------------------------
 
@@ -358,20 +388,25 @@ CREATE TABLE `permissions` (
   `purchases-pay` int(1) NOT NULL DEFAULT '0',
   `settings-money_allocation` int(1) NOT NULL DEFAULT '0',
   `settings-get_money_allocations` int(1) NOT NULL DEFAULT '0',
-  `settings-delete_money_allocation` int(1) NOT NULL DEFAULT '0'
+  `settings-delete_money_allocation` int(1) NOT NULL DEFAULT '0',
+  `settings-bank_accounts` int(1) NOT NULL DEFAULT '0',
+  `settings-get_bank_accounts` int(1) NOT NULL DEFAULT '0',
+  `settings-delete_bank_account` int(1) NOT NULL DEFAULT '0',
+  `reports-paddy_collection` int(1) NOT NULL DEFAULT '0',
+  `reports-cash_book` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `permissions`
 --
 
-INSERT INTO `permissions` (`role_id`, `collection-centers-index`, `collection-centers-add`, `collection-centers-edit`, `collection-centers-delete`, `farmers-index`, `farmers-add`, `farmers-edit`, `farmers-delete`, `purchases-index`, `purchases-add`, `purchases-edit`, `purchases-delete`, `sales-index`, `sales-add`, `sales-edit`, `sales-delete`, `transfers-index`, `transfers-add`, `transfers-edit`, `transfers-delete`, `vehicles-index`, `vehicles-add`, `vehicles-edit`, `vehicles-delete`, `users-index`, `users-add`, `users-edit`, `users-delete`, `collection-centers-get_collection_centers`, `users-get_users`, `vehicles-get_vehicles`, `farmers-get_farmers`, `sales-get_sales`, `purchases-get_purchases`, `transfers-get_transfers`, `settings-index`, `settings-prices`, `settings-save_price`, `settings-get_daily_prices`, `settings-paddy_categories`, `settings-get_paddy_categories`, `settings-paddy_seasons`, `settings-get_paddy_seasons`, `settings-delete_paddy_seasons`, `settings-delete_paddy_categories`, `settings-vehicle_types`, `settings-get_vehicle_types`, `settings-delete_vehicle_type`, `settings-get_paddy_rate`, `purchases-daily_prices`, `purchases-pay`, `settings-money_allocation`, `settings-get_money_allocations`, `settings-delete_money_allocation`) VALUES
-(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1),
-(2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1),
-(3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0),
-(4, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0),
-(5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0),
-(6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0);
+INSERT INTO `permissions` (`role_id`, `collection-centers-index`, `collection-centers-add`, `collection-centers-edit`, `collection-centers-delete`, `farmers-index`, `farmers-add`, `farmers-edit`, `farmers-delete`, `purchases-index`, `purchases-add`, `purchases-edit`, `purchases-delete`, `sales-index`, `sales-add`, `sales-edit`, `sales-delete`, `transfers-index`, `transfers-add`, `transfers-edit`, `transfers-delete`, `vehicles-index`, `vehicles-add`, `vehicles-edit`, `vehicles-delete`, `users-index`, `users-add`, `users-edit`, `users-delete`, `collection-centers-get_collection_centers`, `users-get_users`, `vehicles-get_vehicles`, `farmers-get_farmers`, `sales-get_sales`, `purchases-get_purchases`, `transfers-get_transfers`, `settings-index`, `settings-prices`, `settings-save_price`, `settings-get_daily_prices`, `settings-paddy_categories`, `settings-get_paddy_categories`, `settings-paddy_seasons`, `settings-get_paddy_seasons`, `settings-delete_paddy_seasons`, `settings-delete_paddy_categories`, `settings-vehicle_types`, `settings-get_vehicle_types`, `settings-delete_vehicle_type`, `settings-get_paddy_rate`, `purchases-daily_prices`, `purchases-pay`, `settings-money_allocation`, `settings-get_money_allocations`, `settings-delete_money_allocation`, `settings-bank_accounts`, `settings-get_bank_accounts`, `settings-delete_bank_account`, `reports-paddy_collection`, `reports-cash_book`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0),
+(2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1),
+(3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
+(4, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -398,7 +433,8 @@ CREATE TABLE `purchases` (
 
 INSERT INTO `purchases` (`id`, `farmer_id`, `collection_center_id`, `collection_date`, `purchase_notes`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
 (1, 2, 2, '2020-08-11 00:00:00', '', '2020-08-11 08:50:51', 2, '2020-08-11 15:20:51', 2, 1),
-(2, 5, 6, '2020-08-11 00:00:00', '', '2020-08-11 10:29:42', 3, '2020-08-11 16:59:42', 3, 1);
+(2, 5, 6, '2020-08-11 00:00:00', '', '2020-08-11 10:29:42', 3, '2020-08-11 16:59:42', 3, 1),
+(3, 5, 6, '2020-08-12 00:00:00', 'additional note', '2020-08-12 08:27:17', 3, '2020-08-12 14:57:17', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -422,7 +458,8 @@ CREATE TABLE `purchase_items` (
 
 INSERT INTO `purchase_items` (`id`, `purchase_id`, `paddy_category_id`, `collected_amount`, `collected_rate`, `notes`, `status`) VALUES
 (1, 1, 2, '100000.0000', '10.00', '', 1),
-(2, 2, 2, '5000.0000', '10.00', '', 1);
+(2, 2, 2, '5000.0000', '10.00', '', 1),
+(3, 3, 2, '5000.0000', '10.00', '', 1);
 
 -- --------------------------------------------------------
 
@@ -616,6 +653,12 @@ INSERT INTO `vehicle_types` (`id`, `name`, `description`) VALUES
 --
 
 --
+-- Indexes for table `bank_accounts`
+--
+ALTER TABLE `bank_accounts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `collection_centers`
 --
 ALTER TABLE `collection_centers`
@@ -626,7 +669,7 @@ ALTER TABLE `collection_centers`
 --
 ALTER TABLE `collection_center_cash_book`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `collection_center_id` (`collection_center_id`);
+  ADD KEY `collection_center_id` (`bank_account_id`);
 
 --
 -- Indexes for table `collection_center_stocks`
@@ -683,12 +726,6 @@ ALTER TABLE `pay_orders`
   ADD PRIMARY KEY (`id`),
   ADD KEY `purchase_id` (`purchase_id`),
   ADD KEY `farmer_user_id` (`farmer_user_id`);
-
---
--- Indexes for table `permissions`
---
-ALTER TABLE `permissions`
-  ADD KEY `role_id` (`role_id`);
 
 --
 -- Indexes for table `purchases`
@@ -774,6 +811,12 @@ ALTER TABLE `vehicle_types`
 --
 
 --
+-- AUTO_INCREMENT for table `bank_accounts`
+--
+ALTER TABLE `bank_accounts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `collection_centers`
 --
 ALTER TABLE `collection_centers`
@@ -783,7 +826,7 @@ ALTER TABLE `collection_centers`
 -- AUTO_INCREMENT for table `collection_center_cash_book`
 --
 ALTER TABLE `collection_center_cash_book`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `farmers`
@@ -825,19 +868,19 @@ ALTER TABLE `paddy_seasons`
 -- AUTO_INCREMENT for table `pay_orders`
 --
 ALTER TABLE `pay_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `purchases`
 --
 ALTER TABLE `purchases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `purchase_items`
 --
 ALTER TABLE `purchase_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `sales`
@@ -892,12 +935,6 @@ ALTER TABLE `vehicle_types`
 --
 
 --
--- Constraints for table `collection_center_cash_book`
---
-ALTER TABLE `collection_center_cash_book`
-  ADD CONSTRAINT `collection_center_cash_book_ibfk_1` FOREIGN KEY (`collection_center_id`) REFERENCES `collection_centers` (`id`);
-
---
 -- Constraints for table `collection_center_stocks`
 --
 ALTER TABLE `collection_center_stocks`
@@ -934,12 +971,6 @@ ALTER TABLE `paddy_prices`
 ALTER TABLE `pay_orders`
   ADD CONSTRAINT `pay_orders_ibfk_1` FOREIGN KEY (`farmer_user_id`) REFERENCES `farmers` (`id`),
   ADD CONSTRAINT `pay_orders_ibfk_2` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`);
-
---
--- Constraints for table `permissions`
---
-ALTER TABLE `permissions`
-  ADD CONSTRAINT `permissions_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`id`);
 
 --
 -- Constraints for table `purchases`
