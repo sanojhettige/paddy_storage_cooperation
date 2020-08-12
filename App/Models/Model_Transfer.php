@@ -5,7 +5,7 @@ Class Model_Transfer extends Model {
     private $table = "transfers";
 
     function getTransfers($limit=20, $offset=0, $search=null) {
-        $sql = "SELECT id,transfer_date,modified_at from ".$this->table." p ";
+        $sql = "SELECT id,transfer_date,modified_at,from_center_id,to_center_id,transfer_status_id from ".$this->table." p ";
         $sql .=" where status = 1";
 
         if($search) {
@@ -74,9 +74,9 @@ Class Model_Transfer extends Model {
                 ':transfer_notes' => $data['notes'],
                 ':vehicle_id' => $data['vehicle_id'],
                 ':transfer_status_id' => $data['status_id'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
             if($resp) {

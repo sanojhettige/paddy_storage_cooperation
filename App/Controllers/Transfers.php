@@ -20,16 +20,34 @@ Class Transfers extends Controller {
 
     public function get_transfers() {
         $data = array();
+        $transfers = array();
         $offset = get_post('start');
         $limit = get_post('length');
         $search = get_post('search')['value'];
         $transfer_model = $this->model->load('transfer');
+        $cc_model = $this->model->load('collectionCenter');
 
         $res = $transfer_model->getTransfers($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
-        $data["data"] = $res["data"];
+
+        $editable = is_permitted('transfers-edit');
+        $deletable = is_permitted('transfers-delete');
+
+
+        foreach($res["data"] as $index=>$transfer) {
+            $transfers[$index]['id'] = $transfer['id'];
+            $transfers[$index]['transfer_date'] = $transfer['transfer_date'];
+            $transfers[$index]['modified_at'] = $transfer['modified_at'];
+            $transfers[$index]['from_center'] = $cc_model->getCollectionCenterById($transfer['from_center_id'])["name"];
+            $transfers[$index]['to_center'] = $cc_model->getCollectionCenterById($transfer['to_center_id'])["name"];
+            $transfers[$index]['transfer_status'] = sale_status($transfer['transfer_status_id']);
+            $purchases[$index]['delete'] = $deletable;
+            $purchases[$index]['edit'] = $editable;
+            $purchases[$index]['pay'] = $payable;
+        }
+        $data["data"] = $transfers;
         $data['search'] = $search;
         echo json_encode($data);
     }

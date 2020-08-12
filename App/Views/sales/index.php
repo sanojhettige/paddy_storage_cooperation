@@ -1,3 +1,4 @@
+<?php if(is_permitted('sales-add')) { ?>
 <div class="row component-header">
     <div class="col-md-8">
     </div>
@@ -5,6 +6,7 @@
         <a href="/sales/add" class="btn btn-success btn-sm pull-right"> Add New </a>
     </div>
 </div>
+<?php } ?>
 
 <div class="table-responsive">
 <table id="sale_datatable" class="table table-striped table-sm" url="/sales/get_sales">

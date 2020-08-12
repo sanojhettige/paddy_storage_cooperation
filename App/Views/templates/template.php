@@ -33,13 +33,13 @@
 
                 <!-- Flush Message Section -->
                 <?php
-                if(isset($success_message) || isset($_SESSION['success_message'])) {
-                    $s_message = $success_message ? $success_message : $_SESSION['success_message'];
+                if(isset($success_message) || get_session('success_message')) {
+                    $s_message = $success_message ? $success_message : get_session('success_message');
                     echo '<div class="alert alert-success" role="alert">'.$s_message.'</div>';
                 }
 
-                if(isset($error_message) || isset($_SESSION['error_message'])) {
-                    $e_message = $error_message ? $error_message : $_SESSION['error_message'];
+                if(isset($error_message) || get_session('error_message')) {
+                    $e_message = $error_message ? $error_message : get_session('error_message');
                     echo '<div class="alert alert-danger" role="alert">'.$e_message.'</div>';
                 }
                 ?>

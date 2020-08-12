@@ -81,9 +81,9 @@ Class Model_Sale extends Model {
                 ':issue_date' => $data['collection_date'],  
                 ':sale_notes' => $data['notes'],
                 ':sale_status_id' => $data['status_id'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
             if($resp) {

@@ -46,9 +46,9 @@ Class Model_Vehicle extends Model {
             return $stm->execute(array(
                 ':vehicle_type' => $data['vehicle_type'],
                 ':registration_number' => $data['registration_number'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
         }

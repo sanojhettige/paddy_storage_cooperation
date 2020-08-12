@@ -6,8 +6,8 @@ Class Auth extends Controller {
     public function index($param=null) {
         $user_model = $this->model->load('user');
         if(isset($_POST['do_login'])) {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
+            $username = get_post('username');
+            $password = get_post('password');
     
             $res = $user_model->do_login($username, $password);
             if($res) {
@@ -22,7 +22,7 @@ Class Auth extends Controller {
             }
         }
 
-        if($_SESSION['logged_in'] && $user_model->getUserById($_SESSION['user_id'])) {
+        if(get_session('logged_in') && $user_model->getUserById(get_session('user_id'))) {
             header("Location: ".BASE_URL."/dashboard");
         }
         

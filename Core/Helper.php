@@ -46,8 +46,8 @@ function passwor_encrypt($password=NULL) {
     return $password;
 }
 
-function sale_status() {
-    return array(
+function sale_status($id=null) {
+    $arr =  array(
         array(
             "id"=>1,
             "name"=>"Pending",
@@ -57,17 +57,44 @@ function sale_status() {
             "name"=>"Completed",
         )
     );
+
+    if($id > 0) {
+        $status = filter_array($arr, $id, 'id');
+        return isset($status[0]) ? $status[0]['name']: "";
+    } else {
+        return $arr;
+    }
 }
 
+
+function filter_array($array=null,$term=null, $field='id'){
+    $matches = array();
+    foreach($array as $a){
+        if($a[$field] == $term)
+            $matches[]=$a;
+    }
+    return $matches;
+}
+
+
+
 function get_user_role() {
-    return ($_SESSION['role_id']) ? $_SESSION['role_id']: null;
+    return (get_session("role_id")) ? get_session("role_id"): null;
 }
 function get_assigned_center() {
-    return ($_SESSION['assigned_center']) ? $_SESSION['assigned_center']: null;
+    return (get_session('assigned_center')) ? get_session('assigned_center'): null;
 }
 function get_user_id() {
-    return ($_SESSION['user_id']) ? $_SESSION['user_id']: null;
+    return (get_session('user_id')) ? get_session('user_id'): null;
 }
 function formatCurrency($dollars){
     return 'Rs '.sprintf('%0.2f', $dollars);
   }
+
+  function get_session($name=null) {
+    if(isset($_SESSION[$name])) {
+        return $_SESSION[$name];
+    }
+
+    return null;
+}

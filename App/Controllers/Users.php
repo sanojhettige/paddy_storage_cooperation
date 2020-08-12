@@ -20,16 +20,33 @@ Class Users extends Controller {
 
     public function get_users() {
         $data = array();
+        $users = array();
         $offset = get_post('start');
         $limit = get_post('length');
         $search = get_post('search')['value'];
         $user_model = $this->model->load('user');
 
         $res = $user_model->getUsers($limit,$offset, $search);
+
+        $editable = is_permitted('users-edit');
+        $deletable = is_permitted('users-delete');
+
+        foreach($res["data"] as $index=>$item) {
+            $users[$index]['id'] = $item['id'];
+            $users[$index]['name'] = $item['name'];
+            $users[$index]['email'] = $item['email'];
+            $users[$index]['user_role'] = $item['user_role'];
+            $users[$index]['collection_center'] = $item['collection_center'];
+            $users[$index]['modified_at'] = $item['modified_at'];
+            $users[$index]['delete'] = $deletable;
+            $users[$index]['edit'] = $editable;
+        }
+        $data["data"] = $users;
+
+
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
-        $data["data"] = $res["data"];
         $data['search'] = $search;
         echo json_encode($data);
     }

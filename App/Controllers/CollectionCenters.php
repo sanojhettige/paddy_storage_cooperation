@@ -20,16 +20,31 @@ Class CollectionCenters extends Controller {
 
     public function get_collection_centers() {
         $data = array();
+        $ccs = array();
         $offset = get_post('start');
         $limit = get_post('length');
         $search = get_post('search')['value'];
         $center_model = $this->model->load('collectionCenter');
 
         $res = $center_model->getCollectionCenters($limit,$offset, $search);
+        $editable = is_permitted('collection-centers-edit');
+        $deletable = is_permitted('collection-centers-delete');
+
+        foreach($res["data"] as $index=>$center) {
+            $ccs[$index]['id'] = $center['id'];
+            $ccs[$index]['name'] = $center['name'];
+            $ccs[$index]['city'] = $center['city'];
+            $ccs[$index]['address'] = $center['address'];
+            $ccs[$index]['capacity'] = $center['capacity'];
+            $ccs[$index]['modified_at'] = $center['modified_at'];
+            $ccs[$index]['edit'] = $editable;
+            $ccs[$index]['delete'] = $deletable;
+        }
+
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
-        $data["data"] = $res["data"];
+        $data["data"] = $ccs;
         $data['search'] = $search;
         echo json_encode($data);
     }

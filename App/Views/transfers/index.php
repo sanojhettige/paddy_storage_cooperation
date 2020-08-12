@@ -1,3 +1,4 @@
+<?php if(is_permitted('transfers-add')) { ?>
 <div class="row component-header">
     <div class="col-md-8">
     </div>
@@ -5,6 +6,7 @@
         <a href="/transfers/add" class="btn btn-success btn-sm pull-right"> Add New </a>
     </div>
 </div>
+<?php } ?>
 
 <div class="table-responsive">
 <table id="transfer_datatable" class="table table-striped table-sm" url="/transfers/get_transfers">

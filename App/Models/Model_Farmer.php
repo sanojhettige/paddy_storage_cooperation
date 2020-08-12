@@ -66,9 +66,9 @@ Class Model_Farmer extends Model {
                 ':nic_no' => $data['nic_no'], 
                 ':phone_number' => $data['phone'],
                 ':land_size' => $data['land_size'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
         }

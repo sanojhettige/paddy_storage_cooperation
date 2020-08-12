@@ -83,9 +83,9 @@ Class Model_Purchase extends Model {
                 ':collection_center_id' => $data['collection_center_id'], 
                 ':collection_date' => $data['collection_date'],  
                 ':purchase_notes' => $data['notes'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
             if($resp) {
@@ -193,9 +193,9 @@ Class Model_Purchase extends Model {
                 ':paid_amount' => $data['paid_amount'],  
                 ':paid_date' => $data['paid_date'],
                 ':pay_notes' => $data['pay_notes'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
             if($resp) {

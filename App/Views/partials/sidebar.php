@@ -27,6 +27,14 @@
             </a>
           </li>
           <?php } ?>
+          <?php if(in_array($userRole, array(1,2))) { ?>
+          <li class="nav-item">
+            <a class="nav-link" href="/customers">
+              <span data-feather="layers"></span>
+              Customers
+            </a>
+          </li>
+          <?php } ?>
           <?php if(in_array($userRole, array(1,2,4,3))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/purchases">

@@ -25,7 +25,7 @@ Class Model_User extends Model {
             $sql .=" and u.name like '%".$search."%' or u.email like '%".$search."%'";
         }
 
-        $sql .=" and u.id != ".$_SESSION['user_id'];
+        $sql .=" and u.id != ".get_session('user_id');
 
         $sql .=" order by u.modified_at desc";
 
@@ -63,9 +63,9 @@ Class Model_User extends Model {
                 ':email' => $data['email'], 
                 ':role_id' => $data['role_id'], 
                 ':password' => $data['password'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
         }

@@ -20,16 +20,31 @@ Class Sales extends Controller {
 
     public function get_sales() {
         $data = array();
+        $sales = array();
         $offset = get_post('start');
         $limit = get_post('length');
         $search = get_post('search')['value'];
         $sale_model = $this->model->load('sale');
 
         $res = $sale_model->getSales($limit,$offset, $search);
+
+        $editable = is_permitted('sales-edit');
+        $deletable = is_permitted('sales-delete');
+
+        foreach($res["data"] as $index=>$item) {
+            $sales[$index]['id'] = $item['id'];
+            $sales[$index]['buyer_name'] = $item['buyer_name'];
+            $sales[$index]['collection_center'] = $item['collection_center'];
+            $sales[$index]['issue_date'] = $item['issue_date'];
+            $sales[$index]['delete'] = $deletable;
+            $sales[$index]['edit'] = $editable;
+        }
+        $data["data"] = $sales;
+
+
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
-        $data["data"] = $res["data"];
         $data['search'] = $search;
         echo json_encode($data);
     }

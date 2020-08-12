@@ -40,7 +40,7 @@ Class Farmers extends Controller {
             $farmers[$index]['nic_no'] = $item['nic_no'];
             $farmers[$index]['phone_number'] = $item['phone_number'];
             $farmers[$index]['land_size'] = $item['land_size'];
-            $farmers[$index]['modified_at'] = $item['phmodified_atone_number'];
+            $farmers[$index]['modified_at'] = $item['modified_at'];
             $farmers[$index]['delete'] = $deletable;
             $farmers[$index]['edit'] = $editable;
         }

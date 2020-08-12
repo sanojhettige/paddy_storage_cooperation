@@ -50,9 +50,9 @@ Class Model_Settings extends Model {
                 ':date' => $data['date'],
                 ':buying_price' => $data['buying_price'], 
                 ':selling_price' => $data['selling_price'],
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
         }
@@ -97,9 +97,9 @@ Class Model_Settings extends Model {
             return $stm->execute(array(
                 ':name' => $data['name'],
                 ':description' => $data['description'], 
-                ':created_by' => $_SESSION['user_id'],
+                ':created_by' => get_session('user_id'),
                 ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => $_SESSION['user_id'],
+                ':modified_by' => get_session('user_id'),
                 ':status' => 1
             ));
         }
