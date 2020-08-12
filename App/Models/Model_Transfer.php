@@ -9,7 +9,11 @@ Class Model_Transfer extends Model {
         $sql .=" where status = 1";
 
         if($search) {
-            $sql .=" and p.id like '%".$search."%'";
+            $sql .=" and id like '%".$search."%'";
+        }
+
+        if(in_array(get_user_role(), array(2,3,4,5,6))) {
+            $sql .=" and to_center_id = ".get_assigned_center();
         }
 
         $sql .=" order by modified_at desc";
@@ -54,9 +58,11 @@ Class Model_Transfer extends Model {
     }
 
     function createOrUpdateRecord($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $date = date("Y-m-d h:i:s");
-            $sql = "UPDATE `".$this->table."` SET `to_center_id`='".$data['to_center_id']."', `from_center_id`= '".$data['from_center_id']."' , `transfer_date` = '".$data['transfer_date']."' , `transfer_notes` = '".$data['notes']."', `transfer_status_id`= '".$data['status_id']."', `vehicle_id`= '".$data['vehicle_id']."', `modified_at`= '".$date."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `to_center_id`='".$data['to_center_id']."', `from_center_id`= '".$data['from_center_id']."' , `transfer_date` = '".$data['transfer_date']."' , `transfer_notes` = '".$data['notes']."', `transfer_status_id`= '".$data['status_id']."', `vehicle_id`= '".$data['vehicle_id']."'  WHERE `id` = ".$id ;
             $resp =  $this->db->exec($sql);
             if($resp) {
                 $this->createOrUpdateItems($id, $data['item']);
@@ -74,9 +80,9 @@ Class Model_Transfer extends Model {
                 ':transfer_notes' => $data['notes'],
                 ':vehicle_id' => $data['vehicle_id'],
                 ':transfer_status_id' => $data['status_id'],
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
             if($resp) {

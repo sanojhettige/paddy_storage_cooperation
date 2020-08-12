@@ -515,4 +515,33 @@ Class Settings extends Controller {
         }
         header("Location: ".BASE_URL."/settings/money_allocation");
     }
+
+
+    public function buying_limitation() {
+        $this->data['title'] = "Paddy Buying Limitations";
+        $settings_model = $this->model->load('settings');
+
+        if(get_post("submit")) {
+            $this->updateSeasonalBuying($settings_model);
+        }
+
+        $this->data['seasons'] = $settings_model->getPaddySeasons(20,0)['data'];
+        $this->view->render("settings/buying_limitations", "template", $this->data);
+        clear_messages();
+    }
+
+    private function updateSeasonalBuying($model=null) {
+        $this->data['errors'] = array();
+        try {
+            $res = $model->updateSeasonalBuying($_POST);
+            // print_r($res); exit;
+                if($res) {
+                    $this->data['success_message'] = "Limitations Successfully saved.";
+                } else {
+                    $this->data['error_message'] = "Unable to save record, please try again.";
+                }
+        } catch(Exception $e) {
+            $this->data['error_message'] = $e;
+        }
+    }
 }

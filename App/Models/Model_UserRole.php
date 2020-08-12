@@ -12,7 +12,9 @@ Class Model_UserRole extends Model {
     }
 
     function getUserRoleById($id=null) {
-
+        $query = $this->db->prepare("SELECT * from ".$this->table." where id='".$id."'");
+        $query->execute(); 
+        return $query->fetch();
     }
 
 }

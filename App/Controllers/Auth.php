@@ -5,14 +5,17 @@ Class Auth extends Controller {
     
     public function index($param=null) {
         $user_model = $this->model->load('user');
+        $user_role_model = $this->model->load('userRole');
         if(isset($_POST['do_login'])) {
             $username = get_post('username');
             $password = get_post('password');
     
             $res = $user_model->do_login($username, $password);
             if($res) {
+                $role = $user_role_model->getUserRoleById($res['role_id']);
                 $_SESSION['user_id'] = $res['id'];
                 $_SESSION['role_id'] = $res['role_id'];
+                $_SESSION['role_name'] = $role['name'];
                 $_SESSION['assigned_center'] = $res['collection_center_id'];
                 $_SESSION['logged_in'] = true;
                 $_SESSION['logged_in_time'] = date("Y-m-d h:i:s");

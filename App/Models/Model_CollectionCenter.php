@@ -53,8 +53,10 @@ Class Model_CollectionCenter extends Model {
     } 
 
     function createOrUpdateRecord($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
         if($id > 0) {
-            $sql = "UPDATE `".$this->table."` SET `name`= '".$data['name']."' , `address` = '".$data['address']."' , `city` = '".$data['city']."', `phone_number` = '".$data['phone']."', `capacity` = '".$data['capacity']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `name`= '".$data['name']."' , `address` = '".$data['address']."' , `city` = '".$data['city']."', `phone_number` = '".$data['phone']."', `capacity` = '".$data['capacity']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
             $stm = $this->db->prepare("INSERT INTO ".$this->table." (name,address,city,phone_number,capacity,created_by,created_at,modified_by,status) VALUES (:name, :address, :city, :phone_number, :capacity, :created_by, :created_at, :modified_by, :status)") ;
@@ -64,9 +66,9 @@ Class Model_CollectionCenter extends Model {
                 ':city' => $data['city'], 
                 ':phone_number' => $data['phone'],
                 ':capacity' => $data['capacity'],
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
         }

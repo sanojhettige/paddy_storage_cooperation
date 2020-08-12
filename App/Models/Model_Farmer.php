@@ -11,7 +11,7 @@ Class Model_Farmer extends Model {
             $sql .=" and name like '%".$search."%' or address like '%".$search."%' or city like '%".$search."%'";
         }
 
-        if(get_user_role() === 4) {
+        if(in_array(get_user_role(), array(2,3,4,5,6))) {
             $sql .=" and collection_center_id = ".get_assigned_center();
         }
 
@@ -54,8 +54,10 @@ Class Model_Farmer extends Model {
     } 
 
     function createOrUpdateRecord($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
         if($id > 0) {
-            $sql = "UPDATE `".$this->table."` SET `collection_center_id`='".$data['collection_center']."', `name`= '".$data['name']."' , `address` = '".$data['address']."' , `nic_no` = '".$data['nic_no']."', `phone_number` = '".$data['phone']."', `land_size` = '".$data['land_size']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `collection_center_id`='".$data['collection_center']."', `name`= '".$data['name']."' , `address` = '".$data['address']."' , `nic_no` = '".$data['nic_no']."', `phone_number` = '".$data['phone']."', `land_size` = '".$data['land_size']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
             $stm = $this->db->prepare("INSERT INTO ".$this->table." (collection_center_id,name,address,nic_no,phone_number,land_size,created_by,created_at,modified_by,status) VALUES (:collection_center, :name, :address, :nic_no, :phone_number, :land_size, :created_by, :created_at, :modified_by, :status)") ;
@@ -66,9 +68,9 @@ Class Model_Farmer extends Model {
                 ':nic_no' => $data['nic_no'], 
                 ':phone_number' => $data['phone'],
                 ':land_size' => $data['land_size'],
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
         }

@@ -40,8 +40,11 @@ Class Model_Settings extends Model {
     } 
 
     function createOrUpdatePrice($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $sql = "UPDATE `paddy_prices` SET `paddy_category_id`='".$data['paddy_category_id']."', `date`='".$data['date']."', `buying_price`= '".$data['buying_price']."' , `selling_price` = '".$data['selling_price']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `paddy_prices` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `paddy_category_id`='".$data['paddy_category_id']."', `date`='".$data['date']."', `buying_price`= '".$data['buying_price']."' , `selling_price` = '".$data['selling_price']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
             $stm = $this->db->prepare("INSERT INTO paddy_prices (paddy_category_id,date,buying_price,selling_price,created_by,created_at,modified_by,status) VALUES (:paddy_category_id, :date, :buying_price, :selling_price, :created_by, :created_at, :modified_by, :status)") ;
@@ -50,9 +53,9 @@ Class Model_Settings extends Model {
                 ':date' => $data['date'],
                 ':buying_price' => $data['buying_price'], 
                 ':selling_price' => $data['selling_price'],
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
         }
@@ -89,17 +92,20 @@ Class Model_Settings extends Model {
     }
 
     public function createOrUpdateCategory($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $sql = "UPDATE `paddy_categories` SET `name`='".$data['name']."', `description`= '".$data['description']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `paddy_categories` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `name`='".$data['name']."', `description`= '".$data['description']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
             $stm = $this->db->prepare("INSERT INTO paddy_categories (name,description,created_by,created_at,modified_by,status) VALUES (:name, :description, :created_by, :created_at, :modified_by, :status)") ;
             return $stm->execute(array(
                 ':name' => $data['name'],
                 ':description' => $data['description'], 
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
         }
@@ -120,7 +126,7 @@ Class Model_Settings extends Model {
     }
 
     function getPaddySeasons($limit=20, $offset=0, $search=null) {
-        $sql = "SELECT id,name,description,period from paddy_seasons";
+        $sql = "SELECT id,name,description,period,max_allowed_amount from paddy_seasons";
 
         if($search) {
             $sql .=" and name like '%".$search."%'";
@@ -144,15 +150,21 @@ Class Model_Settings extends Model {
     }
 
     public function createOrUpdateSeason($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
         if($id > 0) {
-            $sql = "UPDATE `paddy_seasons` SET `name`='".$data['name']."', `period`='".$data['period']."', `description`= '".$data['description']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `paddy_seasons` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `name`='".$data['name']."', `period`='".$data['period']."', `description`= '".$data['description']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
-            $stm = $this->db->prepare("INSERT INTO paddy_seasons (name,period,description) VALUES (:name, :period, :description)") ;
+            $stm = $this->db->prepare("INSERT INTO paddy_seasons (name,period,description,created_by,created_at,modified_by,status) VALUES (:name, :period, :description, :created_by, :created_at, :modified_by, :status)") ;
             return $stm->execute(array(
                 ':name' => $data['name'],
                 ':period' => $data['period'],
-                ':description' => $data['description']
+                ':description' => $data['description'],
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
+                ':status' => 1
             ));
         }
     }
@@ -238,8 +250,11 @@ Class Model_Settings extends Model {
     }
 
     function createOrUpdateCashRecord($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $sql = "UPDATE `collection_center_cash_book` SET `bank_account_id`='".$data['bank_account_id']."', `amount`= '".$data['amount']."', `notes`='".$data['notes']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `collection_center_cash_book` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `bank_account_id`='".$data['bank_account_id']."', `amount`= '".$data['amount']."', `notes`='".$data['notes']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
             $stm = $this->db->prepare("INSERT INTO collection_center_cash_book (bank_account_id,amount, notes, created_at,created_by,modified_by, status) VALUES (:bank_account_id, :amount, :notes, :created_at, :created_by, :modified_by, :status)") ;
@@ -247,9 +262,9 @@ Class Model_Settings extends Model {
                 ':bank_account_id' => $data['bank_account_id'],
                 ':amount' => $data['amount'],
                 ':notes' => $data['notes'],
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':created_by' => get_user_id(),
-                ':modified_by' => get_user_id(),
+                ':created_at' => $date,
+                ':created_by' => $user_id,
+                ':modified_by' => $user_id,
                 ':status' => 0
             ));
         }
@@ -297,8 +312,11 @@ Class Model_Settings extends Model {
     }
 
     function createOrUpdateBankAccount($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $sql = "UPDATE `bank_accounts` SET `collection_center_id`='".$data['collection_center_id']."', `bank_account_no`= '".$data['bank_account_no']."', `bank_account_name`='".$data['bank_account_name']."', `bank_and_branch`='".$data['bank_and_branch']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `bank_accounts` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `collection_center_id`='".$data['collection_center_id']."', `bank_account_no`= '".$data['bank_account_no']."', `bank_account_name`='".$data['bank_account_name']."', `bank_and_branch`='".$data['bank_and_branch']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
             $stm = $this->db->prepare("INSERT INTO bank_accounts (collection_center_id,bank_account_no, bank_account_name, bank_and_branch, created_at,created_by,modified_by, status) VALUES (:collection_center_id, :bank_account_no, :bank_account_name, :bank_and_branch, :created_at, :created_by, :modified_by, :status)") ;
@@ -307,9 +325,9 @@ Class Model_Settings extends Model {
                 ':bank_account_no' => $data['bank_account_no'],
                 ':bank_account_name' => $data['bank_account_name'],
                 ':bank_and_branch' => $data['bank_and_branch'],
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':created_by' => get_user_id(),
-                ':modified_by' => get_user_id(),
+                ':created_at' => $date,
+                ':created_by' => $user_id,
+                ':modified_by' => $user_id,
                 ':status' => 0
             ));
         }
@@ -345,6 +363,21 @@ Class Model_Settings extends Model {
         }
 
         return true;
+    }
+
+    function updateSeasonalBuying($data=null) {
+        $count = count($data['maxlimit']);
+        $updated = [];
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+        foreach($data['maxlimit'] as $index=>$row) {
+            $limit = $row;
+            $id = $data['id'][$index];
+            $sql = "UPDATE `paddy_seasons` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `max_allowed_amount`='".$limit."'  WHERE `id` = ".$id ;
+            $updated[$index] =  $this->db->exec($sql);
+        }
+        $upcount = count($updated);
+        return $count === $upcount;
     }
 
     

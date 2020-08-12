@@ -21,17 +21,26 @@ Class Reports extends Controller {
                 BASE_URL.'/assets/js/reports.js'
             )
         );
+
+        if($_POST) {
+            $this->get_paddy_collection();
+        }
         
         $this->view->render("reports/paddy_collection", "template", $this->data);
     }
 
     private function get_paddy_collection() {
-        $report_model = $this->load->model('report');
-        $data = $report_model->daily_paddy_collection($_POST);
+        $report_model = $this->model->load('report');
+        $this->data['report'] = $report_model->daily_paddy_collection($_POST);
+        // print_r($this->data['report']); exit;
     }
 
     public function cash_book($param=null) {
         $this->data['title'] = "Cash Book";
+        $report_model = $this->model->load('report');
+        $this->data['received'] = $report_model->cash_received();
+        $this->data['cash_issued'] = $report_model->cash_issued();
+        $this->data['balance'] = ($this->data['received'] - $this->data['cash_issued']);
         $this->view->render("reports/cash_book", "template", $this->data);
     }
 }

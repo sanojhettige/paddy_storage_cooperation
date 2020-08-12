@@ -15,7 +15,7 @@ Class Model_Purchase extends Model {
             $sql .=" and f.name like '%".$search."%' or c.name like '%".$search."%' or p.id like '%".$search."%'";
         }
 
-        if(get_user_role() === 4) {
+        if(in_array(get_user_role(), array(2,3,4,5,6))) {
             $sql .=" and p.collection_center_id = ".get_assigned_center();
         }
 
@@ -65,9 +65,11 @@ Class Model_Purchase extends Model {
     }
 
     function createOrUpdateRecord($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $date = date("Y-m-d h:i:s");
-            $sql = "UPDATE `".$this->table."` SET `farmer_id`='".$data['farmer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `collection_date` = '".$data['collection_date']."' , `purchase_notes` = '".$data['notes']."', `modified_at`= '".$date."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `farmer_id`='".$data['farmer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `collection_date` = '".$data['collection_date']."' , `purchase_notes` = '".$data['notes']."'  WHERE `id` = ".$id ;
             $resp =  $this->db->exec($sql);
             if($resp) {
                 $this->createOrUpdateItems($id, $data['item']);
@@ -83,9 +85,9 @@ Class Model_Purchase extends Model {
                 ':collection_center_id' => $data['collection_center_id'], 
                 ':collection_date' => $data['collection_date'],  
                 ':purchase_notes' => $data['notes'],
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
             if($resp) {

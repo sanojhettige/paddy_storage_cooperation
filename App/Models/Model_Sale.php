@@ -15,6 +15,10 @@ Class Model_Sale extends Model {
             $sql .=" and f.name like '%".$search."%' or c.name like '%".$search."%' or s.id like '%".$search."%'";
         }
 
+        if(in_array(get_user_role(), array(2,3,4,5,6))) {
+            $sql .=" and s.collection_center_id = ".get_assigned_center();
+        }
+
         $sql .=" order by s.modified_at desc";
 
         $query = $this->db->prepare($sql);
@@ -62,9 +66,11 @@ Class Model_Sale extends Model {
     }
 
     function createOrUpdateRecord($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $date = date("Y-m-d h:i:s");
-            $sql = "UPDATE `".$this->table."` SET `buyer_id`='".$data['buyer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."' , `modified_at`= '".$date."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `buyer_id`='".$data['buyer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."'  WHERE `id` = ".$id ;
             $resp =  $this->db->exec($sql);
             if($resp) {
                 $this->createOrUpdateItems($id, $data['item'], $data['collection_center_id']);
@@ -81,9 +87,9 @@ Class Model_Sale extends Model {
                 ':issue_date' => $data['collection_date'],  
                 ':sale_notes' => $data['notes'],
                 ':sale_status_id' => $data['status_id'],
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
             if($resp) {

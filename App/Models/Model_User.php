@@ -25,6 +25,10 @@ Class Model_User extends Model {
             $sql .=" and u.name like '%".$search."%' or u.email like '%".$search."%'";
         }
 
+        if(in_array(get_user_role(), array(2,3,4,5,6))) {
+            $sql .=" and collection_center_id = ".get_assigned_center();
+        }
+
         $sql .=" and u.id != ".get_session('user_id');
 
         $sql .=" order by u.modified_at desc";
@@ -52,8 +56,11 @@ Class Model_User extends Model {
     }
 
     function createOrUpdateRecord($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
         if($id > 0) {
-            $sql = "UPDATE `".$this->table."` SET `collection_center_id`='".$data['collection_center']."', `name`= '".$data['name']."' , `email` = '".$data['email']."' , `password` = '".$data['password']."', `role_id` = '".$data['role_id']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `collection_center_id`='".$data['collection_center']."', `name`= '".$data['name']."' , `email` = '".$data['email']."' , `password` = '".$data['password']."', `role_id` = '".$data['role_id']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
             $stm = $this->db->prepare("INSERT INTO ".$this->table." (collection_center_id,name,email,role_id,password,created_by,created_at,modified_by,status) VALUES (:collection_center, :name, :email, :role_id, :password, :created_by, :created_at, :modified_by, :status)") ;
@@ -63,9 +70,9 @@ Class Model_User extends Model {
                 ':email' => $data['email'], 
                 ':role_id' => $data['role_id'], 
                 ':password' => $data['password'],
-                ':created_by' => get_session('user_id'),
-                ':created_at' => date("Y-m-d h:i:s"),
-                ':modified_by' => get_session('user_id'),
+                ':created_by' => $user_id,
+                ':created_at' => $date,
+                ':modified_by' => $user_id,
                 ':status' => 1
             ));
         }

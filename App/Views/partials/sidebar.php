@@ -11,7 +11,7 @@
               Dashboard
             </a>
           </li>
-          <?php if(in_array($userRole, array(1,2))) { ?>
+          <?php if(in_array($userRole, array(1))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/collection-centers">
               <span data-feather="file"></span>
@@ -27,7 +27,7 @@
             </a>
           </li>
           <?php } ?>
-          <?php if(in_array($userRole, array(1,2))) { ?>
+          <?php if(in_array($userRole, array(1))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/customers">
               <span data-feather="layers"></span>
@@ -43,7 +43,7 @@
             </a>
           </li>
           <?php } ?>
-          <?php if(in_array($userRole, array(4,3))) { ?>
+          <?php if(in_array($userRole, array(4,3,2))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/purchases/daily_prices">
               <span data-feather="shopping-cart"></span>
@@ -67,7 +67,7 @@
             </a>
           </li>
           <?php } ?>
-          <?php if(in_array($userRole, array(1,2))) { ?>
+          <?php if(in_array($userRole, array(1))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/vehicles">
               <span data-feather="layers"></span>
@@ -96,7 +96,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($userRole, array(1,2))) { ?>
+          <?php if(in_array($userRole, array(1))) { ?>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" data-target="#settings">
               <span data-feather="layers"></span>
@@ -116,6 +116,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="/settings/paddy_seasons">
                   <span class="nav-link-text">Seasons</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/settings/buying_limitation">
+                  <span class="nav-link-text">Buying Limitations</span>
                 </a>
               </li>
               <li class="nav-item">
