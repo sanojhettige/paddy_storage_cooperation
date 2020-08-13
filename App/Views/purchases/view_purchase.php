@@ -4,16 +4,16 @@
   <div class="row">
   <div class="form-group col-md-4">
     <label for="farmer_id">Farmer</label>
-    <?= $record['farmer_id'] ?>
+    <br/><?= $record['farmer_name'] ?>
   </div>
 
   <div class="form-group col-md-4">
     <label for="collection_center_id">Collection Center</label>
-    <?= $record['collection_center_id']; ?>
+    <br/><?= $record['collection_center']; ?>
 </div>
   <div class="form-group col-md-4">
     <label for="collection_date">Collection Date</label>
-    <?= date("Y-m-d", strtotime($record['collection_date'])); ?>
+    <br/><?= date("Y-m-d", strtotime($record['collection_date'])); ?>
     </div>
 
         </div>
@@ -34,7 +34,7 @@
             foreach($record['items'] as $index=>$row) { ?> 
                 <tr class="purcahseItem">
                   <td><?= $index+1; ?></td>
-                  <td><?= $row['paddy_category_id']; ?></td>
+                  <td><?= $row['paddy_name']; ?></td>
                   <td><?= $row['collected_amount']; ?></td>
                   <td><?= $row['collected_rate']; ?></td>
                   <td><?php
@@ -66,7 +66,9 @@
           <span class="error-message item form_error"></span>
 <br/><br/>
   <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id">
+  <?php if(isset($canDelete)) { ?>
   <button type="submit" name="submit" value="1" class="btn btn-danger">Delete</button>
+  <?php } ?>
   <a href="/purchases" class="btn btn-default">Back to Purchases</a>
   
 </form>

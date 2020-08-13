@@ -46,6 +46,37 @@ $(document).ready(function(){
             }
         });
     }
+
+
+    function getMaxLimits(qty, total) {
+        const pid = $("#_purchase_id").val();
+        $.ajax({
+            url: "/purchases/check_max_limits",
+            type: 'POST',
+            dataType: 'json',
+            data: {total_qty: qty, total_amount: total, json: 1, update: pid},
+            success: function(data) {
+                let message = "";
+                if(data.can_proceed) {
+                    $("#submit_purchase").attr("disabled", false);
+                } else {
+                    $("#submit_purchase").attr("disabled", true);
+                    if(data.available_capacity <= 0) {
+                        message +="No enough space to buy paddy";
+                        message += ", max allowed amount is "+data.bo_available_capacity+" Kgs"; 
+                    }
+
+                    if(data.balance <= 0) {
+                        message +="\nNo enough money to buy paddy";
+                        if(data.bo_balance >0) {
+                            message +=", max allowed amount is "+formatCurrency(data.bo_balance);
+                        }
+                    }
+                    alert(message);
+                }
+            }
+        });
+    }
     
 
     function onDateChange(date) {
@@ -66,10 +97,15 @@ $(document).ready(function(){
     }
 
     function calculateTotals() {
-        const subtotals = $('.purchaseItem').map((idx, val) => calculateSubtotal(val)).get();
-        const total = subtotals.reduce((a, v) => a + Number(v), 0);
+        const subTotals = $('.purchaseItem').map((idx, val) => calculateSubtotal(val)).get();
+        const totalQtys = $('.purchaseItem').map((idx, val) => calculateQty(val)).get();
+        const total = subTotals.reduce((a, v) => a + Number(v), 0);
+        const totalQty = totalQtys.reduce((a, v) => a + Number(v), 0);
         $('.total td:eq(1)').text(formatCurrency(total));
+        $("#total_amount").val(total);
+        $("#total_qty").val(totalQty);
         handleRowRemoveButton();
+        getMaxLimits(totalQty, total);
     }
 
     function calculateSubtotal(row) {
@@ -77,6 +113,13 @@ $(document).ready(function(){
         const inputs = $row.find('input');
         const subtotal = inputs[0].value * inputs[1].value;
         $row.find('td:eq(4)').text(formatCurrency(subtotal));
+        return subtotal;
+    }
+    
+    function calculateQty(row) {
+        const $row = $(row);
+        const inputs = $row.find('input');
+        const subtotal = inputs[0].value;
         return subtotal;
     }
 

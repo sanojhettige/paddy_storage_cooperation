@@ -43,4 +43,13 @@ Class Reports extends Controller {
         $this->data['balance'] = ($this->data['received'] - $this->data['cash_issued']);
         $this->view->render("reports/cash_book", "template", $this->data);
     }
+
+    public function stocks() {
+        $this->data['title'] = "Stock Report";
+        $report_model = $this->model->load('report');
+        $cc_model = $this->model->load('collectionCenter');
+        $this->data['collection_centers'] = $cc_model->getCollectionCentersDropdownData();
+        $this->data['report'] = $report_model->getStocks();
+        $this->view->render("reports/stock_report", "template", $this->data);
+    }
 }

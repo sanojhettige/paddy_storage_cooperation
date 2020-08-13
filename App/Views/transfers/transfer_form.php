@@ -50,13 +50,13 @@
       <?php } ?>
       
     </select>
-    <span class="error-message status_id"><?= isset($errors["status_id"]) ? $errors["status_id"]: ""; ?></span>
+    <span class="error-message vehicle_id"><?= isset($errors["vehicle_id"]) ? $errors["vehicle_id"]: ""; ?></span>
   </div>
   <div class="form-group col-md-6">
     <label for="status_id">Status</label>
     <select class="form-control" name="status_id" id="status_id">
       <option value="">Select</option>
-      <?php foreach(sale_status() as $item) { ?>
+      <?php foreach(transfer_status() as $item) { ?>
         <?php if(get_post('status_id') === $item['id'] || $record['transfer_status_id'] === $item['id']) { ?>
             <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
         <?php } else { ?>

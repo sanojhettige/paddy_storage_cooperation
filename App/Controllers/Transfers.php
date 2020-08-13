@@ -14,11 +14,46 @@ Class Transfers extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
+        $this->data['type'] = "all";
         $this->view->render("transfers/index", "template", $this->data);
         clear_messages();
     }
 
-    public function get_transfers() {
+    public function issue_orders($param=null) {
+        $this->data['title'] = "Issue Orders";
+        $this->data['assets'] = array(
+            'css'=>array(
+                BASE_URL.'/assets/css/datatables.min.css'
+            ),
+            'js'=>array(
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
+            )
+        );
+        $this->data['type'] = "issues";
+        $this->view->render("transfers/index", "template", $this->data);
+        clear_messages();
+    }
+
+
+    public function collection_orders($param=null) {
+        $this->data['title'] = "Collection Orders";
+        $this->data['assets'] = array(
+            'css'=>array(
+                BASE_URL.'/assets/css/datatables.min.css'
+            ),
+            'js'=>array(
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
+            )
+        );
+
+        $this->data['type'] = "collections";
+        $this->view->render("transfers/index", "template", $this->data);
+        clear_messages();
+    }
+
+    public function get_transfers($type=null) {
         $data = array();
         $transfers = array();
         $offset = get_post('start');
@@ -27,25 +62,30 @@ Class Transfers extends Controller {
         $transfer_model = $this->model->load('transfer');
         $cc_model = $this->model->load('collectionCenter');
 
-        $res = $transfer_model->getTransfers($limit,$offset, $search);
+        $res = $transfer_model->getTransfers($limit,$offset, $search, $type);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
         $data["recordsFiltered"] = 0;
 
         $editable = is_permitted('transfers-edit');
         $deletable = is_permitted('transfers-delete');
-
+        $viewable = is_permitted('transfers-view');
 
         foreach($res["data"] as $index=>$transfer) {
+            $canIssue = ($transfer['from_center_id'] === get_session('assigned_center'));
+            $canCollect = ($transfer['to_center_id'] === get_session('assigned_center'));
             $transfers[$index]['id'] = $transfer['id'];
             $transfers[$index]['transfer_date'] = $transfer['transfer_date'];
             $transfers[$index]['modified_at'] = $transfer['modified_at'];
             $transfers[$index]['from_center'] = $cc_model->getCollectionCenterById($transfer['from_center_id'])["name"];
             $transfers[$index]['to_center'] = $cc_model->getCollectionCenterById($transfer['to_center_id'])["name"];
-            $transfers[$index]['transfer_status'] = sale_status($transfer['transfer_status_id']);
-            $purchases[$index]['delete'] = $deletable;
-            $purchases[$index]['edit'] = $editable;
-            $purchases[$index]['pay'] = $payable;
+            $transfers[$index]['transfer_status'] = transfer_status($transfer['transfer_status_id']);
+            $transfers[$index]['delete'] = ($transfer['transfer_status_id'] === 1 &&  $deletable);
+            $transfers[$index]['edit'] = ($transfer['transfer_status_id'] === 1 && $editable);
+            $transfers[$index]['view'] = $viewable;
+            $transfers[$index]['pay'] = $payable;
+            $transfers[$index]['can_issue'] = $canIssue;
+            $transfers[$index]['can_collect'] = $canCollect;
         }
         $data["data"] = $transfers;
         $data['search'] = $search;
@@ -73,6 +113,7 @@ Class Transfers extends Controller {
         $cc_model = $this->model->load('collectionCenter');
         $farmer_model = $this->model->load('farmer');
         $settings_model = $this->model->load('settings');
+        $vehicle_model = $this->model->load('vehicle');
         if($_POST) {
             $this->createOrUpdateTransfer($transfer_model);
         }
@@ -82,6 +123,7 @@ Class Transfers extends Controller {
         $this->data['collection_centers'] = $cc_model->getCollectionCentersDropdownData();
         $this->data['farmers'] = $farmer_model->getFarmerDropdownData();
         $this->data['paddy_types'] = $settings_model->getPaddyCategories(100,0,null)['data'];
+        $this->data['vehicles'] = $vehicle_model->getVehicles(100,0,null)['data'];
         $this->view->render("transfers/transfer_form", "template", $this->data);
     }
 
@@ -209,4 +251,63 @@ Class Transfers extends Controller {
             $this->data['error_message'] = $e;
         }
     }
+
+    public function issue($id=NULL) {
+        $this->data['title'] = "Issue transfer";
+        $transfer_model = $this->model->load('transfer');
+        if($id > 0) {
+            $this->data['record'] = $transfer_model->getTransferById($id);
+        }
+        if(get_post('submit') && $this->data['record']) {
+            $this->doUpdateTransferStatus($transfer_model, $id, 2);
+        }
+        $this->data['canIssue'] = true;
+        $this->view->render("transfers/view_transfer", "template", $this->data);
+    }
+
+    public function collect($id=NULL) {
+        $this->data['title'] = "Collect transfer";
+        $transfer_model = $this->model->load('transfer');
+        if($id > 0) {
+            $this->data['record'] = $transfer_model->getTransferById($id);
+        }
+        if(get_post('submit') && $this->data['record']) {
+            $this->doUpdateTransferStatus($transfer_model, $id, 3);
+        }
+        $this->data['canCollect'] = true;
+        $this->view->render("transfers/view_transfer", "template", $this->data);
+    }
+
+    private function doUpdateTransferStatus($model=null, $id=null, $status=null) {
+        $data = array();
+        $data['errors'] = array();
+        try {
+            if(!in_array($status, array(2,3))) {
+                $this->data['error_message'] = "Invalid transfer status";
+            } elseif(!$id) {
+                $this->data['error_message'] = "Invalid transfer ID";
+            } else {
+                $res = $model->doUpdateTransferStatus($id, $status);
+                if($res) {
+                    $message = "Transfer Successfully Updated.";
+                    $this->data['success_message'] = $message;
+                } else {
+                    $this->data['error_message'] = "Unable to save data, please try again.";
+                }
+            }
+        } catch(Exception $e) {
+            $data['error_message'] = $e;
+        }
+    }
+    
+    public function view($id=NULL) {
+        $this->data['title'] = "View transfer";
+        $transfer_model = $this->model->load('transfer');
+        if($id > 0) {
+            $this->data['record'] = $transfer_model->getTransferById($id);
+        }
+        $this->view->render("transfers/view_transfer", "template", $this->data);
+    }
+
+
 }

@@ -21,6 +21,10 @@ $(document).ready(function() {
               if(data.edit)
                 content += '<a href="/collection-centers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
               
+              if(data.view)
+                content += '<a href="/collection-centers/view/'+data.id+'" class="btn btn-success btn-sm">View</a>';
+              
+
               if(data.delete)
                 content += '<a href="/collection-centers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
               
@@ -54,6 +58,10 @@ $(document).ready(function() {
             if(data.edit)
               content += '<a href="/farmers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
             
+            if(data.view)
+              content += '<a href="/farmers/view/'+data.id+'" class="btn btn-success btn-sm">View</a>';
+            
+
             if(data.delete)
               content += '<a href="/farmers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
             content += '</div>';
@@ -85,6 +93,9 @@ $(document).ready(function() {
           content = '<div class="btn-group" role="group" aria-label="Action Button">';
           if(data.edit)
             content += '<a href="/customers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+          
+          if(data.view)
+            content += '<a href="/customers/view/'+data.id+'" class="btn btn-success btn-sm">View</a>';
           
           if(data.delete)
             content += '<a href="/customers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
@@ -260,9 +271,15 @@ $('#purchase_datatable').DataTable( {
         if(data.edit) {
           content += '<a href="/purchases/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
         }
+
+        if(data.view) {
+          content += '<a href="/purchases/view/'+data.id+'" class="btn btn-success btn-sm">View</a>';
+        }
+
         if(data.delete) {
           content += '<a href="/purchases/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
         }
+
         if(data.pay) {
           content += '<a href="/purchases/pay/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm">Pay</a>';
         }
@@ -293,6 +310,9 @@ $('#sale_datatable').DataTable( {
         content = '<div class="btn-group" role="group" aria-label="Action Button">';
         if(data.edit)
           content += '<a href="/sales/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
+        
+          if(data.view)
+          content += '<a href="/sales/view/'+data.id+'" class="btn btn-success btn-sm">View</a>';
         
         if(data.delete)
           content += '<a href="/sales/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
@@ -326,8 +346,17 @@ $('#transfer_datatable').DataTable( {
         if(data.edit)
           content += '<a href="/transfers/edit/'+data.id+'" class="btn btn-info btn-sm">Edit</a>';
         
-        if(data.edit)
+        if(data.view)
+          content += '<a href="/transfers/view/'+data.id+'" class="btn btn-success btn-sm">View</a>';
+        
+        if(data.delete)
           content += '<a href="/transfers/delete/'+data.id+'" id="'+data.id+'" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
+        
+        if(data.can_issue)
+          content += '<a href="/transfers/issue/'+data.id+'" id="'+data.id+'" class="btn btn-success btn-sm">Issue Now</a>';
+        
+        if(data.can_collect)
+          content += '<a href="/transfers/collect/'+data.id+'" id="'+data.id+'" class="btn btn-success btn-sm">Collect Now</a>';
         
           content += '</div>';
         return content;

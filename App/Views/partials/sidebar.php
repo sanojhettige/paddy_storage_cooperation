@@ -67,6 +67,20 @@
             </a>
           </li>
           <?php } ?>
+          <?php if(in_array($userRole, array(4))) { ?>
+          <li class="nav-item">
+            <a class="nav-link" href="/transfers/issue_orders">
+              <span data-feather="bar-chart-2"></span>
+              Issue Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/transfers/collection_orders">
+              <span data-feather="bar-chart-2"></span>
+              Collection Orders
+            </a>
+          </li>
+          <?php } ?>
           <?php if(in_array($userRole, array(1))) { ?>
           <li class="nav-item">
             <a class="nav-link" href="/vehicles">
@@ -82,6 +96,7 @@
               Reports <span class="pull-right"><b class="caret"></b>
             </a>
             <ul class="nav-second-level collapse" id="reports">
+            <?php if(in_array($userRole, array(2))) { ?>
             <li class="nav-item">
                 <a class="nav-link" href="/reports/paddy_collection">
                   <span class="nav-link-text">Paddy Collection</span>
@@ -92,6 +107,14 @@
                   <span class="nav-link-text">Cash Book</span>
                 </a>
               </li>
+            <?php } ?>
+            <?php if(in_array($userRole, array(1))) { ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/reports/stocks">
+                  <span class="nav-link-text">Stock Report</span>
+                </a>
+              </li>
+            <?php } ?>
             </ul>
           </li>
           <?php } ?>

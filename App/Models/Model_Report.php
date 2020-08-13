@@ -52,11 +52,17 @@ Class Model_Report extends Model {
         return ($received['total_received']) ? $received['total_received']: 0;
     }
 
-    function cash_issued() {
+    function cash_issued($includePendingPayOrders=NULL) {
         $sql ="select sum(po.paid_amount) as total_issued from pay_orders po ";
         $sql .=" inner join purchases p on p.id = po.purchase_id ";
         
-        $sql .=" where p.status = 1 and po.status = 1";
+        $sql .=" where po.status = 1";
+        
+        if(!$includePendingPayOrders) {
+            $sql .=" and p.status = 1";
+        } else {
+            $sql .=" and p.status in (0,1)";
+        }
 
         if(in_array(get_user_role(), array(2,3,4,5,6))) {
             $sql .=" and p.collection_center_id = ".get_assigned_center();
@@ -68,6 +74,35 @@ Class Model_Report extends Model {
         $query->execute();
         $issued =  $query->fetch();
         return ($issued['total_issued']) ? $issued['total_issued']: 0;
+    }
+
+
+    public function getStocks() {
+        $sql = "select paddy_categories.name as paddy_name,collection_centers.name as collection_center, collection_center_stocks.available_stock  from collection_center_stocks";
+        $sql .=" inner join paddy_categories on paddy_categories.id = collection_center_stocks.paddy_category_id ";
+        $sql .=" inner join collection_centers on collection_centers.id = collection_center_stocks.collection_center_id ";
+        $sql .=" where paddy_categories.status = 1 and collection_centers.status = 1";
+
+        if(in_array(get_user_role(), array(2,3,4,5,6))) {
+            $sql .=" and collection_center_stocks.collection_center_id = ".get_assigned_center();
+        }
+
+        if(get_post('collection_center_id')) {
+            $sql .=" and collection_center_stocks.collection_center_id =".get_post('collection_center_id');
+        }
+
+        // if(get_post('collection_center_id')) {
+        //     $sql .=" group by collection_center_stocks.collection_center_id";
+        // } else {
+        //     $sql .=" group by paddy_categories.id";
+        // }
+        $sql .=" order by collection_center_stocks.paddy_category_id asc";
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $count = $query->rowCount();
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
 }

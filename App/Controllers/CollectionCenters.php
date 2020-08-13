@@ -29,6 +29,7 @@ Class CollectionCenters extends Controller {
         $res = $center_model->getCollectionCenters($limit,$offset, $search);
         $editable = is_permitted('collection-centers-edit');
         $deletable = is_permitted('collection-centers-delete');
+        $viewable = is_permitted('collection-centers-view');
 
         foreach($res["data"] as $index=>$center) {
             $ccs[$index]['id'] = $center['id'];
@@ -39,6 +40,7 @@ Class CollectionCenters extends Controller {
             $ccs[$index]['modified_at'] = $center['modified_at'];
             $ccs[$index]['edit'] = $editable;
             $ccs[$index]['delete'] = $deletable;
+            $ccs[$index]['view'] = $viewable;
         }
 
         $data["draw"] = get_post("draw");
@@ -129,5 +131,16 @@ Class CollectionCenters extends Controller {
         } catch(Exception $e) {
             $this->data['error_message'] = $e;
         }
+    }
+
+
+    public function view($id=NULL) {
+        $this->data['title'] = "View collection center";
+        $center_model = $this->model->load('collectionCenter');
+        if($id > 0) {
+            $this->data['record'] = $center_model->getCollectionCenterById($id);
+        }
+        
+        $this->view->render("collection_centers/view_cc", "template", $this->data);
     }
 }

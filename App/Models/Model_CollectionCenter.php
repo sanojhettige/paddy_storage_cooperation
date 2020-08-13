@@ -73,4 +73,13 @@ Class Model_CollectionCenter extends Model {
             ));
         }
     }
+
+
+    function getCollectionCenterUsageById($id=NULL) {
+        $sql = "select sum(available_stock) as used_space from collection_center_stocks where collection_center_id = ".$id;
+        $query = $this->db->prepare($sql);
+        $query->execute(); 
+        $data = $query->fetch();
+        return $data ? $data['used_space']: 0;
+    }
 }

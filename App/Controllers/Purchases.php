@@ -34,6 +34,7 @@ Class Purchases extends Controller {
         $editable = is_permitted('purchases-edit');
         $deletable = is_permitted('purchases-delete');
         $payable = is_permitted('purchases-pay');
+        $viewable = is_permitted('purchases-view');
 
         foreach($res["data"] as $index=>$item) {
 
@@ -42,10 +43,11 @@ Class Purchases extends Controller {
             $purchases[$index]['farmer_name'] = $item['farmer_name'];
             $purchases[$index]['collection_center'] = $item['collection_center'];
             $purchases[$index]['collection_date'] = $item['collection_date'];
-            $purchases[$index]['is_paid'] = $isPaid ? "Yes": "No";
-            $purchases[$index]['delete'] = !$isPaid && $deletable;
-            $purchases[$index]['edit'] = !$isPaid && $editable;
-            $purchases[$index]['pay'] = !$isPaid && $payable;
+            $purchases[$index]['is_paid'] = ($isPaid && $isPaid['status'] === 1) ? "Yes": "No";
+            $purchases[$index]['delete'] = (!$isPaid || $isPaid['status'] === 0) && $deletable;
+            $purchases[$index]['edit'] = (!$isPaid || $isPaid['status'] === 0) && $editable;
+            $purchases[$index]['pay'] = (!$isPaid || $isPaid['status'] === 0) && $payable;
+            $purchases[$index]['view'] = $viewable;
         }
 
         $data["data"] = $purchases;
@@ -276,7 +278,7 @@ Class Purchases extends Controller {
             } elseif(empty(get_post('paid_date'))) {
                 $data['errors']["paid_date"] = "Issue date is required.";
             } else {
-                $res = $model->createOrUpdatePayOrder($purchase, $_POST);
+                $res = $model->createOrUpdatePayOrder($purchase, $_POST, 1);
                 if($res) {
                     $message = "Pay order Successfully saved.";
                     $data['success_message'] = $message;
@@ -302,5 +304,63 @@ Class Purchases extends Controller {
         }
         echo json_encode($data);
         exit;
+    }
+
+
+    public function check_max_limits() {
+        $report_model = $this->model->load('report');
+        $center_model = $this->model->load('collectionCenter');
+        $purchase_model = $this->model->load('purchase');
+        $purchase = array();
+        $pId = get_post('update');
+        $json = get_post('json');
+        $qty = get_post('total_qty');
+        $total = get_post('total_amount');
+        $center = $center_model->getCollectionCenterById(get_session('assigned_center'));
+        $used_space = $center_model->getCollectionCenterUsageById(get_session('assigned_center'));
+        $this->data['can_proceed'] = false;
+        
+        if($pId > 0) {
+            $purchase = $purchase_model->getPurchaseById($pId);
+        }
+
+        $this->data['received'] = $report_model->cash_received();
+        $this->data['cash_issued'] = $report_model->cash_issued(1);
+        $this->data['balance'] = ($this->data['received'] - $this->data['cash_issued']);
+        $this->data['total_capacity'] = $center['capacity'];
+        $this->data['used_capacity'] = $used_space;
+
+        if($purchase['id']) {
+            $this->data['balance'] = $this->data['balance'] + $purchase['total_amount'];
+            $this->data['used_capacity'] = $this->data['used_capacity'] + $purchase['total_qty'];
+        }
+
+        $this->data['available_capacity'] = $center['capacity'] - $used_space;
+        $this->data['bo_available_capacity'] = $this->data['available_capacity'];
+        $this->data['bo_balance'] = $this->data['balance'];
+
+        if($this->data['balance'] >= $total && $this->data['available_capacity'] >= $qty) {
+            $this->data['can_proceed'] = true;
+        } else {
+            $this->data['available_capacity'] = $this->data['available_capacity'] - $qty;
+            $this->data['balance'] = $this->data['balance'] - $total;
+        }
+        
+        if($json === "1") {
+            echo json_encode($this->data);
+            exit;
+        } else {
+            return $this->data;
+        }
+    }
+
+
+    public function view($id=NULL) {
+        $this->data['title'] = "Purchase";
+        $purchase_model = $this->model->load('purchase');
+        if($id > 0) {
+            $this->data['record'] = $purchase_model->getPurchaseById($id);
+        }
+        $this->view->render("purchases/view_purchase", "template", $this->data);
     }
 }

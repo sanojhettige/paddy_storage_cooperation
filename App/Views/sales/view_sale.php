@@ -4,20 +4,20 @@
   <div class="row">
   <div class="form-group col-md-3">
     <label for="buyer_id">Buyer</label>
-    <?= $record['buyer_id'] ?>
+    <br/><?= $record['customer_name'] ?>
   </div>
 
   <div class="form-group col-md-3">
     <label for="collection_center_id">Issue Center</label>
-    <?= $record['collection_center_id']; ?>
+    <br/><?= $record['collection_center']; ?>
 </div>
   <div class="form-group col-md-3">
     <label for="collection_date">Issue Date</label>
-    <?= date("Y-m-d", strtotime($record['issue_date'])); ?>
+    <br/><?= date("Y-m-d", strtotime($record['issue_date'])); ?>
     </div>
   <div class="form-group col-md-3">
     <label for="status_id">Sale Status</label>
-    <?= $record['sale_status_id']; ?>
+    <br/><?= sale_status($record['sale_status_id']); ?>
 </div>
 
         </div>
@@ -38,7 +38,7 @@
             foreach($record['items'] as $index=>$row) { ?> 
                 <tr class="saleItem">
                   <td><?= $index+1; ?></td>
-                  <td><?= $row['paddy_category_id']; ?></td>
+                  <td><?= $row['paddy_name']; ?></td>
                   <td><?= $row['sold_amount']; ?></td>
                   <td><?= $row['sold_rate']; ?></td>
                   <td><?php
@@ -61,7 +61,7 @@
         <div class="col-md-12">
 
         <label for="notes">Notes</label>
-        <?= $record['purchase_notes']; ?>
+        <?= $record['sale_notes']; ?>
                     </div>
           </div>
           
@@ -70,7 +70,9 @@
           <span class="error-message item form_error"></span>
 <br/><br/>
   <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id">
+  <?php if(isset($canDelete)) { ?>
   <button type="submit" name="submit" value="1" class="btn btn-danger">Delete</button>
+  <?php } ?>
   <a href="/sales" class="btn btn-default">Back to Sales</a>
   
 </form>

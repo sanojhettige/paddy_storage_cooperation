@@ -4,7 +4,8 @@ if ( ! defined('APP_PATH')) exit("Access denied");
 Class Model_Transfer extends Model {
     private $table = "transfers";
 
-    function getTransfers($limit=20, $offset=0, $search=null) {
+    function getTransfers($limit=20, $offset=0, $search=null, $type=null) {
+        $center_id = get_session("assigned_center");
         $sql = "SELECT id,transfer_date,modified_at,from_center_id,to_center_id,transfer_status_id from ".$this->table." p ";
         $sql .=" where status = 1";
 
@@ -13,7 +14,11 @@ Class Model_Transfer extends Model {
         }
 
         if(in_array(get_user_role(), array(2,3,4,5,6))) {
-            $sql .=" and to_center_id = ".get_assigned_center();
+            if($type === "collections") {
+                $sql .=" and to_center_id = ".$center_id;
+            } elseif($type === "issues") {
+                $sql .=" and from_center_id = ".$center_id;
+            }
         }
 
         $sql .=" order by modified_at desc";
@@ -28,15 +33,23 @@ Class Model_Transfer extends Model {
     }
 
     function getTransferById($id=null) {
-        $purchase = array();
-        $query = $this->db->prepare("SELECT * from ".$this->table." where id='".$id."'");
+        $transfer = array();
+        $sql1 = "SELECT t.*, v.registration_number, cc1.name from_center, cc2.name as to_center from ".$this->table." t";
+        $sql1 .=" left join vehicles v on v.id = t.vehicle_id ";
+        $sql1 .=" left join collection_centers cc1 on cc1.id = t.from_center_id ";
+        $sql1 .=" left join collection_centers cc2 on cc2.id = t.to_center_id ";
+        $sql1 .=" where t.id='".$id."'";
+        $query = $this->db->prepare($sql1);
         $query->execute(); 
-        $purchase = $query->fetch();
+        $transfer = $query->fetch();
 
-        $items_query = $this->db->prepare("SELECT * from transfer_items where transfer_id='".$id."'");
+        $sql2 = "SELECT ti.*, pc.name as paddy_name from transfer_items ti ";
+        $sql2 .=" left join paddy_categories pc on pc.id = ti.paddy_category_id";
+        $sql2 .=" where ti.transfer_id='".$id."'";
+        $items_query = $this->db->prepare($sql2);
         $items_query->execute();
-        $items = $items_query->fetchAll(PDO::FETCH_ASSOC); 
-        return array_merge($purchase,array('items'=>$items));
+        $items = $items_query->fetchAll(PDO::FETCH_ASSOC);
+        return array_merge($transfer,array('items'=>$items));
     }
 
     function deleteTransferById($id=NULL) {
@@ -117,7 +130,8 @@ Class Model_Transfer extends Model {
 
             $stmt = $this->db->prepare($sql." ".$query);
             $itemRows[$n] =  $stmt->execute($iData);
-            if($itemRows && $status === 2) {
+            if($itemRows && $status === 3)  // 3 = stock received
+            {
                 $this->updateStock($items['qty_org'][$index],$items['qty'][$index], $item, $to_center,'add');
                 $this->updateStock($items['qty_org'][$index],$items['qty'][$index], $item, $from_center,'remove');
             }
@@ -155,6 +169,24 @@ Class Model_Transfer extends Model {
                 ));
             }
         }
+    }
+
+    public function doUpdateTransferStatus($id=NULL, $status_id=NULL) {
+        $date = date("Y-m-d h:i:s");
+        $user_id = get_session('user_id');
+        $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `transfer_status_id`= '".$status_id."'  WHERE `id` = ".$id ;
+        $resp =  $this->db->exec($sql);
+        if($resp) {
+            $trf = $this->getTransferById($id);
+            
+            foreach($trf['items'] as $item) {
+                $this->updateStock($item['transfer_amount'],$item['transfer_amount'], $item['paddy_category_id'], $trf['to_center_id'],'add');
+                $this->updateStock($item['transfer_amount'],$item['transfer_amount'], $item['paddy_category_id'], $trf['from_center_id'],'remove');
+            }
+
+            return true;
+        }
+        return false;
     }
 
 }

@@ -115,8 +115,10 @@
 
           <span class="error-message item form_error"></span>
 <br/><br/>
-  <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id">
-  <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+  <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id" id="_purchase_id">
+  <input type="hidden" value="" id="total_amount" name="total_amount">
+  <input type="hidden" value="" id="total_qty" name="total_qty">
+  <button type="submit" name="submit" id="submit_purchase" class="btn btn-primary">Submit</button>
   <button type="reset" class="btn btn-default">Reset</button>
   
 </form>

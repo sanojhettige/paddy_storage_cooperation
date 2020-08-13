@@ -5,9 +5,9 @@ Class Model_Sale extends Model {
     private $table = "sales";
 
     function getSales($limit=20, $offset=0, $search=null) {
-        $sql = "SELECT s.id,s.buyer_id,f.name as buyer_name, c.name as collection_center, s.collection_center_id,s.issue_date,s.modified_at from ".$this->table." s ";
-        $sql .=" left join farmers f on f.id = s.buyer_id";
-        $sql .=" left join collection_centers c on c.id = s.collection_center_id";
+        $sql = "SELECT s.id,s.customer_id,c.name as buyer_name, cc.name as collection_center, s.collection_center_id,s.issue_date,s.modified_at from ".$this->table." s ";
+        $sql .=" left join customers c on c.id = s.customer_id";
+        $sql .=" left join collection_centers cc on cc.id = s.collection_center_id";
 
         $sql .=" where s.status = 1";
 
@@ -32,11 +32,18 @@ Class Model_Sale extends Model {
 
     function getSaleById($id=null) {
         $sale = array();
-        $query = $this->db->prepare("SELECT * from ".$this->table." where id='".$id."'");
+        $sql1 ="SELECT s.*, c.name as customer_name, cc.name as collection_center from ".$this->table." s ";
+        $sql1 .=" left join customers c on c.id = s.customer_id ";
+        $sql1 .=" left join collection_centers cc on cc.id = s.collection_center_id ";
+        $sql1 .=" where s.id='".$id."'";
+        $query = $this->db->prepare($sql1);
         $query->execute(); 
         $sale = $query->fetch();
 
-        $items_query = $this->db->prepare("SELECT * from sale_items where sale_id='".$id."'");
+        $sql = "SELECT si.*, pc.name as paddy_name from sale_items si ";
+        $sql .=" left join paddy_categories pc on pc.id = si.paddy_category_id";
+        $sql .=" where si.sale_id='".$id."'";
+        $items_query = $this->db->prepare($sql);
         $items_query->execute();
         $items = $items_query->fetchAll(PDO::FETCH_ASSOC); 
         return array_merge($sale,array('items'=>$items));
@@ -70,7 +77,7 @@ Class Model_Sale extends Model {
         $user_id  = get_session('user_id');
 
         if($id > 0) {
-            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `buyer_id`='".$data['buyer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `customer_id`='".$data['buyer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."'  WHERE `id` = ".$id ;
             $resp =  $this->db->exec($sql);
             if($resp) {
                 $this->createOrUpdateItems($id, $data['item'], $data['collection_center_id']);
@@ -80,9 +87,9 @@ Class Model_Sale extends Model {
             }
             
         } else {
-            $stm = $this->db->prepare("INSERT INTO ".$this->table." (buyer_id,collection_center_id,issue_date,sale_notes,sale_status_id,created_by,created_at,modified_by,status) VALUES (:buyer_id, :collection_center_id, :issue_date, :sale_notes, :sale_status_id, :created_by, :created_at, :modified_by, :status)") ;
+            $stm = $this->db->prepare("INSERT INTO ".$this->table." (customer_id,collection_center_id,issue_date,sale_notes,sale_status_id,created_by,created_at,modified_by,status) VALUES (:customer_id, :collection_center_id, :issue_date, :sale_notes, :sale_status_id, :created_by, :created_at, :modified_by, :status)") ;
             $resp = $stm->execute(array(
-                ':buyer_id' => $data['buyer_id'],
+                ':customer_id' => $data['buyer_id'],
                 ':collection_center_id' => $data['collection_center_id'], 
                 ':issue_date' => $data['collection_date'],  
                 ':sale_notes' => $data['notes'],

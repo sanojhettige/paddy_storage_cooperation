@@ -33,6 +33,7 @@ Class Farmers extends Controller {
         
         $editable = is_permitted('farmers-edit');
         $deletable = is_permitted('farmers-delete');
+        $viewable = is_permitted('farmers-view');
 
         foreach($res["data"] as $index=>$item) {
             $farmers[$index]['id'] = $item['id'];
@@ -43,6 +44,7 @@ Class Farmers extends Controller {
             $farmers[$index]['modified_at'] = $item['modified_at'];
             $farmers[$index]['delete'] = $deletable;
             $farmers[$index]['edit'] = $editable;
+            $farmers[$index]['view'] = $viewable;
         }
         $data["data"] = $farmers;
 
@@ -137,5 +139,14 @@ Class Farmers extends Controller {
         } catch(Exception $e) {
             $this->data['error_message'] = $e;
         }
+    }
+
+    public function view($id=NULL) {
+        $this->data['title'] = "View farmer";
+        $farmer_model = $this->model->load('farmer');
+        if($id > 0) {
+            $this->data['record'] = $farmer_model->getFarmerById($id);
+        }
+        $this->view->render("farmers/view_farmer", "template", $this->data);
     }
 }

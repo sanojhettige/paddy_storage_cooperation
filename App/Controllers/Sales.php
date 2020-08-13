@@ -30,6 +30,7 @@ Class Sales extends Controller {
 
         $editable = is_permitted('sales-edit');
         $deletable = is_permitted('sales-delete');
+        $viewable = is_permitted('sales-view');
 
         foreach($res["data"] as $index=>$item) {
             $sales[$index]['id'] = $item['id'];
@@ -38,6 +39,7 @@ Class Sales extends Controller {
             $sales[$index]['issue_date'] = $item['issue_date'];
             $sales[$index]['delete'] = $deletable;
             $sales[$index]['edit'] = $editable;
+            $sales[$index]['view'] = $viewable;
         }
         $data["data"] = $sales;
 
@@ -67,7 +69,7 @@ Class Sales extends Controller {
 
         $sale_model = $this->model->load('sale');
         $cc_model = $this->model->load('collectionCenter');
-        $farmer_model = $this->model->load('farmer');
+        $customer_model = $this->model->load('customer');
         $settings_model = $this->model->load('settings');
         if($_POST) {
             $this->createOrUpdateSale($sale_model);
@@ -76,7 +78,7 @@ Class Sales extends Controller {
         $this->data['record']['items'] = $this->defaultItem(null);
 
         $this->data['collection_centers'] = $cc_model->getCollectionCentersDropdownData();
-        $this->data['buyers'] = $farmer_model->getFarmerDropdownData();
+        $this->data['buyers'] = $customer_model->getCustomers(1000,0)['data'];
         $this->data['paddy_types'] = $settings_model->getPaddyCategories(100,0,null)['data'];
         $this->view->render("sales/sale_form", "template", $this->data);
     }
@@ -99,7 +101,7 @@ Class Sales extends Controller {
         $sale_model = $this->model->load('sale');
         $cc_model = $this->model->load('collectionCenter');
         $settings_model = $this->model->load('settings');
-        $farmer_model = $this->model->load('farmer');
+        $customer_model = $this->model->load('customer');
         
         if($id > 0) {
             $this->data['record'] = $sale_model->getSaleById($id);
@@ -112,7 +114,7 @@ Class Sales extends Controller {
             $this->data['record']['items'] = $this->defaultItem($this->data['record']['id']);
         }
         $this->data['collection_centers'] = $cc_model->getCollectionCentersDropdownData();
-        $this->data['buyers'] = $farmer_model->getFarmerDropdownData();
+        $this->data['buyers'] = $customer_model->getCustomers(1000,0)['data'];
         $this->data['paddy_types'] = $settings_model->getPaddyCategories(100,0,null)['data'];
         $this->view->render("sales/sale_form", "template", $this->data);
     }
@@ -200,5 +202,15 @@ Class Sales extends Controller {
         } catch(Exception $e) {
             $this->data['error_message'] = $e;
         }
+    }
+
+
+    public function view($id=NULL) {
+        $this->data['title'] = "View sale";
+        $sale_model = $this->model->load('sale');
+        if($id > 0) {
+            $this->data['record'] = $sale_model->getSaleById($id);
+        }
+        $this->view->render("sales/view_sale", "template", $this->data);
     }
 }

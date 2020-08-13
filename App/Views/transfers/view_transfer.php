@@ -1,32 +1,39 @@
 
 
-<form method="post" action="" id="saleForm">
+<form method="post" action="" id="transferForm">
   <div class="row">
-  <div class="form-group col-md-4">
-    <label for="farmer_id">Farmer</label>
-    <?= $record['farmer_id'] ?>
+  <div class="form-group col-md-2">
+    <label for="registration_number">Vehicle : </label>
+    <br/><?= $record['registration_number'] ?>
   </div>
 
-  <div class="form-group col-md-4">
-    <label for="collection_center_id">Collection Center</label>
-    <?= $record['collection_center_id']; ?>
+  <div class="form-group col-md-2">
+    <label for="from_center_id">Issued By : </label>
+    <br/><?= $record['from_center']; ?>
 </div>
-  <div class="form-group col-md-4">
-    <label for="collection_date">Collection Date</label>
-    <?= date("Y-m-d", strtotime($record['collection_date'])); ?>
+<div class="form-group col-md-2">
+    <label for="from_center_id">Issued To : </label>
+    <br/><?= $record['to_center']; ?>
+</div>
+  <div class="form-group col-md-2">
+    <label for="collection_date">Transfer Date</label>
+    <br/><?= date("Y-m-d", strtotime($record['transfer_date'])); ?>
+    </div>
+    <div class="form-group col-md-2">
+    <label for="collection_date">Transfer Status</label>
+    <br/><?= transfer_status($record['transfer_status_id']); ?>
     </div>
 
         </div>
 
-        
+        <br/>
+        <br/>
         <div class="col-md-12">
           <table class="table">
             <thead>
               <th width="5%">#</th>
-              <th width="30%">Paddy Type</th>
-              <th width="20%">Qty (Kg)</th>
-              <th width="20%">Collected price(Unit)</th>
-              <th width="25%">Total</th>
+              <th width="60%">Paddy Type</th>
+              <th width="35%">Qty (Kg)</th>
             </thead>
             <tbody class="itemList">
             <?php 
@@ -34,30 +41,18 @@
             foreach($record['items'] as $index=>$row) { ?> 
                 <tr class="purcahseItem">
                   <td><?= $index+1; ?></td>
-                  <td><?= $row['paddy_category_id']; ?></td>
-                  <td><?= $row['collected_amount']; ?></td>
-                  <td><?= $row['collected_rate']; ?></td>
-                  <td><?php
-                    $total = $row['collected_amount']* $row['collected_rate'];
-                   $subTotal += $total;
-                   echo $total;
-                   ?></td>
+                  <td><?= $row['paddy_name']; ?></td>
+                  <td><?= $row['transfer_amount']; ?></td>
                 </tr>
             <?php } ?>
         </tbody>
-        <tfooter>
-                      <tr class="total">
-                      <td colspan="4"></td>
-                        <td><?= $subTotal; ?></td>
-                      </tr>
-        </tfooter>
           </table>
         </div>
 
         <div class="col-md-12">
 
         <label for="notes">Notes</label>
-        <?= $record['purchase_notes']; ?>
+        <?= $record['transfer_notes']; ?>
                     </div>
           </div>
           
@@ -66,7 +61,18 @@
           <span class="error-message item form_error"></span>
 <br/><br/>
   <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id">
-  <button type="submit" name="submit" value="1" class="btn btn-danger">Delete</button>
-  <a href="/purchases" class="btn btn-default">Back to Purchases</a>
+  <?php if(isset($canIssue) && $record['transfer_status_id'] === 1) { ?>
+    <button type="submit" name="submit" value="2" class="btn btn-success">Issue Stock</button>
+  <?php } ?>
+  <?php if(isset($canCollect) && $record['transfer_status_id'] === 2) { ?>
+    <button type="submit" name="submit" value="3" class="btn btn-success">Collect Stock</button>
+  <?php } ?>
+  <?php if(isset($canDelete) && $record['transfer_status_id'] === 1) { ?>
+    <button type="submit" name="submit" value="4" class="btn btn-danger">Delete</button>
+  <?php } ?>
+  
+  
+  
+  <a href="/transfers" class="btn btn-default">Back to Orders</a>
   
 </form>

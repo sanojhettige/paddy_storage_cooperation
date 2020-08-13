@@ -67,6 +67,32 @@ function sale_status($id=null) {
 }
 
 
+
+function transfer_status($id=null) {
+    $arr =  array(
+        array(
+            "id"=>1,
+            "name"=>"Pending",
+        ),
+        array(
+            "id"=>2,
+            "name"=>"Issued",
+        ),
+        array(
+            "id"=>3,
+            "name"=>"Collected",
+        )
+    );
+
+    if($id > 0) {
+        $status = filter_array($arr, $id, 'id');
+        return isset($status[0]) ? $status[0]['name']: "";
+    } else {
+        return $arr;
+    }
+}
+
+
 function filter_array($array=null,$term=null, $field='id'){
     $matches = array();
     foreach($array as $a){
