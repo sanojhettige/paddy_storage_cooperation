@@ -8,7 +8,7 @@
 </div>
 <?php } ?>
 <div class="table-responsive">
-<table id="cc_datatable" class="table table-striped table-sm" url="/collection-centers/get_collection_centers">
+    <table id="cc_datatable" class="table table-striped table-sm" url="/collection-centers/get_collection_centers">
         <thead>
             <tr>
                 <th>ID</th>

@@ -123,18 +123,19 @@ Class Model_Purchase extends Model {
         $stm->execute();
         $idata = array();
         
-        $sql = "INSERT INTO purchase_items (purchase_id,paddy_category_id,collected_amount,collected_rate,notes) VALUES ";
+        $sql = "INSERT INTO purchase_items (purchase_id,paddy_category_id,collected_amount,collected_rate,block_no,notes) VALUES ";
         $n = 0;
         $query = array();
         $iData = array();
         $itemRows = array();
         foreach ($items['paddy_type'] as $index=>$item) {
-            $query = '(:purchase_id' . $n . ', :paddy_category_id' . $n . ', :collected_amount' . $n . ', :collected_rate' . $n . ', :notes' . $n . ')';
+            $query = '(:purchase_id' . $n . ', :paddy_category_id' . $n . ', :collected_amount' . $n . ', :collected_rate' . $n . ', :block_no' . $n.', :notes' . $n . ')';
 
             $iData['purchase_id' . $n] = $pId;
             $iData['paddy_category_id' . $n] = $item;
             $iData['collected_amount' . $n] = $items['qty'][$index];
             $iData['collected_rate' . $n] = $items['price'][$index];
+            $iData['block_no'. $n] = $items['block_no'][$index];
             $iData['notes' . $n] = "";
 
             $stmt = $this->db->prepare($sql." ".$query);

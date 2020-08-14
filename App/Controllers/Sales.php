@@ -272,4 +272,8 @@ Class Sales extends Controller {
             $data['error_message'] = $e;
         }
     }
+
+    public function check_stock_availability() {
+        
+    }
 }

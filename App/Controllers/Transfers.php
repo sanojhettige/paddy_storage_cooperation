@@ -70,6 +70,7 @@ Class Transfers extends Controller {
         $editable = is_permitted('transfers-edit');
         $deletable = is_permitted('transfers-delete');
         $viewable = is_permitted('transfers-view');
+        $payable = false;
 
         foreach($res["data"] as $index=>$transfer) {
             $canIssue = ($transfer['from_center_id'] === get_session('assigned_center'));

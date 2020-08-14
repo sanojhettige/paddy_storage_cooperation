@@ -1,5 +1,5 @@
 <div class="table-responsive">
-<table class="table table-striped table-sm">
+    <table class="table table-striped table-sm">
         <tr>
             <td colspan="3">Received</td>
             <td><?= formatCurrency($received); ?></td>

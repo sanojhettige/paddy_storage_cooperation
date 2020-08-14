@@ -330,12 +330,12 @@ Class Purchases extends Controller {
         $this->data['total_capacity'] = $center['capacity'];
         $this->data['used_capacity'] = $used_space;
 
-        if($purchase['id']) {
+        if(isset($purchase['id'])) {
             $this->data['balance'] = $this->data['balance'] + $purchase['total_amount'];
-            $this->data['used_capacity'] = $this->data['used_capacity'] + $purchase['total_qty'];
+            $this->data['used_capacity'] = $used_space - $purchase['total_qty'];
         }
 
-        $this->data['available_capacity'] = $center['capacity'] - $used_space;
+        $this->data['available_capacity'] = $center['capacity'] - $this->data['used_capacity'];
         $this->data['bo_available_capacity'] = $this->data['available_capacity'];
         $this->data['bo_balance'] = $this->data['balance'];
 

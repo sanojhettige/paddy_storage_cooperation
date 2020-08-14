@@ -32,7 +32,6 @@ Class Reports extends Controller {
     private function get_paddy_collection() {
         $report_model = $this->model->load('report');
         $this->data['report'] = $report_model->daily_paddy_collection($_POST);
-        // print_r($this->data['report']); exit;
     }
 
     public function cash_book($param=null) {

@@ -8,7 +8,6 @@
 
 
 //default configs
-    // init_set('display_errors', 1);
     error_reporting(E_ALL);
     define("UPLOAD_PATH", "/images/");
     define("VIEW_DIR", "App/Views/");

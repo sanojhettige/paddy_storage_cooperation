@@ -54,19 +54,18 @@ Class Model_Report extends Model {
 
     function cash_issued($includePendingPayOrders=NULL) {
         $sql ="select sum(po.paid_amount) as total_issued from pay_orders po ";
-        $sql .=" inner join purchases p on p.id = po.purchase_id ";
+        $sql .=" right join purchases p on po.purchase_id = p.id";
         
-        $sql .=" where po.status = 1";
+        $sql .=" where p.status = 1";
         
         if(!$includePendingPayOrders) {
-            $sql .=" and p.status = 1";
-        } else {
-            $sql .=" and p.status in (0,1)";
+            $sql .=" and po.status = 1";
         }
 
         if(in_array(get_user_role(), array(2,3,4,5,6))) {
             $sql .=" and p.collection_center_id = ".get_assigned_center();
         }
+        // echo $sql; exit;
 
         $query = $this->db->prepare($sql);
         $query->execute();
@@ -90,12 +89,6 @@ Class Model_Report extends Model {
         if(get_post('collection_center_id')) {
             $sql .=" and collection_center_stocks.collection_center_id =".get_post('collection_center_id');
         }
-
-        // if(get_post('collection_center_id')) {
-        //     $sql .=" group by collection_center_stocks.collection_center_id";
-        // } else {
-        //     $sql .=" group by paddy_categories.id";
-        // }
         $sql .=" order by collection_center_stocks.paddy_category_id asc";
 
         $query = $this->db->prepare($sql);
@@ -105,4 +98,80 @@ Class Model_Report extends Model {
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    function getTotalCenters() {
+        $sql = "SELECT * from collection_centers where status = 1";
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        return $query->rowCount();
+    }
+
+    function getTotalFarmers() {
+        $sql = "SELECT * from farmers where status = 1";
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        return $query->rowCount();
+    }
+
+    function getAvailableStock() {
+        $sql ="select sum(ccs.available_stock) as total from collection_center_stocks ccs ";
+        $sql .=" inner join collection_centers cc on cc.id = ccs.collection_center_id ";
+        $sql .=" where cc.status = 1";
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $data = $query->fetch();
+
+        if($data['total'] > 1000) {
+            return ($data['total']/1000)." Mt";
+        }
+
+        return $data['total']." Kgs";
+    }
+
+    function getPurchaseTotal($date1=null, $date2=null) {
+        $sql ="select sum(total_qty) as stock, sum(total_amount) as amount from purchases where status = 1";
+        
+        if($date1) {
+            $sql .=" and collection_date >= '".$date1."'";
+        }
+
+        if($date2) {
+            $sql .=" and collection_date <= '".$date2."'";
+        }
+        
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $data = $query->fetch();
+
+        if($data['stock'] > 1000) {
+            return ($data['stock']/1000)." Mt";
+        }
+
+        return $data['stock']." Kgs";
+    }
+
+    function getSalesTotal($date1=null, $date2=null) {
+        $sql ="select sum(total_qty) as stock, sum(total_amount) as amount from sales where status = 1";
+        if($date1) {
+            $sql .=" and issue_date >= '".$date1."'";
+        }
+
+        if($date2) {
+            $sql .=" and issue_date <= '".$date2."'";
+        }
+        
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $data = $query->fetch();
+
+        if($data['stock'] > 1000) {
+            return ($data['stock']/1000)." Mt";
+        }
+
+        return $data['stock']." Kgs";
+    }
+
+    
 }

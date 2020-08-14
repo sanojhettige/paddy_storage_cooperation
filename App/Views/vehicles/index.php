@@ -9,7 +9,7 @@
 <?php } ?>
 
 <div class="table-responsive">
-<table id="vehicle_datatable" class="table table-striped table-sm" url="/vehicles/get_vehicles">
+    <table id="vehicle_datatable" class="table table-striped table-sm" url="/vehicles/get_vehicles">
         <thead>
             <tr>
                 <th>ID</th>

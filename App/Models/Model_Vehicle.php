@@ -4,7 +4,7 @@ if ( ! defined('APP_PATH')) exit("Access denied");
 Class Model_Vehicle extends Model {
     private $table = "vehicles";
 
-    function getVehicles($limit=20, $offset=0) {
+    function getVehicles($limit=20, $offset=0, $search=null) {
         $sql = "SELECT v.id,vt.name as vehicle_type,v.registration_number as reg_no,v.modified_at from ".$this->table." v ";
         
         $sql .=" left join vehicle_types vt on vt.id = v.vehicle_type";

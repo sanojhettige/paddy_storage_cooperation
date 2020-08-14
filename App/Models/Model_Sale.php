@@ -82,7 +82,7 @@ Class Model_Sale extends Model {
         $user_id  = get_session('user_id');
 
         if($id > 0) {
-            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `customer_id`='".$data['buyer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `customer_id`='".$data['buyer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."', `total_amount`='".$data['total_amount']."', `total_qty`='".$data['total_qty']."'  WHERE `id` = ".$id ;
             $resp =  $this->db->exec($sql);
             if($resp) {
                 $this->createOrUpdateItems($id, $data['item'], $data['collection_center_id']);
@@ -92,13 +92,15 @@ Class Model_Sale extends Model {
             }
             
         } else {
-            $stm = $this->db->prepare("INSERT INTO ".$this->table." (customer_id,collection_center_id,issue_date,sale_notes,sale_status_id,created_by,created_at,modified_by,status) VALUES (:customer_id, :collection_center_id, :issue_date, :sale_notes, :sale_status_id, :created_by, :created_at, :modified_by, :status)") ;
+            $stm = $this->db->prepare("INSERT INTO ".$this->table." (customer_id,collection_center_id,issue_date,sale_notes,total_amount,total_qty,sale_status_id,created_by,created_at,modified_by,status) VALUES (:customer_id, :collection_center_id, :issue_date, :sale_notes, :total_amount, :total_qty, :sale_status_id, :created_by, :created_at, :modified_by, :status)") ;
             $resp = $stm->execute(array(
                 ':customer_id' => $data['buyer_id'],
                 ':collection_center_id' => $data['collection_center_id'], 
                 ':issue_date' => $data['collection_date'],  
                 ':sale_notes' => $data['notes'],
                 ':sale_status_id' => $data['status_id'],
+                ':total_amount' => $data['total_amount'],
+                ':total_qty' => $data['total_qty'],
                 ':created_by' => $user_id,
                 ':created_at' => $date,
                 ':modified_by' => $user_id,

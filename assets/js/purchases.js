@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function() {
     $('.datetimepicker').datepicker({
         timepicker: false,
         language: 'en',
@@ -8,7 +8,7 @@ $(document).ready(function(){
         onSelect: function(dateText, inst) {
             onDateChange(dateText);
         }
-      });
+    });
 
     $(".addItem").click(function(e) {
         addRow();
@@ -20,7 +20,7 @@ $(document).ready(function(){
         const date = $("#collection_date").val();
         const row = $(this).closest('tr');
         getDailyPrice(date, $(this).val(), row);
-        
+
     });
 
     $(document).on("click", ".remove_row", function() {
@@ -38,7 +38,7 @@ $(document).ready(function(){
             url: "/settings/get_paddy_rate",
             type: 'POST',
             dataType: 'json',
-            data: {date, paddy_type: category},
+            data: { date, paddy_type: category },
             success: function(data) {
                 const inputs = row.find('input');
                 inputs[1].value = data.buying_price;
@@ -54,22 +54,22 @@ $(document).ready(function(){
             url: "/purchases/check_max_limits",
             type: 'POST',
             dataType: 'json',
-            data: {total_qty: qty, total_amount: total, json: 1, update: pid},
+            data: { total_qty: qty, total_amount: total, json: 1, update: pid },
             success: function(data) {
                 let message = "";
-                if(data.can_proceed) {
+                if (data.can_proceed) {
                     $("#submit_purchase").attr("disabled", false);
                 } else {
                     $("#submit_purchase").attr("disabled", true);
-                    if(data.available_capacity <= 0) {
-                        message +="No enough space to buy paddy";
-                        message += ", max allowed amount is "+data.bo_available_capacity+" Kgs"; 
+                    if (data.available_capacity <= 0) {
+                        message += "No enough space to buy paddy";
+                        message += ", max allowed amount is " + data.bo_available_capacity + " Kgs";
                     }
 
-                    if(data.balance <= 0) {
-                        message +="\nNo enough money to buy paddy";
-                        if(data.bo_balance >0) {
-                            message +=", max allowed amount is "+formatCurrency(data.bo_balance);
+                    if (data.balance <= 0) {
+                        message += "\nNo enough money to buy paddy";
+                        if (data.bo_balance > 0) {
+                            message += ", max allowed amount is " + formatCurrency(data.bo_balance);
                         }
                     }
                     alert(message);
@@ -77,16 +77,17 @@ $(document).ready(function(){
             }
         });
     }
-    
+
 
     function onDateChange(date) {
         $('.purchaseItem').map((idx, val) => {
             const select = $(val).find('select');
-            getDailyPrice(date, select[0].value, $(val)); 
+            getDailyPrice(date, select[0].value, $(val));
         });
     }
 
     loadPurchase();
+
     function loadPurchase() {
         calculateTotals();
         handleRowRemoveButton();
@@ -115,7 +116,7 @@ $(document).ready(function(){
         $row.find('td:eq(4)').text(formatCurrency(subtotal));
         return subtotal;
     }
-    
+
     function calculateQty(row) {
         const $row = $(row);
         const inputs = $row.find('input');
@@ -139,39 +140,39 @@ $(document).ready(function(){
         let totalRows = 0;
         const $firstRow = $('.purchaseItem:first');
         $('.purchaseItem').map((idx, val) => totalRows++).get();
-        if(totalRows === 1) {
-            $('.remove_row').css('display','none');
+        if (totalRows === 1) {
+            $('.remove_row').css('display', 'none');
         } else {
-            $('.remove_row').css('display','block');
+            $('.remove_row').css('display', 'block');
         }
-        
-    }
-  
-  });
-  
-  (function () {    
-      'use strict';
 
-      $("#purchaseForm").submit(function(e) {
+    }
+
+});
+
+(function() {
+    'use strict';
+
+    $("#purchaseForm").submit(function(e) {
         e.preventDefault();
         $(".error-message").html("");
         var actionurl = e.currentTarget.action;
         $.ajax({
-                url: actionurl,
-                type: 'POST',
-                dataType: 'json',
-                data: $("#purchaseForm").serialize(),
-                success: function(data) {
-                    if(data.success === 1) {
-                        if(data.purchase > 0) {
-                            location.replace('/purchases/edit/'+data.purchase);
-                        }
-                    } else {
-                      $.each(data.errors, function(index, error) {
-                          $("."+index).html(error);
-                      });
+            url: actionurl,
+            type: 'POST',
+            dataType: 'json',
+            data: $("#purchaseForm").serialize(),
+            success: function(data) {
+                if (data.success === 1) {
+                    if (data.purchase > 0) {
+                        location.replace('/purchases/edit/' + data.purchase);
                     }
+                } else {
+                    $.each(data.errors, function(index, error) {
+                        $("." + index).html(error);
+                    });
                 }
+            }
         });
 
     });
@@ -181,24 +182,24 @@ $(document).ready(function(){
         $(".error-message").html("");
         var actionurl = e.currentTarget.action;
         $.ajax({
-                url: actionurl,
-                type: 'POST',
-                dataType: 'json',
-                data: $("#payForm").serialize(),
-                success: function(data) {
-                    if(data.success === 1) {
-                        if(data.pay > 0) {
-                            window.open('/purchases/pay/'+data.pay+'?print=1', '_blank');
-                        }
-                    } else {
-                      $.each(data.errors, function(index, error) {
-                          $("."+index).html(error);
-                      });
+            url: actionurl,
+            type: 'POST',
+            dataType: 'json',
+            data: $("#payForm").serialize(),
+            success: function(data) {
+                if (data.success === 1) {
+                    if (data.pay > 0) {
+                        window.open('/purchases/pay/' + data.pay + '?print=1', '_blank');
                     }
+                } else {
+                    $.each(data.errors, function(index, error) {
+                        $("." + index).html(error);
+                    });
                 }
+            }
         });
 
     });
 
 
-  })($);
+})($);

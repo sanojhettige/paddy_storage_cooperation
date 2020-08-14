@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     $('.datetimepicker').datepicker({
         timepicker: false,
@@ -8,4 +7,4 @@ $(document).ready(function() {
         multipleDatesSeparator: " To "
     });
 
-  });
+});

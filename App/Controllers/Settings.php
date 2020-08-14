@@ -113,6 +113,7 @@ Class Settings extends Controller {
     // Paddy Seasons
     public function paddy_seasons($id=null) {
         $this->data['title'] = "Paddy Seasons";
+        $this->data['record'] = array();
         $settings_model = $this->model->load('settings');
         $this->data['assets'] = array(
             'css'=>array(
@@ -128,7 +129,7 @@ Class Settings extends Controller {
             )
         );
 
-        if($id > 0) {
+        if(is_int($id) > 0) {
             $this->data['record'] = $settings_model->getSeasonById($id);
         }
 
@@ -194,6 +195,7 @@ Class Settings extends Controller {
     // Paddy Types
     public function paddy_categories($id=null) {
         $this->data['title'] = "Paddy Categories";
+        $this->data['record'] = array();
         $settings_model = $this->model->load('settings');
         $this->data['assets'] = array(
             'css'=>array(
@@ -204,7 +206,7 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if($id > 0) {
+        if(is_int($id) > 0) {
             $this->data['record'] = $settings_model->getCategoryById($id);
         }
 
@@ -268,6 +270,7 @@ Class Settings extends Controller {
     // Vehicle Types
     public function vehicle_types($id=null) {
         $this->data['title'] = "Vehicle Types";
+        $this->data['record'] = array();
         $settings_model = $this->model->load('settings');
         $this->data['assets'] = array(
             'css'=>array(
@@ -278,7 +281,7 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if($id > 0) {
+        if(is_int($id) > 0) {
             $this->data['record'] = $settings_model->getVehicleTypeById($id);
         }
 
@@ -340,8 +343,9 @@ Class Settings extends Controller {
     }
 
     // Bank accounts
-    public function bank_accounts($id=null) {
+    public function bank_accounts($id=0) {
         $this->data['title'] = "Bank Account";
+        $this->data['record'] = array();
         $settings_model = $this->model->load('settings');
         $cc_model = $this->model->load('collectionCenter');
         $this->data['assets'] = array(
@@ -357,7 +361,7 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if($id > 0) {
+        if(is_int($id) > 0) {
             $this->data['record'] = $settings_model->getBankAccountById($id);
         }
 
@@ -437,6 +441,7 @@ Class Settings extends Controller {
     // Money allocation
     public function money_allocation($id=null) {
         $this->data['title'] = "Money Allocation";
+        $this->data['record'] = array();
         $settings_model = $this->model->load('settings');
         $cc_model = $this->model->load('collectionCenter');
         $this->data['assets'] = array(
@@ -452,7 +457,7 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if($id > 0) {
+        if(is_int($id) > 0) {
             $this->data['record'] = $settings_model->getCashRecordById($id);
         }
 

@@ -306,9 +306,12 @@ Class Model_Settings extends Model {
 
 
     function getBankAccountById($id=NULL) {
-        $query = $this->db->prepare("SELECT * from bank_accounts where id='".$id."'");
-        $query->execute(); 
-        return $query->fetch();
+        if($id > 0) {
+            $query = $this->db->prepare("SELECT * from bank_accounts where id='".$id."'");
+            $query->execute(); 
+            return $query->fetch();
+        }
+        return array();
     }
 
     function createOrUpdateBankAccount($id=NULL, $data=[]) {

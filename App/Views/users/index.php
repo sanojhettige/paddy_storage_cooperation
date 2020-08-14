@@ -9,7 +9,7 @@
 <?php } ?>
 
 <div class="table-responsive">
-<table id="users_datatable" class="table table-striped table-sm" url="/users/get_users">
+    <table id="users_datatable" class="table table-striped table-sm" url="/users/get_users">
         <thead>
             <tr>
                 <th>ID</th>
