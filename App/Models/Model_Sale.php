@@ -4,8 +4,9 @@ if ( ! defined('APP_PATH')) exit("Access denied");
 Class Model_Sale extends Model {
     private $table = "sales";
 
-    function getSales($limit=20, $offset=0, $search=null) {
-        $sql = "SELECT s.id,s.customer_id,c.name as buyer_name, cc.name as collection_center, s.collection_center_id,s.issue_date,s.modified_at from ".$this->table." s ";
+    function getSales($limit=20, $offset=0, $search=null, $type=null) {
+        $center_id = get_assigned_center();
+        $sql = "SELECT s.id,s.customer_id,c.name as buyer_name, cc.name as collection_center, s.collection_center_id,s.issue_date,s.modified_at,s.sale_status_id from ".$this->table." s ";
         $sql .=" left join customers c on c.id = s.customer_id";
         $sql .=" left join collection_centers cc on cc.id = s.collection_center_id";
 
@@ -16,7 +17,11 @@ Class Model_Sale extends Model {
         }
 
         if(in_array(get_user_role(), array(2,3,4,5,6))) {
-            $sql .=" and s.collection_center_id = ".get_assigned_center();
+            if($type === "collections") {
+                $sql .=" and s.collection_center_id = ".$center_id;
+            } elseif($type === "issues") {
+                $sql .=" and s.collection_center_id = ".$center_id;
+            }
         }
 
         $sql .=" order by s.modified_at desc";
@@ -183,6 +188,24 @@ Class Model_Sale extends Model {
                 ));
             }
         }
+    }
+
+
+    public function doUpdateSaleStatus($id=NULL, $status_id=NULL) {
+        $date = date("Y-m-d h:i:s");
+        $user_id = get_session('user_id');
+        $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `sale_status_id`= '".$status_id."'  WHERE `id` = ".$id ;
+        $resp =  $this->db->exec($sql);
+        if($resp) {
+            $sale = $this->getSaleById($id);
+            
+            foreach($trf['items'] as $item) {
+                $this->updateStock($item['sold_amount'],$item['sold_amount'], $item['paddy_category_id'], $sale['collection_center_id'],'remove');
+            }
+
+            return true;
+        }
+        return false;
     }
 
 }

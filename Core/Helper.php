@@ -54,7 +54,7 @@ function sale_status($id=null) {
         ),
         array(
             "id"=>2,
-            "name"=>"Completed",
+            "name"=>"Issued",
         )
     );
 

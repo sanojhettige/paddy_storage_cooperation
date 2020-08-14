@@ -14,11 +14,29 @@ Class Sales extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
+        $this->data['type'] = "all";
         $this->view->render("sales/index", "template", $this->data);
         clear_messages();
     }
 
-    public function get_sales() {
+    public function collection_orders($param=null) {
+        $this->data['title'] = "Collection Orders";
+        $this->data['assets'] = array(
+            'css'=>array(
+                BASE_URL.'/assets/css/datatables.min.css'
+            ),
+            'js'=>array(
+                BASE_URL.'/assets/js/datatables.min.js',
+                BASE_URL.'/assets/js/datatables.js'
+            )
+        );
+
+        $this->data['type'] = "collections";
+        $this->view->render("sales/index", "template", $this->data);
+        clear_messages();
+    }
+
+    public function get_sales($type=null) {
         $data = array();
         $sales = array();
         $offset = get_post('start');
@@ -26,20 +44,23 @@ Class Sales extends Controller {
         $search = get_post('search')['value'];
         $sale_model = $this->model->load('sale');
 
-        $res = $sale_model->getSales($limit,$offset, $search);
+        $res = $sale_model->getSales($limit,$offset, $search, $type);
 
         $editable = is_permitted('sales-edit');
         $deletable = is_permitted('sales-delete');
         $viewable = is_permitted('sales-view');
 
         foreach($res["data"] as $index=>$item) {
+            $canIssue = ($item['collection_center_id'] === get_session('assigned_center'));
             $sales[$index]['id'] = $item['id'];
             $sales[$index]['buyer_name'] = $item['buyer_name'];
             $sales[$index]['collection_center'] = $item['collection_center'];
             $sales[$index]['issue_date'] = $item['issue_date'];
+            $sales[$index]['sale_status'] = sale_status($item['sale_status_id']);
             $sales[$index]['delete'] = $deletable;
             $sales[$index]['edit'] = $editable;
             $sales[$index]['view'] = $viewable;
+            $sales[$index]['can_issue'] = $canIssue;
         }
         $data["data"] = $sales;
 
@@ -212,5 +233,43 @@ Class Sales extends Controller {
             $this->data['record'] = $sale_model->getSaleById($id);
         }
         $this->view->render("sales/view_sale", "template", $this->data);
+    }
+
+    public function issue($id=NULL) {
+        $this->data['title'] = "Issue sale";
+        $sale_model = $this->model->load('sale');
+        if($id > 0) {
+            $this->data['record'] = $sale_model->getSaleById($id);
+        }
+        if(get_post('submit') && $this->data['record']) {
+            $this->doUpdateSaleStatus($sale_model, $id, 2);
+        }
+        if($this->data['record']['collection_center_id'] === get_session('assigned_center') && $this->data['record']['sale_status_id'] === 1)
+            $this->data['canIssue'] = true;
+        
+        $this->view->render("sales/view_sale", "template", $this->data);
+    }
+
+
+    private function doUpdateSaleStatus($model=null, $id=null, $status=null) {
+        $data = array();
+        $data['errors'] = array();
+        try {
+            if(!in_array($status, array(2))) {
+                $this->data['error_message'] = "Invalid sale status";
+            } elseif(!$id) {
+                $this->data['error_message'] = "Invalid sale ID";
+            } else {
+                $res = $model->doUpdateSaleStatus($id, $status);
+                if($res) {
+                    $message = "Sale Successfully Updated.";
+                    $this->data['success_message'] = $message;
+                } else {
+                    $this->data['error_message'] = "Unable to save data, please try again.";
+                }
+            }
+        } catch(Exception $e) {
+            $data['error_message'] = $e;
+        }
     }
 }

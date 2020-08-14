@@ -9,13 +9,14 @@
 <?php } ?>
 
 <div class="table-responsive">
-<table id="sale_datatable" class="table table-striped table-sm" url="/sales/get_sales">
+    <table id="sale_datatable" class="table table-striped table-sm" url="/sales/get_sales/<?= $type; ?>">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Buyer Name</th>
                 <th>Collection Center</th>
                 <th>Date</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -25,6 +26,7 @@
                 <th>Buyer Name</th>
                 <th>Collection Center</th>
                 <th>Date</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </tfoot>
