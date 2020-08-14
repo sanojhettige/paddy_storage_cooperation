@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 13, 2020 at 11:39 PM
+-- Generation Time: Aug 14, 2020 at 11:15 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -125,8 +125,8 @@ CREATE TABLE `collection_center_stocks` (
 --
 
 INSERT INTO `collection_center_stocks` (`collection_center_id`, `paddy_category_id`, `available_stock`) VALUES
-(6, 2, '10000.0000'),
-(5, 2, '1000.0000');
+(6, 2, '15000.0000'),
+(5, 2, '100.0000');
 
 -- --------------------------------------------------------
 
@@ -185,7 +185,7 @@ INSERT INTO `farmers` (`id`, `collection_center_id`, `name`, `nic_no`, `address`
 (2, 5, 'Farmer Anuradhapura 01', '1234567890v', 'address', '0712345677', '5 Acre', '2020-08-05 10:50:31', 1, '2020-08-05 05:20:31', 1, 1),
 (3, 6, 'Farmer Ampara 01', '78754758757v', 'address', '0713473773', '10 Acre', '2020-08-11 10:01:31', 2, '2020-08-11 16:31:31', 2, 1),
 (4, 8, 'Farmer Batticaloa', '1234567890v', 'address', '0716656565', '20 Acre', '2020-08-11 10:02:19', 2, '2020-08-11 16:32:19', 2, 1),
-(5, 6, 'Farmer New 123', '834872347v', 'khsdh', '0737787287', '50 Acre', '2020-08-11 10:27:51', 3, '2020-08-11 16:57:51', 3, 1);
+(5, 6, 'Farmer New 123', '834872347v', 'khsdh', '0737787287', '50 Acre', '2020-08-11 10:27:51', 3, '2020-08-14 04:45:29', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -226,7 +226,7 @@ CREATE TABLE `paddy_categories` (
 
 INSERT INTO `paddy_categories` (`id`, `name`, `description`, `available_stock`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
 (1, 'Suwandel', '', '0.0000', '2020-08-09 19:18:36', 1, '2020-08-09 13:48:46', 1, 1),
-(2, 'Kalu Heenati', '', '10000.0000', '2020-08-09 07:28:56', 2, '2020-08-13 03:12:26', 1, 1);
+(2, 'Kalu Heenati', '', '15100.0000', '2020-08-09 07:28:56', 2, '2020-08-14 05:10:49', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -357,7 +357,10 @@ CREATE TABLE `pay_orders` (
 --
 
 INSERT INTO `pay_orders` (`id`, `purchase_id`, `farmer_user_id`, `paid_amount`, `paid_date`, `pay_notes`, `issued_from_bank`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 1, 5, '100000.00', '2020-08-13 00:00:00', '', 0, '2020-08-13 08:32:37', 3, '2020-08-13 01:56:22', 3, 1);
+(1, 3, 5, '100000.00', '2020-08-14 10:11:19', '', 0, '2020-08-14 10:11:19', 3, '2020-08-14 16:41:19', 3, 0),
+(2, 4, 3, '50000.00', '2020-08-14 10:14:24', '', 0, '2020-08-14 10:14:24', 3, '2020-08-14 16:44:24', 3, 0),
+(3, 5, 2, '135000.00', '2020-08-14 10:18:04', '', 0, '2020-08-14 10:18:04', 7, '2020-08-14 16:48:04', 7, 0),
+(4, 6, 2, '1000.00', '2020-08-14 10:36:25', '', 0, '2020-08-14 10:36:25', 7, '2020-08-14 17:06:25', 7, 0);
 
 -- --------------------------------------------------------
 
@@ -444,20 +447,22 @@ CREATE TABLE `permissions` (
   `sales-view` int(1) NOT NULL DEFAULT '0',
   `purchases-view` int(1) NOT NULL DEFAULT '0',
   `transfers-view` int(1) NOT NULL DEFAULT '0',
-  `customers-view` int(1) NOT NULL DEFAULT '0'
+  `customers-view` int(1) NOT NULL DEFAULT '0',
+  `sales-collection_orders` int(1) NOT NULL DEFAULT '0',
+  `sales-issue` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `permissions`
 --
 
-INSERT INTO `permissions` (`id`, `role_id`, `collection-centers-index`, `collection-centers-add`, `collection-centers-edit`, `collection-centers-delete`, `farmers-index`, `farmers-add`, `farmers-edit`, `farmers-delete`, `purchases-index`, `purchases-add`, `purchases-edit`, `purchases-delete`, `sales-index`, `sales-add`, `sales-edit`, `sales-delete`, `transfers-index`, `transfers-add`, `transfers-edit`, `transfers-delete`, `vehicles-index`, `vehicles-add`, `vehicles-edit`, `vehicles-delete`, `users-index`, `users-add`, `users-edit`, `users-delete`, `collection-centers-get_collection_centers`, `users-get_users`, `vehicles-get_vehicles`, `farmers-get_farmers`, `sales-get_sales`, `purchases-get_purchases`, `transfers-get_transfers`, `settings-index`, `settings-prices`, `settings-save_price`, `settings-get_daily_prices`, `settings-paddy_categories`, `settings-get_paddy_categories`, `settings-paddy_seasons`, `settings-get_paddy_seasons`, `settings-delete_paddy_seasons`, `settings-delete_paddy_categories`, `settings-vehicle_types`, `settings-get_vehicle_types`, `settings-delete_vehicle_type`, `settings-get_paddy_rate`, `purchases-daily_prices`, `purchases-pay`, `settings-money_allocation`, `settings-get_money_allocations`, `settings-delete_money_allocation`, `settings-bank_accounts`, `settings-get_bank_accounts`, `settings-delete_bank_account`, `reports-paddy_collection`, `reports-cash_book`, `customers-index`, `customers-add`, `customers-edit`, `customers-delete`, `customers-get_customers`, `settings-buying_limitation`, `purchases-check_max_limits`, `reports-stocks`, `transfers-issue_orders`, `transfers-collection_orders`, `transfers-issue`, `transfers-collect`, `collection-centers-view`, `farmers-view`, `sales-view`, `purchases-view`, `transfers-view`, `customers-view`) VALUES
-(1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1),
-(2, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0),
-(3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0),
-(4, 4, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0),
-(5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `permissions` (`id`, `role_id`, `collection-centers-index`, `collection-centers-add`, `collection-centers-edit`, `collection-centers-delete`, `farmers-index`, `farmers-add`, `farmers-edit`, `farmers-delete`, `purchases-index`, `purchases-add`, `purchases-edit`, `purchases-delete`, `sales-index`, `sales-add`, `sales-edit`, `sales-delete`, `transfers-index`, `transfers-add`, `transfers-edit`, `transfers-delete`, `vehicles-index`, `vehicles-add`, `vehicles-edit`, `vehicles-delete`, `users-index`, `users-add`, `users-edit`, `users-delete`, `collection-centers-get_collection_centers`, `users-get_users`, `vehicles-get_vehicles`, `farmers-get_farmers`, `sales-get_sales`, `purchases-get_purchases`, `transfers-get_transfers`, `settings-index`, `settings-prices`, `settings-save_price`, `settings-get_daily_prices`, `settings-paddy_categories`, `settings-get_paddy_categories`, `settings-paddy_seasons`, `settings-get_paddy_seasons`, `settings-delete_paddy_seasons`, `settings-delete_paddy_categories`, `settings-vehicle_types`, `settings-get_vehicle_types`, `settings-delete_vehicle_type`, `settings-get_paddy_rate`, `purchases-daily_prices`, `purchases-pay`, `settings-money_allocation`, `settings-get_money_allocations`, `settings-delete_money_allocation`, `settings-bank_accounts`, `settings-get_bank_accounts`, `settings-delete_bank_account`, `reports-paddy_collection`, `reports-cash_book`, `customers-index`, `customers-add`, `customers-edit`, `customers-delete`, `customers-get_customers`, `settings-buying_limitation`, `purchases-check_max_limits`, `reports-stocks`, `transfers-issue_orders`, `transfers-collection_orders`, `transfers-issue`, `transfers-collect`, `collection-centers-view`, `farmers-view`, `sales-view`, `purchases-view`, `transfers-view`, `customers-view`, `sales-collection_orders`, `sales-issue`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0),
+(2, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0),
+(3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0),
+(4, 4, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1),
+(5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -485,7 +490,10 @@ CREATE TABLE `purchases` (
 --
 
 INSERT INTO `purchases` (`id`, `farmer_id`, `collection_center_id`, `collection_date`, `total_amount`, `total_qty`, `purchase_notes`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 5, 6, '2020-08-13', '100000.00', '10000.0000', '', '2020-08-13 08:32:37', 3, '2020-08-13 03:12:26', 3, 1);
+(3, 5, 6, '2020-08-14', '100000.00', '10000.0000', 'test note', '2020-08-14 10:11:19', 3, '2020-08-14 16:41:19', 3, 1),
+(4, 3, 6, '2020-08-14', '50000.00', '5000.0000', 'new note', '2020-08-14 10:14:24', 3, '2020-08-14 16:44:24', 3, 1),
+(5, 2, 5, '2020-08-14', '135000.00', '13500.0000', 'test note', '2020-08-14 10:18:04', 7, '2020-08-14 05:03:02', 7, 4),
+(6, 2, 5, '2020-08-14', '1000.00', '100.0000', 'jshdf', '2020-08-14 10:36:25', 7, '2020-08-14 05:10:49', 7, 1);
 
 -- --------------------------------------------------------
 
@@ -497,9 +505,10 @@ CREATE TABLE `purchase_items` (
   `id` int(11) NOT NULL,
   `purchase_id` int(11) NOT NULL,
   `paddy_category_id` int(11) NOT NULL,
-  `collected_amount` decimal(11,4) NOT NULL,
+  `collected_amount` decimal(11,3) NOT NULL,
   `collected_rate` decimal(11,2) NOT NULL,
   `notes` text COLLATE utf8_unicode_ci,
+  `block_no` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `status` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -507,8 +516,11 @@ CREATE TABLE `purchase_items` (
 -- Dumping data for table `purchase_items`
 --
 
-INSERT INTO `purchase_items` (`id`, `purchase_id`, `paddy_category_id`, `collected_amount`, `collected_rate`, `notes`, `status`) VALUES
-(2, 1, 2, '10000.0000', '10.00', '', 1);
+INSERT INTO `purchase_items` (`id`, `purchase_id`, `paddy_category_id`, `collected_amount`, `collected_rate`, `notes`, `block_no`, `status`) VALUES
+(1, 3, 2, '10000.000', '10.00', '', 'A1', 1),
+(2, 4, 2, '5000.000', '10.00', '', 'A1', 1),
+(3, 5, 2, '13500.000', '10.00', '', 'D23', 4),
+(5, 6, 2, '100.000', '10.00', '', 'D23', 1);
 
 -- --------------------------------------------------------
 
@@ -521,6 +533,8 @@ CREATE TABLE `sales` (
   `customer_id` int(11) NOT NULL,
   `collection_center_id` int(11) NOT NULL,
   `issue_date` datetime NOT NULL,
+  `total_amount` decimal(11,2) NOT NULL DEFAULT '0.00',
+  `total_qty` decimal(11,4) NOT NULL DEFAULT '0.0000',
   `sale_notes` text COLLATE utf8_unicode_ci NOT NULL,
   `sale_status_id` int(2) NOT NULL DEFAULT '1',
   `created_at` datetime NOT NULL,
@@ -529,13 +543,6 @@ CREATE TABLE `sales` (
   `modified_by` int(11) NOT NULL,
   `status` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `sales`
---
-
-INSERT INTO `sales` (`id`, `customer_id`, `collection_center_id`, `issue_date`, `sale_notes`, `sale_status_id`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 2, 6, '2020-08-13 00:00:00', '', 1, '2020-08-13 11:21:50', 1, '2020-08-13 17:51:50', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -552,13 +559,6 @@ CREATE TABLE `sale_items` (
   `notes` text COLLATE utf8_unicode_ci,
   `status` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `sale_items`
---
-
-INSERT INTO `sale_items` (`id`, `sale_id`, `paddy_category_id`, `sold_amount`, `sold_rate`, `notes`, `status`) VALUES
-(1, 1, 2, '100.0000', '12.00', '', 1);
 
 -- --------------------------------------------------------
 
@@ -581,13 +581,6 @@ CREATE TABLE `transfers` (
   `status` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Dumping data for table `transfers`
---
-
-INSERT INTO `transfers` (`id`, `from_center_id`, `to_center_id`, `vehicle_id`, `transfer_date`, `transfer_status_id`, `transfer_notes`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 6, 5, 3, '2020-08-13', 2, 'dfsdf', '2020-08-13 10:55:08', 1, '2020-08-13 05:29:47', 3, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -601,13 +594,6 @@ CREATE TABLE `transfer_items` (
   `transfer_amount` decimal(11,4) NOT NULL,
   `status` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `transfer_items`
---
-
-INSERT INTO `transfer_items` (`id`, `transfer_id`, `paddy_category_id`, `transfer_amount`, `status`) VALUES
-(2, 1, 2, '1000.0000', 1);
 
 -- --------------------------------------------------------
 
@@ -639,7 +625,8 @@ INSERT INTO `users` (`id`, `role_id`, `collection_center_id`, `name`, `email`, `
 (3, 4, 6, 'Collection Officer', 'co@psc.com', '123', '2020-08-11 10:03:30', 2, '2020-08-11 16:33:30', 2, 1),
 (4, 3, 6, 'Finance Officer', 'fo@psc.com', '123', '2020-08-11 10:03:49', 2, '2020-08-11 16:33:49', 2, 1),
 (5, 2, 6, 'Manager', 'ma@psc.com', '123', '2020-08-11 10:04:02', 2, '2020-08-11 16:34:02', 2, 1),
-(6, 5, 6, 'Storekeeper', 'stkp@psc.com', '123', '2020-08-11 10:04:26', 2, '2020-08-11 16:34:26', 2, 1);
+(6, 5, 6, 'Storekeeper', 'stkp@psc.com', '123', '2020-08-11 10:04:26', 2, '2020-08-11 16:34:26', 2, 1),
+(7, 4, 5, 'Anuradhapura Collection Officer', 'co1@psc.com', '123', '2020-08-14 10:17:26', 1, '2020-08-14 16:47:26', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -948,7 +935,7 @@ ALTER TABLE `paddy_seasons`
 -- AUTO_INCREMENT for table `pay_orders`
 --
 ALTER TABLE `pay_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -960,43 +947,43 @@ ALTER TABLE `permissions`
 -- AUTO_INCREMENT for table `purchases`
 --
 ALTER TABLE `purchases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `purchase_items`
 --
 ALTER TABLE `purchase_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sale_items`
 --
 ALTER TABLE `sale_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transfers`
 --
 ALTER TABLE `transfers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transfer_items`
 --
 ALTER TABLE `transfer_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user_roles`
