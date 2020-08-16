@@ -4,7 +4,7 @@ if ( ! defined('APP_PATH')) exit("Access denied");
 Class Model_Report extends Model {
 
     function daily_paddy_collection($params=null) {
-        $sql = "select po.id as pay_order_issued,pi.collected_amount,pi.collected_rate,p.id as purchase_id,f.name as farmer_name, pc.name as paddy_name from purchase_items pi";
+        $sql = "select po.status as pay_order_issued, pi.collected_amount,pi.collected_rate,p.id as purchase_id,f.name as farmer_name, pc.name as paddy_name from purchase_items pi";
         $sql .=" inner join purchases p on p.id = pi.purchase_id ";
         $sql .=" left join paddy_categories pc on pc.id = pi.paddy_category_id ";
         $sql .=" left join farmers f on f.id = p.farmer_id ";

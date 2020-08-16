@@ -9,7 +9,7 @@ Class Reports extends Controller {
 
     public function paddy_collection($param=null) {
         $this->data['title'] = "Daily Paddy Collection";
-
+        $this->data['report']= array();
         $this->data['assets'] = array(
             'css'=>array(
                 'https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css',

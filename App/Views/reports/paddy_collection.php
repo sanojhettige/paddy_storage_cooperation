@@ -14,7 +14,7 @@
             <span class="error-message to_date"><?= isset($errors["to_date"]) ? $errors["to_date"]: ""; ?></span>
         </div>
         <div class="col-md-4">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" style="margin-top: 30px;" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>
