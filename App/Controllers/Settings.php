@@ -4,11 +4,46 @@ if ( ! defined('APP_PATH')) exit("Access denied");
 Class Settings extends Controller {
     
     public function index($param=null) {
+        $settings_model = $this->model->load('settings');
+        $this->data['seasons'] = $settings_model->getPaddySeasons(10,0, '')['data'];
+        $this->data['record'] = $settings_model->getAppData();
+
+        if(isset($_POST['submit'])) {
+            $this->saveSettings($settings_model);
+        }
         $this->view->render("settings/index", "template", $this->data);
+        clear_messages();
+    }
+
+    private function saveSettings($model=null) {
+        $this->data['errors'] = array();
+        try {
+            if(empty(get_post("app_name"))) {
+                $this->data['errors']["app_name"] = "App name is required";
+            } elseif(empty(get_post("address"))) {
+                $this->data['errors']["address"] = "Address is required";
+            } elseif(empty(get_post("phone_number"))) {
+                $this->data['errors']["phone_number"] = "Phone number(s) is required";
+            } elseif(empty(get_post("email_address"))) {
+                $this->data['errors']["email_address"] = "Email address is required";
+            } elseif(empty(get_post("active_season_id"))) {
+                $this->data['errors']["active_season_id"] = "Active Season is required";
+            } else {
+                $res = $model->updateAppData($_POST);
+                if($res) {
+                    $this->data['success_message'] = "App data Successfully saved.";
+                } else {
+                    $this->data['error_message'] = "Unable to save data, please try again.";
+                }
+            }
+        } catch(Exception $e) {
+            $this->data['error_message'] = $e;
+        }
     }
 
     public function prices() {
         $settings_model = $this->model->load('settings');
+        $this->data['title'] = "Daily Price";
         $this->data['assets'] = array(
             'js'=>array(
                 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js',
@@ -104,10 +139,16 @@ Class Settings extends Controller {
     public function get_paddy_rate() {
         $date = get_post('date');
         $category = get_post('paddy_type');
+        $warehouse = get_post('warehouse');
         $settings_model = $this->model->load('settings');
+        $sales_model = $this->model->load('sale');
         $rate = $settings_model->getPaddyRateByCategoryAndDate($date, $category);
-
-        echo json_encode($rate);
+        $avl_stock = $sales_model->getPaddyAvailableStock($warehouse, $category);
+        $pendingSales = $sales_model->getPendingSaleStock($warehouse, $category);
+        $sold_stock = $pendingSales;
+        $available_stock = $avl_stock - $sold_stock;
+        $stock = array('in_stock'=>$avl_stock,'sold_stock'=>$sold_stock,'available_stock'=>$available_stock);
+        echo json_encode(array_merge($rate, $stock));
     }
 
     // Paddy Seasons
@@ -129,7 +170,7 @@ Class Settings extends Controller {
             )
         );
 
-        if(is_int($id) > 0) {
+        if(is_numeric($id) && isset($id) && $id > 0) {
             $this->data['record'] = $settings_model->getSeasonById($id);
         }
 
@@ -171,7 +212,7 @@ Class Settings extends Controller {
         $res = $settings_model->getPaddySeasons($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         $data["data"] = $res["data"];
         $data['search'] = $search;
         echo json_encode($data);
@@ -206,7 +247,7 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if(is_int($id) > 0) {
+        if(is_numeric($id) && isset($id) && $id > 0) {
             $this->data['record'] = $settings_model->getCategoryById($id);
         }
 
@@ -246,7 +287,7 @@ Class Settings extends Controller {
         $res = $settings_model->getPaddyCategories($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         $data["data"] = $res["data"];
         $data['search'] = $search;
         echo json_encode($data);
@@ -281,7 +322,8 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if(is_int($id) > 0) {
+        
+        if(is_numeric($id) && isset($id) && $id > 0) {
             $this->data['record'] = $settings_model->getVehicleTypeById($id);
         }
 
@@ -321,7 +363,7 @@ Class Settings extends Controller {
         $res = $settings_model->getVehicleTypes($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         $data["data"] = $res["data"];
         $data['search'] = $search;
         echo json_encode($data);
@@ -343,7 +385,7 @@ Class Settings extends Controller {
     }
 
     // Bank accounts
-    public function bank_accounts($id=0) {
+    public function bank_accounts($id=null) {
         $this->data['title'] = "Bank Account";
         $this->data['record'] = array();
         $settings_model = $this->model->load('settings');
@@ -361,7 +403,7 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if(is_int($id) > 0) {
+        if(is_numeric($id) && isset($id) && $id > 0) {
             $this->data['record'] = $settings_model->getBankAccountById($id);
         }
 
@@ -408,7 +450,7 @@ Class Settings extends Controller {
         $res = $settings_model->getBankAccounts($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
 
         foreach($res["data"] as $index=>$account) {
             $accounts[$index]['id'] = $account['id'];
@@ -457,7 +499,7 @@ Class Settings extends Controller {
                 BASE_URL.'/assets/js/datatables.js'
             )
         );
-        if(is_int($id) > 0) {
+        if(is_numeric($id) && isset($id) && $id > 0) {
             $this->data['record'] = $settings_model->getCashRecordById($id);
         }
 
@@ -500,7 +542,7 @@ Class Settings extends Controller {
         $res = $settings_model->getCashRecords($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         $data["data"] = $res["data"];
         $data['search'] = $search;
         echo json_encode($data);

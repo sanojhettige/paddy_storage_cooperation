@@ -124,12 +124,12 @@ Class Model_Transfer extends Model {
         foreach ($items['paddy_type'] as $index=>$item) {
             $query = '(:transfer_id' . $n . ', :paddy_category_id' . $n . ', :transfer_amount' . $n . ')';
 
-            $iData['transfer_id' . $n] = $pId;
-            $iData['paddy_category_id' . $n] = $item;
-            $iData['transfer_amount' . $n] = $items['qty'][$index];
+            $iData[$index]['transfer_id' . $n] = $pId;
+            $iData[$index]['paddy_category_id' . $n] = $item;
+            $iData[$index]['transfer_amount' . $n] = $items['qty'][$index];
 
             $stmt = $this->db->prepare($sql." ".$query);
-            $itemRows[$n] =  $stmt->execute($iData);
+            $itemRows[$n] =  $stmt->execute($iData[$index]);
             if($itemRows && $status === 3)  // 3 = stock received
             {
                 $this->updateStock($items['qty_org'][$index],$items['qty'][$index], $item, $to_center,'add');

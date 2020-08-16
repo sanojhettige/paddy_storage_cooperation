@@ -18,7 +18,7 @@
                 class="error-message collection_center_id"><?= isset($errors["collection_center_id"]) ? $errors["collection_center_id"]: ""; ?></span>
         </div>
         <div class="col-md-4">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button style="margin-top: 30px;" type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>

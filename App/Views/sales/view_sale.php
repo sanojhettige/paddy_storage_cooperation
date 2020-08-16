@@ -67,13 +67,13 @@
 
     <span class="error-message item form_error"></span>
     <br /><br />
-    <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id">
+    <input type="hidden" value="<?= isset($record['id']) ? $record['id'] : ''; ?>" name="_id">
     <?php if(isset($canDelete)) { ?>
     <button type="submit" name="submit" value="1" class="btn btn-danger">Delete</button>
     <?php } ?>
     <?php if(isset($canIssue)) { ?>
     <button type="submit" name="submit" value="1" class="btn btn-success">Issue Items</button>
     <?php } ?>
-    <a href="/sales" class="btn btn-default">Back to Sales</a>
+    <a href="<?php echo isset($redirect) ? $redirect : "/sales"; ?>" class="btn btn-default">Back to Sales</a>
 
 </form>

@@ -77,4 +77,15 @@ Class Model_User extends Model {
             ));
         }
     }
+
+
+    function updateProfile($id=NULL, $data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id  = get_session('user_id');
+
+        $password = password_encrypt($data['password']);
+        $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `name`= '".$data['name']."', `password` = '".$password."' WHERE `id` = ".$id ;
+        return $this->db->exec($sql);
+
+    }
 }

@@ -46,7 +46,7 @@ Class Users extends Controller {
 
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         $data['search'] = $search;
         echo json_encode($data);
     }

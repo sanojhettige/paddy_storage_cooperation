@@ -33,22 +33,77 @@ $(document).ready(function() {
         onDateChange(date);
     });
 
+    $(document).on("change", "#collection_center_id", function() {
+        const date = $("#collection_date").val();
+        onCenterChange(date);
+    })
+
+
+
     function getDailyPrice(date, category, row) {
+        const warehouse = $("#collection_center_id").val();
+        const id = $("#_sale_id").val();
         $.ajax({
             url: "/settings/get_paddy_rate",
             type: 'POST',
             dataType: 'json',
-            data: { date, paddy_type: category },
+            data: { date, paddy_type: category, warehouse, sale_id: id },
             success: function(data) {
                 const inputs = row.find('input');
                 inputs[1].value = data.selling_price;
+                if (data.available_stock >= 0) {
+                    inputs[0].placeholder = "Avl. " + data.available_stock;
+                    inputs[0].available_stock = data.available_stock;
+                } else {
+                    inputs[0].available_stock = 0;
+                }
+
                 calculateTotals();
             }
         });
     }
 
 
+    function getMaxLimits(qty, category) {
+        const sid = $("#_sale_id").val();
+        const warehouse = $("#collection_center_id").val();
+        $.ajax({
+            url: "/sales/check_max_limits",
+            type: 'POST',
+            dataType: 'json',
+            data: { total_qty: qty, category, warehouse, json: 1, update: sid },
+            success: function(data) {
+                let message = "";
+                if (data.can_proceed) {
+                    $("#submit_sale").attr("disabled", false);
+                } else {
+                    $("#submit_sale").attr("disabled", true);
+                    if (data.available_stock <= 0) {
+                        message += "No enough stocks to issue paddy";
+                        message += ", max allowed amount is " + data.available_stock + " Kgs";
+                    } else if (data.available_stock < qty) {
+                        message += "No enough stocks to issue paddy";
+                        message += ", max allowed amount is " + data.available_stock + " Kgs";
+                    }
+                    if (message) {
+                        alert(message);
+                    }
+
+                }
+            }
+        });
+    }
+
+
+
     function onDateChange(date) {
+        $('.saleItem').map((idx, val) => {
+            const select = $(val).find('select');
+            getDailyPrice(date, select[0].value, $(val));
+        });
+    }
+
+    function onCenterChange(date) {
         $('.saleItem').map((idx, val) => {
             const select = $(val).find('select');
             getDailyPrice(date, select[0].value, $(val));
@@ -75,14 +130,22 @@ $(document).ready(function() {
         handleRowRemoveButton();
         $("#total_amount").val(total);
         $("#total_qty").val(totalQty);
-        isStockAvailable(totalQty, total);
     }
 
     function calculateSubtotal(row) {
         const $row = $(row);
         const inputs = $row.find('input');
+        const select = $(row).find('select');
         const subtotal = inputs[0].value * inputs[1].value;
         $row.find('td:eq(4)').text(formatCurrency(subtotal));
+        getMaxLimits(inputs[0].value, select[0].value);
+        return subtotal;
+    }
+
+    function calculateQty(row) {
+        const $row = $(row);
+        const inputs = $row.find('input');
+        const subtotal = inputs[0].value;
         return subtotal;
     }
 
@@ -107,29 +170,6 @@ $(document).ready(function() {
         } else {
             $('.remove_row').css('display', 'block');
         }
-    }
-
-    function isStockAvailable(qty, warehouse) {
-        const pid = $("#_purchase_id").val();
-        $.ajax({
-            url: "/sales/check_stock_availability",
-            type: 'POST',
-            dataType: 'json',
-            data: { total_qty: qty, warehouse, json: 1, update: pid },
-            success: function(data) {
-                let message = "";
-                if (data.can_proceed) {
-                    $("#submit_sale").attr("disabled", false);
-                } else {
-                    $("#submit_sale").attr("disabled", true);
-                    if (data.available_stock <= 0) {
-                        message += "No enough stock available at selected center";
-                        message += ", available amount is " + data.bo_available_stock + " Kgs";
-                    }
-                    alert(message);
-                }
-            }
-        });
     }
 
 });

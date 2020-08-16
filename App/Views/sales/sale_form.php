@@ -2,10 +2,10 @@
     <div class="row">
         <div class="form-group col-md-3">
             <label for="buyer_id">Buyer</label>
-            <select class="form-control" name="buyer_id" id="buyer_id">
+            <select class="form-control" name="customer_id" id="customer_id">
                 <option value="">Select Buyer</option>
                 <?php foreach($buyers as $item) { ?>
-                <?php if(get_post('buyer_id') === $item['id'] || $record['buyer_id'] === $item['id']) { ?>
+                <?php if(get_post('buyer_id') == $item['id'] || $record['customer_id'] == $item['id']) { ?>
                 <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
                 <?php } else { ?>
                 <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
@@ -13,7 +13,8 @@
                 <?php } ?>
 
             </select>
-            <span class="error-message buyer_id"><?= isset($errors["buyer_id"]) ? $errors["buyer_id"]: ""; ?></span>
+            <span
+                class="error-message customer_id"><?= isset($errors["customer_id"]) ? $errors["customer_id"]: ""; ?></span>
         </div>
 
         <div class="form-group col-md-3">
@@ -21,7 +22,7 @@
             <select class="form-control" name="collection_center_id" id="collection_center_id">
                 <option value="">Select Type</option>
                 <?php foreach($collection_centers as $item) { ?>
-                <?php if(get_post('collection_center_id') === $item['id'] || $record['collection_center_id'] === $item['id']) { ?>
+                <?php if(get_post('collection_center_id') == $item['id'] || $record['collection_center_id'] == $item['id']) { ?>
                 <option selected value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
                 <?php } else { ?>
                 <option value="<?= $item['id']; ?>"><?= $item['name']; ?></option>
@@ -93,8 +94,8 @@
 
                         </td>
                         <td>
-                            <input class="form-control" value="<?= $row['sold_amount']; ?>" type="number"
-                                name="item[qty][]">
+                            <input available_stock="0" class="form-control" value="<?= $row['sold_amount']; ?>"
+                                type="number" name="item[qty][]">
                         </td>
                         <td>
                             <span class="input-group-prepend">
@@ -138,7 +139,7 @@
 
     <span class="error-message item form_error"></span>
     <br /><br />
-    <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id">
+    <input type="hidden" id="_sale_id" value="<?= isset($record['id']) ? $record['id'] : ''; ?>" name="_id">
     <input type="hidden" value="" id="total_amount" name="total_amount">
     <input type="hidden" value="" id="total_qty" name="total_qty">
     <button type="submit" name="submit" id="submit_sale" class="btn btn-primary">Submit</button>

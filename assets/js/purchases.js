@@ -50,11 +50,12 @@ $(document).ready(function() {
 
     function getMaxLimits(qty, total) {
         const pid = $("#_purchase_id").val();
+        const farmer_id = $("#farmer_id").val();
         $.ajax({
             url: "/purchases/check_max_limits",
             type: 'POST',
             dataType: 'json',
-            data: { total_qty: qty, total_amount: total, json: 1, update: pid },
+            data: { total_qty: qty, total_amount: total, json: 1, update: pid, farmer: farmer_id },
             success: function(data) {
                 let message = "";
                 if (data.can_proceed) {
@@ -64,6 +65,9 @@ $(document).ready(function() {
                     if (data.available_capacity <= 0) {
                         message += "No enough space to buy paddy";
                         message += ", max allowed amount is " + data.bo_available_capacity + " Kgs";
+                    } else if (data.available_capacity < qty) {
+                        message += "No enough stocks to issue paddy";
+                        message += ", max allowed amount is " + data.available_capacity + " Kgs";
                     }
 
                     if (data.balance <= 0) {
@@ -72,7 +76,12 @@ $(document).ready(function() {
                             message += ", max allowed amount is " + formatCurrency(data.bo_balance);
                         }
                     }
-                    alert(message);
+
+                    if (data.max_exceed_season) {
+                        message += "To provide equal opportunity to each farmer, we have planned to buy only " + data.season_max + " Kg(s) from each farmer.";
+                    }
+                    if (message)
+                        alert(message);
                 }
             }
         });
@@ -113,7 +122,7 @@ $(document).ready(function() {
         const $row = $(row);
         const inputs = $row.find('input');
         const subtotal = inputs[0].value * inputs[1].value;
-        $row.find('td:eq(4)').text(formatCurrency(subtotal));
+        $row.find('td:eq(5)').text(formatCurrency(subtotal));
         return subtotal;
     }
 
@@ -129,8 +138,8 @@ $(document).ready(function() {
         const $newItem = $lastRow.clone();
         $newItem.find('input').val('');
         $newItem.find('select').val('');
-        $newItem.find('td:eq(4)').text('0.00');
-        $newItem.find('td:eq(5)').html('<button type="button" class="btn btn-sm btn-danger remove_row">Remove</button>');
+        $newItem.find('td:eq(5)').text('0.00');
+        $newItem.find('td:eq(6)').html('<button type="button" class="btn btn-sm btn-danger remove_row">Remove</button>');
         $newItem.insertAfter($lastRow);
         $newItem.find('select:first').focus();
         handleRowRemoveButton();

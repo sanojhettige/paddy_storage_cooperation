@@ -76,7 +76,7 @@ Class Model_Purchase extends Model {
         $user_id  = get_session('user_id');
 
         if($id > 0) {
-            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `farmer_id`='".$data['farmer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `collection_date` = '".$data['collection_date']."' , `purchase_notes` = '".$data['notes']."', `total_amount`='".$data['total_amount']."', `total_qty`='".$data['total_qty']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `farmer_id`='".$data['farmer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `collection_date` = '".$data['collection_date']."' , `purchase_notes` = '".$data['notes']."', `total_amount`='".$data['total_amount']."', `total_qty`='".$data['total_qty']."' WHERE `id` = ".$id ;
             $resp =  $this->db->exec($sql);
             if($resp) {
                 $this->createOrUpdateItems($id, $data['item']);
@@ -123,24 +123,25 @@ Class Model_Purchase extends Model {
         $stm->execute();
         $idata = array();
         
-        $sql = "INSERT INTO purchase_items (purchase_id,paddy_category_id,collected_amount,collected_rate,block_no,notes) VALUES ";
+        $sql = "INSERT INTO purchase_items (purchase_id,paddy_category_id,collected_amount,collected_rate,block_no,notes,num_packs) VALUES ";
         $n = 0;
         $query = array();
         $iData = array();
         $itemRows = array();
         foreach ($items['paddy_type'] as $index=>$item) {
-            $query = '(:purchase_id' . $n . ', :paddy_category_id' . $n . ', :collected_amount' . $n . ', :collected_rate' . $n . ', :block_no' . $n.', :notes' . $n . ')';
+            $query = '(:purchase_id' . $n . ', :paddy_category_id' . $n . ', :collected_amount' . $n . ', :collected_rate' . $n . ', :block_no' . $n.', :notes' . $n . ', :num_packs'.$n.')';
 
-            $iData['purchase_id' . $n] = $pId;
-            $iData['paddy_category_id' . $n] = $item;
-            $iData['collected_amount' . $n] = $items['qty'][$index];
-            $iData['collected_rate' . $n] = $items['price'][$index];
-            $iData['block_no'. $n] = $items['block_no'][$index];
-            $iData['notes' . $n] = "";
-
+            $iData[$index]['purchase_id' . $n] = $pId;
+            $iData[$index]['paddy_category_id' . $n] = $item;
+            $iData[$index]['collected_amount' . $n] = $items['qty'][$index];
+            $iData[$index]['collected_rate' . $n] = $items['price'][$index];
+            $iData[$index]['block_no'. $n] = $items['block_no'][$index];
+            $iData[$index]['num_packs'. $n] = $items['num_packs'][$index];
+            $iData[$index]['notes' . $n] = "";
+            
             $stmt = $this->db->prepare($sql." ".$query);
-            $itemRows[$n] =  $stmt->execute($iData);
-            if($itemRows) {
+            $itemRows[$n] =  $stmt->execute($iData[$index]);
+            if($itemRows[$n]) {
                 $this->updateStock($items['qty_org'][$index],$items['qty'][$index], $item, $center_id,'add');
             }
             $n += 1;
@@ -156,9 +157,9 @@ Class Model_Purchase extends Model {
             $query->execute(); 
             $stock = $query->fetch();
             if($type === "add") {
-                $newStock = ($stock) ? (($stock['available_stock'] - $org_qty) + $qty) : $qty;
+                $newStock = ($stock) ? (($stock['available_stock'] - (int)$org_qty) + (int)$qty) : (int)$qty;
             } else {
-                $newStock = ($stock) ? (($stock['available_stock'] + $org_qty) - $qty) : -$qty;
+                $newStock = ($stock) ? (($stock['available_stock'] + (int)$org_qty) - (int)$qty) : (int)-$qty;
             }
             
 
@@ -228,6 +229,19 @@ Class Model_Purchase extends Model {
         $query = $this->db->prepare("SELECT * from pay_orders where purchase_id='".$id."'");
         $query->execute();
         return $query->fetch();
+    }
+    
+
+    function maxPurchaseOnActiveSeason() {
+        $query = $this->db->prepare("SELECT active_season_id from app_settings where id=1");
+        $query->execute();
+        $settings =  $query->fetch();
+        $active_season = $settings['active_season_id'];
+        
+        $query = $this->db->prepare("SELECT max_allowed_amount from paddy_seasons where id='".$active_season."'");
+        $query->execute();
+        $row =  $query->fetch();
+        return $row['max_allowed_amount'] > 0 ? $row['max_allowed_amount'] : 0;
     }
 
 }

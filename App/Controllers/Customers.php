@@ -29,7 +29,7 @@ Class Customers extends Controller {
         $res = $customer_model->getCustomers($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         
         $editable = is_permitted('customers-edit');
         $deletable = is_permitted('customers-delete');

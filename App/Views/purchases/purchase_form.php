@@ -54,9 +54,10 @@
             <table class="table">
                 <thead>
                     <th width="20%">Paddy Type</th>
-                    <th width="15%">Qty (Kg)</th>
+                    <th width="10%">Qty (Kg)</th>
                     <th width="15%">Buying price</th>
-                    <th width="20%">Block No</th>
+                    <th width="15%">Block No</th>
+                    <th width="10%">Total Pcks.</th>
                     <th width="20%">Total</th>
                     <th></th>
                 </thead>
@@ -65,7 +66,7 @@
                     <tr class="purchaseItem">
                         <td>
 
-                            <select class="form-control paddy_type" name="item[paddy_type][]">
+                            <select required class="form-control paddy_type" name="item[paddy_type][]">
                                 <?php foreach($paddy_types as $paddy) {
                           if($row['paddy_category_id'] == $paddy['id'])
                           echo "<option selected value='".$paddy['id']."'>".$paddy['name']."</option>";
@@ -76,7 +77,7 @@
 
                         </td>
                         <td>
-                            <input class="form-control" value="<?= $row['collected_amount']; ?>" type="number"
+                            <input required class="form-control" value="<?= $row['collected_amount']; ?>" type="number"
                                 name="item[qty][]">
                         </td>
                         <td>
@@ -93,8 +94,13 @@
                                 name="item[qty_org][]">
                         </td>
                         <td>
-                            <input class="form-control" value="<?= isset($row['block_no']) ? $row['block_no']: ""; ?>"
-                                type="text" name="item[block_no][]"> </td>
+                            <input required class="form-control"
+                                value="<?= isset($row['block_no']) ? $row['block_no']: ""; ?>" type="text"
+                                name="item[block_no][]"> </td>
+                        <td>
+                            <input required class="form-control"
+                                value="<?= isset($row['num_packs']) ? $row['num_packs']: ""; ?>" type="number"
+                                name="item[num_packs][]"> </td>
                         <td></td>
                         <td>
                             <button type="button" class="btn btn-sm btn-danger remove_row">Remove</button>
@@ -104,7 +110,7 @@
                 </tbody>
                 <tfooter>
                     <tr class="total">
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td>00.00</td>
                     </tr>
                 </tfooter>
@@ -124,7 +130,7 @@
 
     <span class="error-message item form_error"></span>
     <br /><br />
-    <input type="hidden" value="<?= $record ? $record['id'] : ''; ?>" name="_id" id="_purchase_id">
+    <input type="hidden" value="<?= isset($record['id']) ? $record['id'] : ''; ?>" name="_id" id="_purchase_id">
     <input type="hidden" value="" id="total_amount" name="total_amount">
     <input type="hidden" value="" id="total_qty" name="total_qty">
     <button type="submit" name="submit" id="submit_purchase" class="btn btn-primary">Submit</button>

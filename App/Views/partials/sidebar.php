@@ -150,6 +150,11 @@
                 </a>
                 <ul class="nav-second-level collapse" id="settings">
                     <li class="nav-item">
+                        <a class="nav-link" href="/settings">
+                            <span class="nav-link-text">System Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/settings/bank_accounts">
                             <span class="nav-link-text">Bank Accounts</span>
                         </a>
@@ -197,6 +202,12 @@
                 </a>
             </li>
             <?php } ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/auth/profile">
+                    <span data-feather="layers"></span>
+                    Profile
+                </a>
+            </li>
 
         </ul>
 

@@ -8,7 +8,7 @@ Class Model_Farmer extends Model {
         $sql = "SELECT id,name,phone_number,address,nic_no,land_size,modified_at from ".$this->table." where status = 1";
 
         if($search) {
-            $sql .=" and name like '%".$search."%' or address like '%".$search."%' or city like '%".$search."%'";
+            $sql .=" and name like '%".$search."%' or address like '%".$search."%' or nic_no like '%".$search."%'";
         }
 
         if(in_array(get_user_role(), array(2,3,4,5,6))) {

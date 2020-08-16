@@ -42,8 +42,15 @@ function clear_messages() {
     $_SESSION['error_message'] = null;
 }
 
-function passwor_encrypt($password=NULL) {
-    return $password;
+function password_encrypt($password=NULL) {
+    $salt=sha1($password);
+    $arr= strlen($password);
+    $count=ceil($arr/2);
+    $stringarr=str_split($password,$count);
+    return hash("sha512", $stringarr['0']); 
+
+    // $password2=$salt . ( hash( 'whirlpool', $salt . $stringarr['1'] ) );
+    // return $password1.$password2;
 }
 
 function sale_status($id=null) {

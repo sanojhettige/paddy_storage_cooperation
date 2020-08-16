@@ -29,7 +29,7 @@ Class Purchases extends Controller {
         $res = $purchase_model->getPurchases($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
 
         $editable = is_permitted('purchases-edit');
         $deletable = is_permitted('purchases-delete');
@@ -258,7 +258,7 @@ Class Purchases extends Controller {
         }
         $this->data['pay_order'] = $purchase_model->getPayOrderByPurchaseId($id);
         
-        if($_GET['print']) {
+        if(isset($_GET['print'])) {
             $this->view->render("purchases/print_pay_order", "print_template", $this->data);
         } else {
             $this->view->render("purchases/pay_form", "template", $this->data);
@@ -316,9 +316,13 @@ Class Purchases extends Controller {
         $json = get_post('json');
         $qty = get_post('total_qty');
         $total = get_post('total_amount');
+        $farmer = get_post('farmer');
         $center = $center_model->getCollectionCenterById(get_session('assigned_center'));
         $used_space = $center_model->getCollectionCenterUsageById(get_session('assigned_center'));
+        $season_max = $purchase_model->maxPurchaseOnActiveSeason();
         $this->data['can_proceed'] = false;
+        $this->data['max_exceed_season'] = false;
+        $this->data['season_max'] = $season_max;
         
         if($pId > 0) {
             $purchase = $purchase_model->getPurchaseById($pId);
@@ -341,6 +345,12 @@ Class Purchases extends Controller {
 
         if($this->data['balance'] >= $total && $this->data['available_capacity'] >= $qty) {
             $this->data['can_proceed'] = true;
+
+            if($qty > $season_max) {
+                $this->data['can_proceed'] = false;
+                $this->data['max_exceed_season'] = true;
+            }
+            
         } else {
             $this->data['available_capacity'] = $this->data['available_capacity'] - $qty;
             $this->data['balance'] = $this->data['balance'] - $total;

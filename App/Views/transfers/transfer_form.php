@@ -2,7 +2,7 @@
     <div class="row">
         <div class="form-group col-md-4">
             <label for="from_center_id">From</label>
-            <select class="form-control" name="from_center_id" id="from_center_id">
+            <select required class="form-control" name="from_center_id" id="from_center_id">
                 <option value="">Select</option>
                 <?php foreach($collection_centers as $item) { ?>
                 <?php if(get_post('from_center_id') === $item['id'] || $record['from_center_id'] === $item['id']) { ?>
@@ -18,7 +18,7 @@
         </div>
         <div class="form-group col-md-4">
             <label for="to_center_id">To Center</label>
-            <select class="form-control" name="to_center_id" id="to_center_id">
+            <select required class="form-control" name="to_center_id" id="to_center_id">
                 <option value="">Select</option>
                 <?php foreach($collection_centers as $item) { ?>
                 <?php if(get_post('to_center_id') === $item['id'] || $record['to_center_id'] === $item['id']) { ?>
@@ -43,7 +43,7 @@
         </div>
         <div class="form-group col-md-6">
             <label for="vehicle_id">Assigned Vehicle</label>
-            <select class="form-control" name="vehicle_id" id="vehicle_id">
+            <select required class="form-control" name="vehicle_id" id="vehicle_id">
                 <option value="">Select</option>
                 <?php foreach($vehicles as $item) { ?>
                 <?php if(get_post('vehicle_id') === $item['id'] || $record['vehicle_id'] === $item['id']) { ?>
@@ -95,7 +95,7 @@
                     <tr class="transferItem">
                         <td></td>
                         <td>
-                            <select class="form-control paddy_type" name="item[paddy_type][]">
+                            <select required class="form-control paddy_type" name="item[paddy_type][]">
                                 <?php foreach($paddy_types as $paddy) {
                           if($row['paddy_category_id'] == $paddy['id'])
                           echo "<option selected value='".$paddy['id']."'>".$paddy['name']."</option>";
@@ -106,7 +106,7 @@
 
                         </td>
                         <td>
-                            <input class="form-control" value="<?= $row['transfer_amount']; ?>" type="number"
+                            <input required class="form-control" value="<?= $row['transfer_amount']; ?>" type="number"
                                 name="item[qty][]">
                             <input type="hidden" name="item[id][]" value="<?= $row['id']; ?>">
                             <input class="form-control" value="<?= $row['transfer_amount']; ?>" type="hidden"
@@ -127,7 +127,7 @@
 
             <label for="notes">Notes</label>
             <textarea class="form-control" id="notes" name="notes"
-                rows="4"><?= get_post('notes') ? get_post('notes') : ($record ? $record['transfer_notes'] : ''); ?></textarea>
+                rows="4"><?= get_post('notes') ? get_post('notes') : (isset($record['transfer_notes']) ? $record['transfer_notes'] : ''); ?></textarea>
 
         </div>
     </div>

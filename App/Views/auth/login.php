@@ -16,7 +16,7 @@
                     required>
             </div>
             <div class="form-group">
-                <p class="error-message"><?= isset($message); ?></p>
+                <p class="error-message"><?= isset($message) ? $message: ""; ?></p>
             </div>
 
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="do_login">Sign in</button>

@@ -28,7 +28,7 @@ Class Vehicles extends Controller {
         $res = $vehicle_model->getVehicles($limit,$offset, $search);
         $data["draw"] = $_POST["draw"];
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         $data["data"] = $res["data"];
         $data['search'] = $search;
         echo json_encode($data);

@@ -29,7 +29,7 @@ Class Farmers extends Controller {
         $res = $farmer_model->getFarmers($limit,$offset, $search);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         
         $editable = is_permitted('farmers-edit');
         $deletable = is_permitted('farmers-delete');

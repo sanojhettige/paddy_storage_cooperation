@@ -55,10 +55,10 @@
                         <td>Total</td>
                         <td><?= formatCurrency($subTotal); ?></td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td>Paid Amount</td>
                         <td><?= formatCurrency($pay_order['paid_amount']); ?></td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>Payable Amount</td>
                         <td><?= formatCurrency($subTotal); ?></td>

@@ -21,6 +21,7 @@ body {
 
 .auth-container {
     margin: auto;
+    margin-top: 10%;
 }
 
 .auth-form-container {

@@ -71,6 +71,6 @@
 
 
 
-    <a href="/transfers" class="btn btn-default">Back to Orders</a>
+    <a href="<?php echo isset($redirect) ? $redirect : "/sales"; ?>" class="btn btn-default">Back to Orders</a>
 
 </form>

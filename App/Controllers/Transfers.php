@@ -65,7 +65,7 @@ Class Transfers extends Controller {
         $res = $transfer_model->getTransfers($limit,$offset, $search, $type);
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
 
         $editable = is_permitted('transfers-edit');
         $deletable = is_permitted('transfers-delete');
@@ -256,6 +256,7 @@ Class Transfers extends Controller {
     public function issue($id=NULL) {
         $this->data['title'] = "Issue transfer";
         $transfer_model = $this->model->load('transfer');
+        $this->data['redirect'] = "/transfers/issue_orders";
         if($id > 0) {
             $this->data['record'] = $transfer_model->getTransferById($id);
         }
@@ -268,6 +269,7 @@ Class Transfers extends Controller {
 
     public function collect($id=NULL) {
         $this->data['title'] = "Collect transfer";
+        $this->data['redirect'] = "/transfers/collection_orders";
         $transfer_model = $this->model->load('transfer');
         if($id > 0) {
             $this->data['record'] = $transfer_model->getTransferById($id);
@@ -303,6 +305,7 @@ Class Transfers extends Controller {
     
     public function view($id=NULL) {
         $this->data['title'] = "View transfer";
+        $this->data['redirect'] = "/transfers";
         $transfer_model = $this->model->load('transfer');
         if($id > 0) {
             $this->data['record'] = $transfer_model->getTransferById($id);

@@ -15,7 +15,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>NIC No</th>
-                <th>Address</th>
+                <th>Phone Number</th>
                 <th>Land Size</th>
                 <th>Last Update Date</th>
                 <th>Actions</th>
@@ -26,7 +26,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>NIC No</th>
-                <th>Address</th>
+                <th>Phone Number</th>
                 <th>Land Size</th>
                 <th>Last Update Date</th>
                 <th>Actions</th>

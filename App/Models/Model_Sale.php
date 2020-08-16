@@ -82,7 +82,7 @@ Class Model_Sale extends Model {
         $user_id  = get_session('user_id');
 
         if($id > 0) {
-            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `customer_id`='".$data['buyer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."', `total_amount`='".$data['total_amount']."', `total_qty`='".$data['total_qty']."'  WHERE `id` = ".$id ;
+            $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `customer_id`='".$data['customer_id']."', `collection_center_id`= '".$data['collection_center_id']."' , `issue_date` = '".$data['collection_date']."' , `sale_notes` = '".$data['notes']."', `sale_status_id`='".$data['status_id']."', `total_amount`='".$data['total_amount']."', `total_qty`='".$data['total_qty']."'  WHERE `id` = ".$id ;
             $resp =  $this->db->exec($sql);
             if($resp) {
                 $this->createOrUpdateItems($id, $data['item'], $data['collection_center_id']);
@@ -94,7 +94,7 @@ Class Model_Sale extends Model {
         } else {
             $stm = $this->db->prepare("INSERT INTO ".$this->table." (customer_id,collection_center_id,issue_date,sale_notes,total_amount,total_qty,sale_status_id,created_by,created_at,modified_by,status) VALUES (:customer_id, :collection_center_id, :issue_date, :sale_notes, :total_amount, :total_qty, :sale_status_id, :created_by, :created_at, :modified_by, :status)") ;
             $resp = $stm->execute(array(
-                ':customer_id' => $data['buyer_id'],
+                ':customer_id' => $data['customer_id'],
                 ':collection_center_id' => $data['collection_center_id'], 
                 ':issue_date' => $data['collection_date'],  
                 ':sale_notes' => $data['notes'],
@@ -131,14 +131,14 @@ Class Model_Sale extends Model {
         foreach ($items['paddy_type'] as $index=>$item) {
             $query = '(:sale_id' . $n . ', :paddy_category_id' . $n . ', :sold_amount' . $n . ', :sold_rate' . $n . ', :notes' . $n . ')';
 
-            $iData['sale_id' . $n] = $sId;
-            $iData['paddy_category_id' . $n] = $item;
-            $iData['sold_amount' . $n] = $items['qty'][$index];
-            $iData['sold_rate' . $n] = $items['price'][$index];
-            $iData['notes' . $n] = "";
+            $iData[$index]['sale_id' . $n] = $sId;
+            $iData[$index]['paddy_category_id' . $n] = $item;
+            $iData[$index]['sold_amount' . $n] = $items['qty'][$index];
+            $iData[$index]['sold_rate' . $n] = $items['price'][$index];
+            $iData[$index]['notes' . $n] = "";
 
             $stmt = $this->db->prepare($sql." ".$query);
-            $itemRows[$n] =  $stmt->execute($iData);
+            $itemRows[$n] =  $stmt->execute($iData[$index]);
             if($itemRows && $status === 2) {
                 $this->updateStock($items['qty_org'][$index], $items['qty'][$index], $item, $center_id, 'remove');
             }
@@ -201,7 +201,7 @@ Class Model_Sale extends Model {
         if($resp) {
             $sale = $this->getSaleById($id);
             
-            foreach($trf['items'] as $item) {
+            foreach($sale['items'] as $item) {
                 $this->updateStock($item['sold_amount'],$item['sold_amount'], $item['paddy_category_id'], $sale['collection_center_id'],'remove');
             }
 
@@ -210,4 +210,43 @@ Class Model_Sale extends Model {
         return false;
     }
 
+    public function getPendingSaleStock($warehouse=null, $category=null)
+    {
+        $sql ="select sum(si.sold_amount) as sold_stock from sale_items si ";
+        $sql .=" inner join sales s on s.id = si.sale_id ";
+        $sql .=" where s.sale_status_id = 1";
+
+        if($warehouse > 0) {
+            $sql .=" and s.collection_center_id = ".$warehouse;
+        } 
+
+        if($category > 0) {
+            $sql .=" and si.paddy_category_id = ".$category;
+        }
+
+        $query = $this->db->prepare($sql);
+        $query->execute(); 
+        $data =  $query->fetch();
+        return $data['sold_stock'] ? $data['sold_stock']: 0;
+    }
+
+    function getPaddyAvailableStock($center=null, $category=null) {
+        if($center >0 && $category > 0) {
+            $sql = "select sum(available_stock) as available_stock from collection_center_stocks where collection_center_id =".$center." and paddy_category_id = ".$category;
+            $query = $this->db->prepare($sql);
+            $query->execute(); 
+            $data =  $query->fetch();
+            return $data['available_stock'] ? $data['available_stock']: 0;
+        }
+        return 0;
+    }
+
+    function itemSoldAmount($saleId=null, $category=null) {
+        $sql =" select sum(sold_amount) as sold_stock from sale_items where sale_id = ".$saleId." and paddy_category_id = ".$category;
+        $query = $this->db->prepare($sql);
+        $query->execute(); 
+        $data =  $query->fetch();
+        return $data['sold_stock'] ? $data['sold_stock']: 0;
+    }
+    
 }

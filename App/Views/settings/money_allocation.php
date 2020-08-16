@@ -1,4 +1,4 @@
-<?php if(isset($id) && $id <= 0) { ?>
+<?php if(isset($record['id'])) { ?>
 <div class="row component-header">
     <div class="col-md-8">
     </div>
@@ -64,10 +64,10 @@
                 <span class="error-message"><?= isset($errors["amount"]) ? $errors["amount"]: ""; ?></span>
             </div>
             <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description"
-                    rows="2"><?= get_post('description') ? get_post('description') : ($record ? $record['notes'] : ''); ?></textarea>
-                <span class="error-message"><?= isset($errors["description"]) ? $errors["description"]: ""; ?></span>
+                <label for="notes">Description</label>
+                <textarea class="form-control" id="description" name="notes"
+                    rows="2"><?= get_post('notes') ? get_post('notes') : ($record ? $record['notes'] : ''); ?></textarea>
+                <span class="error-message"><?= isset($errors["notes"]) ? $errors["notes"]: ""; ?></span>
             </div>
 
 

@@ -1,4 +1,4 @@
-<?php if(isset($id) && $id <= 0) { ?>
+<?php if(isset($record['id'])) { ?>
 <div class="row component-header">
     <div class="col-md-8">
     </div>

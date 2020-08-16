@@ -67,7 +67,7 @@ Class Sales extends Controller {
 
         $data["draw"] = get_post("draw");
         $data["recordsTotal"] = $res["count"];
-        $data["recordsFiltered"] = 0;
+        $data["recordsFiltered"] = $res["count"];
         $data['search'] = $search;
         echo json_encode($data);
     }
@@ -156,8 +156,8 @@ Class Sales extends Controller {
         $data['errors'] = array();
         $data['sale'] = null;
         try {
-            if(empty(get_post("buyer_id"))) {
-                $data['errors']["buyer_id"] = "Buyer is required";
+            if(empty(get_post("customer_id"))) {
+                $data['errors']["customer_id"] = "Buyer is required";
             } elseif(empty(get_post("status_id"))) {
                 $data['errors']["status_id"] = "Status is required";
             } elseif(empty(get_post("collection_center_id"))) {
@@ -198,6 +198,7 @@ Class Sales extends Controller {
 
     public function delete($id=NULL) {
         $this->data['title'] = "Delete sale";
+        $this->data['redirect'] = "/sales";
         $sale_model = $this->model->load('sale');
         if($id > 0) {
             $this->data['record'] = $sale_model->getSaleById($id);
@@ -228,6 +229,7 @@ Class Sales extends Controller {
 
     public function view($id=NULL) {
         $this->data['title'] = "View sale";
+        $this->data['redirect'] = "/sales";
         $sale_model = $this->model->load('sale');
         if($id > 0) {
             $this->data['record'] = $sale_model->getSaleById($id);
@@ -237,6 +239,7 @@ Class Sales extends Controller {
 
     public function issue($id=NULL) {
         $this->data['title'] = "Issue sale";
+        $this->data['redirect'] = "/sales/collection_orders";
         $sale_model = $this->model->load('sale');
         if($id > 0) {
             $this->data['record'] = $sale_model->getSaleById($id);
@@ -250,12 +253,11 @@ Class Sales extends Controller {
         $this->view->render("sales/view_sale", "template", $this->data);
     }
 
-
     private function doUpdateSaleStatus($model=null, $id=null, $status=null) {
         $data = array();
         $data['errors'] = array();
         try {
-            if(!in_array($status, array(2))) {
+            if(!in_array($status, array(2,3))) {
                 $this->data['error_message'] = "Invalid sale status";
             } elseif(!$id) {
                 $this->data['error_message'] = "Invalid sale ID";
@@ -272,8 +274,39 @@ Class Sales extends Controller {
             $data['error_message'] = $e;
         }
     }
+    
 
-    public function check_stock_availability() {
+
+    public function check_max_limits() {
+        $report_model = $this->model->load('report');
+        $center_model = $this->model->load('collectionCenter');
+        $sales_model = $this->model->load('sale');
+        $purchase = array();
+        $sId = get_post('update');
+        $json = get_post('json');
+        $qty = get_post('total_qty');
+        $category = get_post('category');
+        $warehouse = get_post('warehouse');
+        $itemSoldAmount = 0;
+        $can_proceed = false;
+        if($sId > 0)
+            $itemSoldAmount = $sales_model->itemSoldAmount($sId, $category);
+
+        $avl_stock = $sales_model->getPaddyAvailableStock($warehouse, $category);
+        $pendingSales = $sales_model->getPendingSaleStock($warehouse, $category);
+        $sold_stock = $pendingSales;
+        $available_stock = ($avl_stock + $itemSoldAmount) - $sold_stock;
+
+        if($qty <= $available_stock) {
+            $can_proceed = true;
+        }
+        $stock = array('in_stock'=>$avl_stock,'sold_stock'=>$sold_stock,'available_stock'=>$available_stock, 'can_proceed' => $can_proceed);
         
+        if($json === "1") {
+            echo json_encode($stock);
+            exit;
+        } else {
+            return $stock;
+        }
     }
 }
