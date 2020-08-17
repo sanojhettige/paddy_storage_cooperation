@@ -17,13 +17,13 @@ Class Model_Report extends Model {
         }
 
         if($params['from_date']) {
-            $sql .=" and p.collection_date >= '".date("Y-m-d", strtotime(get_post('from_date')))."'";
+            $sql .=" and p.collection_date >= '".date("Y-m-d", strtotime($params['from_date']))."'";
         }
 
         if($params['to_date']) {
-            $sql .=" and p.collection_date <= '".date("Y-m-d", strtotime(get_post('to_date')))."'";
+            $sql .=" and p.collection_date <= '".date("Y-m-d", strtotime($params['to_date']))."'";
         }
-
+        
         $sql .=" order by p.collection_date asc";
 
         $query = $this->db->prepare($sql);
@@ -33,12 +33,25 @@ Class Model_Report extends Model {
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function cash_received() {
-        $sql ="select sum(cb.amount) as total_received from collection_center_cash_book cb ";
+    function cash_received($date1=null, $date2=null, $detail=null) {
+        $fields =" sum(cb.amount) as total_received ";
+        if($detail) {
+            $fields ="cb.amount, cb.received_date as date, cb.id as v_no, cb.notes as description";
+        }
+        $sql ="select ".$fields." from collection_center_cash_book cb ";
+        
         $sql .=" inner join bank_accounts ba on ba.id = cb.bank_account_id ";
         $sql .=" inner join collection_centers cc on cc.id = ba.collection_center_id ";
 
         $sql .=" where cb.status = 1";
+
+        if(isset($date1)) {
+            $sql .=" and cb.received_date >= '".date("Y-m-d", strtotime($date1))."'";
+        }
+
+        if(isset($date2)) {
+            $sql .=" and cb.received_date <= '".date("Y-m-d", strtotime($date2))."'";
+        }
 
         if(in_array(get_user_role(), array(2,3,4,5,6))) {
             $sql .=" and cc.id = ".get_assigned_center();
@@ -46,14 +59,21 @@ Class Model_Report extends Model {
 
         $query = $this->db->prepare($sql);
         $query->execute();
-        $count = $query->rowCount();
-        $query->execute();
-        $received = $query->fetch();
-        return ($received['total_received']) ? $received['total_received']: 0;
+        if($detail) {
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $received =  $query->fetch();
+            return ($received['total_received']) ? $received['total_received']: 0;
+        }
     }
 
-    function cash_issued($includePendingPayOrders=NULL) {
-        $sql ="select sum(po.paid_amount) as total_issued from pay_orders po ";
+    function cash_issued($includePendingPayOrders=NULL, $date1=null ,$date2=null, $detail=null) {
+        $fields =" sum(po.paid_amount) as total_issued ";
+        if($detail) {
+            $fields =" po.purchase_id as v_no, po.paid_amount as amount, po.paid_date as date, po.pay_notes as description";
+        }
+        $sql ="select ".$fields." from pay_orders po  ";
+        
         $sql .=" right join purchases p on po.purchase_id = p.id";
         
         $sql .=" where p.status = 1";
@@ -65,18 +85,29 @@ Class Model_Report extends Model {
         if(in_array(get_user_role(), array(2,3,4,5,6))) {
             $sql .=" and p.collection_center_id = ".get_assigned_center();
         }
-        // echo $sql; exit;
 
+        if(isset($date1)) {
+            $sql .=" and po.paid_date >= '".date("Y-m-d", strtotime($date1))."'";
+        }
+
+        if(isset($date2)) {
+            $sql .=" and po.paid_date <= '".date("Y-m-d", strtotime($date2))."'";
+        }
+        
         $query = $this->db->prepare($sql);
         $query->execute();
-        $count = $query->rowCount();
-        $query->execute();
-        $issued =  $query->fetch();
-        return ($issued['total_issued']) ? $issued['total_issued']: 0;
+        
+        if($detail) {
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $issued =  $query->fetch();
+            return ($issued['total_issued']) ? $issued['total_issued']: 0;
+        }
+        
     }
 
 
-    public function getStocks() {
+    public function getStocks($centerId=NULL) {
         $sql = "select paddy_categories.name as paddy_name,collection_centers.name as collection_center, collection_center_stocks.available_stock  from collection_center_stocks";
         $sql .=" inner join paddy_categories on paddy_categories.id = collection_center_stocks.paddy_category_id ";
         $sql .=" inner join collection_centers on collection_centers.id = collection_center_stocks.collection_center_id ";
@@ -85,10 +116,13 @@ Class Model_Report extends Model {
         if(in_array(get_user_role(), array(2,3,4,5,6))) {
             $sql .=" and collection_center_stocks.collection_center_id = ".get_assigned_center();
         }
+        // echo $centerId; exit;
 
-        if(get_post('collection_center_id')) {
-            $sql .=" and collection_center_stocks.collection_center_id =".get_post('collection_center_id');
+        if(is_numeric($centerId)) {
+            $sql .=" and collection_center_stocks.collection_center_id =".$centerId;
         }
+
+        
         $sql .=" order by collection_center_stocks.paddy_category_id asc";
 
         $query = $this->db->prepare($sql);

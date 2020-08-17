@@ -74,6 +74,9 @@
     <?php if(isset($canIssue)) { ?>
     <button type="submit" name="submit" value="1" class="btn btn-success">Issue Items</button>
     <?php } ?>
+    <?php if(isset($canPrint)) { ?>
+    <a target="_blank" href="/sales/view/<?= $record['id'] ?>?print=1" class="btn btn-success">Print</a>
+    <?php } ?>
     <a href="<?php echo isset($redirect) ? $redirect : "/sales"; ?>" class="btn btn-default">Back to Sales</a>
 
 </form>

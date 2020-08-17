@@ -61,6 +61,7 @@ Class Sales extends Controller {
             $sales[$index]['edit'] = $editable;
             $sales[$index]['view'] = $viewable;
             $sales[$index]['can_issue'] = $canIssue;
+            $sales[$index]['print'] = $viewable;
         }
         $data["data"] = $sales;
 
@@ -234,7 +235,18 @@ Class Sales extends Controller {
         if($id > 0) {
             $this->data['record'] = $sale_model->getSaleById($id);
         }
-        $this->view->render("sales/view_sale", "template", $this->data);
+        
+        $this->data['canPrint'] = true;
+
+        if(isset($_GET['print'])) {
+            $pdf = $this->library->load('tcpdf');
+            $settings_model = $this->model->load('settings');
+            $this->data['app_data'] = $settings_model->getAppData();
+            $this->view->render("sales/print_sale", "print_template", $this->data);
+        } else {
+            $this->view->render("sales/view_sale", "template", $this->data);
+        }
+        
     }
 
     public function issue($id=NULL) {

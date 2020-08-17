@@ -47,6 +47,7 @@ Class Purchases extends Controller {
             $purchases[$index]['delete'] = (!$isPaid || $isPaid['status'] === 0) && $deletable;
             $purchases[$index]['edit'] = (!$isPaid || $isPaid['status'] === 0) && $editable;
             $purchases[$index]['pay'] = (!$isPaid || $isPaid['status'] === 0) && $payable;
+            $purchases[$index]['print'] = ($isPaid && $isPaid['status'] === 1);
             $purchases[$index]['view'] = $viewable;
         }
 
@@ -245,6 +246,7 @@ Class Purchases extends Controller {
         $cc_model = $this->model->load('collectionCenter');
         $settings_model = $this->model->load('settings');
         $farmer_model = $this->model->load('farmer');
+        $pdf = $this->library->load('tcpdf');
         
         if($id > 0) {
             $this->data['record'] = $purchase_model->getPurchaseById($id);
@@ -257,6 +259,8 @@ Class Purchases extends Controller {
             $this->data['record']['items'] = $this->defaultItem($this->data['record']['id']);
         }
         $this->data['pay_order'] = $purchase_model->getPayOrderByPurchaseId($id);
+        $this->data['app_data'] = $settings_model->getAppData();
+
         
         if(isset($_GET['print'])) {
             $this->view->render("purchases/print_pay_order", "print_template", $this->data);

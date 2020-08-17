@@ -5,12 +5,17 @@ $(document).ready(function() {
     });
 
 
-    $('.datetimepicker').datepicker({
-        timepicker: false,
-        language: 'en',
-        range: true,
-        multipleDates: false,
-        multipleDatesSeparator: " To "
+    // $('.datetimepicker').datepicker({
+    //     timepicker: false,
+    //     language: 'en',
+    //     range: true,
+    //     multipleDates: false,
+    //     multipleDatesSeparator: " To "
+    // });
+
+    $(document).on("click", ".print_stock_report", function() {
+        const center = $("#collection_center_id").val();
+        window.open('/reports/stocks/' + center, '_blank');
     });
 
 

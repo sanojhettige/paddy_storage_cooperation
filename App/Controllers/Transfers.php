@@ -87,6 +87,7 @@ Class Transfers extends Controller {
             $transfers[$index]['pay'] = $payable;
             $transfers[$index]['can_issue'] = $canIssue;
             $transfers[$index]['can_collect'] = $canCollect;
+            $transfers[$index]['print'] = $viewable;
         }
         $data["data"] = $transfers;
         $data['search'] = $search;
@@ -306,11 +307,20 @@ Class Transfers extends Controller {
     public function view($id=NULL) {
         $this->data['title'] = "View transfer";
         $this->data['redirect'] = "/transfers";
+        $this->data['canPrint'] = true;
         $transfer_model = $this->model->load('transfer');
         if($id > 0) {
             $this->data['record'] = $transfer_model->getTransferById($id);
         }
-        $this->view->render("transfers/view_transfer", "template", $this->data);
+
+        if(isset($_GET['print'])) {
+            $pdf = $this->library->load('tcpdf');
+            $settings_model = $this->model->load('settings');
+            $this->data['app_data'] = $settings_model->getAppData();
+            $this->view->render("transfers/print_transfer", "print_template", $this->data);
+        } else {
+            $this->view->render("transfers/view_transfer", "template", $this->data);
+        }
     }
 
 

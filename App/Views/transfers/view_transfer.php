@@ -65,12 +65,15 @@
     <?php if(isset($canCollect) && $record['transfer_status_id'] === 2) { ?>
     <button type="submit" name="submit" value="3" class="btn btn-success">Collect Stock</button>
     <?php } ?>
+    <?php if(isset($canPrint)) { ?>
+    <a target="_blank" href="/transfers/view/<?= $record['id'] ?>?print=1" class="btn btn-success">Print</a>
+    <?php } ?>
     <?php if(isset($canDelete) && $record['transfer_status_id'] === 1) { ?>
     <button type="submit" name="submit" value="4" class="btn btn-danger">Delete</button>
     <?php } ?>
 
 
 
-    <a href="<?php echo isset($redirect) ? $redirect : "/sales"; ?>" class="btn btn-default">Back to Orders</a>
+    <a href="<?php echo isset($redirect) ? $redirect : "/transfers"; ?>" class="btn btn-default">Back to Orders</a>
 
 </form>

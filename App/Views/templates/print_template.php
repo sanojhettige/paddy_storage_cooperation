@@ -11,7 +11,7 @@
     <link href="<?= BASE_URL.'/assets/css/bootstrap.css'; ?>" rel="stylesheet" />
     <link href="<?= BASE_URL.'/assets/css/print.css'; ?>" rel="stylesheet" />
     <script type="text/javascript">
-    window.print();
+    // window.print();
     </script>
 
 </head>

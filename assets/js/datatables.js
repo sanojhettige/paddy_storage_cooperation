@@ -292,6 +292,10 @@ $(document).ready(function() {
                     if (data.pay) {
                         content += '<a href="/purchases/pay/' + data.id + '" id="' + data.id + '" class="btn btn-danger btn-sm">Pay</a>';
                     }
+
+                    if (data.print) {
+                        content += '<a target="_blank" href="/purchases/pay/' + data.id + '?print=1" id="' + data.id + '" class="btn btn-success btn-sm">Print</a>';
+                    }
                     content += '</div>';
                     return content;
                 }
@@ -328,6 +332,9 @@ $(document).ready(function() {
                     if (data.can_issue)
                         content += '<a href="/sales/issue/' + data.id + '" class="btn btn-success btn-sm">Issue</a>';
 
+                    if (data.print) {
+                        content += '<a target="_blank" href="/sales/view/' + data.id + '?print=1" id="' + data.id + '" class="btn btn-success btn-sm">Print</a>';
+                    }
 
                     if (data.delete)
                         content += '<a href="/sales/delete/' + data.id + '" id="' + data.id + '" class="btn btn-danger btn-sm deleteRecord">Delete</a>';
@@ -370,6 +377,10 @@ $(document).ready(function() {
 
                     if (data.can_issue)
                         content += '<a href="/transfers/issue/' + data.id + '" id="' + data.id + '" class="btn btn-success btn-sm">Issue Now</a>';
+
+                    if (data.print) {
+                        content += '<a target="_blank" href="/transfers/view/' + data.id + '?print=1" id="' + data.id + '" class="btn btn-success btn-sm">Print</a>';
+                    }
 
                     if (data.can_collect)
                         content += '<a href="/transfers/collect/' + data.id + '" id="' + data.id + '" class="btn btn-success btn-sm">Collect Now</a>';

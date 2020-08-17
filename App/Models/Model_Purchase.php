@@ -32,7 +32,7 @@ Class Model_Purchase extends Model {
 
     function getPurchaseById($id=null) {
         $purchase = array();
-        $sql1 ="SELECT p.*, f.name as farmer_name,f.nic_no,f.address, cc.name as collection_center from ".$this->table." p ";
+        $sql1 ="SELECT p.*, f.name as farmer_name,f.nic_no,f.address, cc.name as collection_center, cc.address as collection_center_address from ".$this->table." p ";
         $sql1 .=" left join farmers f on f.id = p.farmer_id ";
         $sql1 .=" left join collection_centers cc on cc.id = p.collection_center_id ";
         $sql1 .=" where p.id='".$id."'";
