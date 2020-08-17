@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 16, 2020 at 11:48 PM
+-- Generation Time: Aug 17, 2020 at 08:55 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -105,7 +105,8 @@ INSERT INTO `collection_centers` (`id`, `name`, `city`, `address`, `phone_number
 (5, 'Anuradhapuraya', 'Anuradhapuraya', 'Anuradhapuraya', '0123456789', '20000.00', '2020-08-11 09:59:37', 2, '2020-08-11 16:29:37', 2, 1),
 (6, 'Ampara', 'Ampara', 'Ampara', '0123456789', '20000.00', '2020-08-11 09:59:49', 2, '2020-08-11 16:29:49', 2, 1),
 (7, 'Jaffna', 'Jaffna', 'Jaffna', '0123456789', '15000.00', '2020-08-11 10:00:06', 2, '2020-08-11 16:30:06', 2, 1),
-(8, 'Batticaloa', 'Batticaloa', 'Batticaloa', '0123456789', '10000.00', '2020-08-11 10:00:47', 2, '2020-08-13 07:08:57', 1, 1);
+(8, 'Batticaloa', 'Batticaloa', 'Batticaloa', '0123456789', '10000.00', '2020-08-11 10:00:47', 2, '2020-08-17 02:55:06', 1, 1),
+(9, 'cc_01_delete', 'jhsdjh', 'mwj', '0716537467', '666.00', '2020-08-17 08:28:00', 1, '2020-08-17 02:58:03', 1, 4);
 
 -- --------------------------------------------------------
 
@@ -414,7 +415,7 @@ INSERT INTO `pay_orders` (`id`, `purchase_id`, `farmer_user_id`, `paid_amount`, 
 (1, 1, 7, '16000.00', '2020-08-16 09:43:41', '', 0, '2020-08-16 09:43:41', 3, '2020-08-16 16:13:41', 3, 0),
 (2, 2, 3, '25000.00', '2020-08-16 09:48:05', '', 0, '2020-08-16 09:48:05', 3, '2020-08-16 16:18:05', 3, 0),
 (3, 3, 8, '16600.00', '2020-08-16 09:48:53', '', 0, '2020-08-16 09:48:53', 3, '2020-08-16 16:18:53', 3, 0),
-(4, 4, 5, '15000.00', '2020-08-16 09:49:25', '', 0, '2020-08-16 09:49:25', 3, '2020-08-16 16:19:25', 3, 0),
+(4, 4, 5, '15000.00', '2020-08-06 00:00:00', '', 0, '2020-08-16 09:49:25', 3, '2020-08-16 22:11:31', 3, 1),
 (5, 5, 6, '18250.00', '2020-08-01 00:00:00', '', 0, '2020-08-16 09:50:01', 3, '2020-08-16 05:47:16', 3, 1);
 
 -- --------------------------------------------------------
@@ -712,7 +713,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `collection_center_id`, `name`, `email`, `password`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 1, 0, 'Sanoj Hettige', 'sanojhettige@gmail.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-02 15:10:38', 1, '2020-08-16 05:42:24', 3, 1),
+(1, 1, 0, 'PSC Admin', 'admin@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-02 15:10:38', 1, '2020-08-16 05:42:24', 3, 1),
 (2, 2, 2, 'Test', 'test@jadf.sdfdf', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-06 07:46:28', 1, '2020-08-16 05:42:31', 3, 1),
 (3, 4, 6, 'Collection Officer', 'co@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-11 10:03:30', 2, '2020-08-16 05:42:38', 3, 1),
 (4, 3, 6, 'Finance Officer', 'fo@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-11 10:03:49', 2, '2020-08-16 05:42:46', 3, 1),
@@ -979,7 +980,7 @@ ALTER TABLE `bank_accounts`
 -- AUTO_INCREMENT for table `collection_centers`
 --
 ALTER TABLE `collection_centers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `collection_center_cash_book`
@@ -1009,7 +1010,7 @@ ALTER TABLE `paddy_buying_allocations`
 -- AUTO_INCREMENT for table `paddy_categories`
 --
 ALTER TABLE `paddy_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `paddy_expections`
