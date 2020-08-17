@@ -422,6 +422,8 @@ Class Settings extends Controller {
                 $this->data['errors']["collection_center_id"] = "Collection center is required";
             } elseif(empty(get_post("bank_account_no"))) {
                 $this->data['errors']["bank_account_no"] = "Account No is required";
+            } if(get_post("bank_account_no") && !preg_match('/^[0-9 ]+$/i', get_post("bank_account_no"))) {
+                $this->data['errors']["bank_account_no"] = "Account number format is invalid";
             } elseif(empty(get_post("bank_account_name"))) {
                 $this->data['errors']["bank_account_name"] = "Account name is required";
             } elseif(empty(get_post("bank_and_branch"))) {
