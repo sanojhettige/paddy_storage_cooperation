@@ -47,7 +47,7 @@ Class Purchases extends Controller {
             $purchases[$index]['delete'] = (!$isPaid || $isPaid['status'] === 0) && $deletable;
             $purchases[$index]['edit'] = (!$isPaid || $isPaid['status'] === 0) && $editable;
             $purchases[$index]['pay'] = (!$isPaid || $isPaid['status'] === 0) && $payable;
-            $purchases[$index]['print'] = ($isPaid && $isPaid['status'] === 1);
+            $purchases[$index]['print'] = ($isPaid && $isPaid['status'] === 1 && $editable);
             $purchases[$index]['view'] = $viewable;
         }
 

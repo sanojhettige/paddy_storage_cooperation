@@ -40,7 +40,7 @@ class MYPDF extends TCPDF {
         $this->SetXY($xVal, $yVal);
         $this->Write(0, 'From ', '', 0, 'L', true, 0, false, false, 0);
         $this->SetXY($xVal+24, $yVal);
-        $this->Write(0, ': '.$this->record['to_center'], '', 0, 'L', true, 0, false, false, 0);
+        $this->Write(0, ': '.$this->record['from_center'], '', 0, 'L', true, 0, false, false, 0);
         $this->SetXY($xVal, $yVal+5);
         $this->Write(0, 'To ', '', 0, 'L', true, 0, false, false, 0);
         $this->SetXY($xVal+24, $yVal+5);
