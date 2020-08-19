@@ -1,5 +1,8 @@
 <form method="post" action="">
     <div class="form-group">
+        <h3>Your PIN is <?= $record['reset_pin']; ?></h3>
+    </div>
+    <div class="form-group">
         <label for="name">Full Name</label>
         <input value="<?= get_post('name') ? get_post('name') : ($record ? $record['name'] : ''); ?>" type="text"
             class="form-control" required id="name" name="name" placeholder="">

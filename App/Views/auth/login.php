@@ -20,6 +20,7 @@
             </div>
 
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="do_login">Sign in</button>
+            <a href="<?= BASE_URL."/auth/reset_password"; ?>">Reset Password</a>
             <p class="mt-5 mb-3 text-muted">&copy; <?= date("Y"). " ". APP_NAME; ?></p>
         </form>
     </div>

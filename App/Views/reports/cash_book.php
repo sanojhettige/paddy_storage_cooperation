@@ -42,7 +42,7 @@
                 </tr>
                 <?php foreach($received as $row) { ?>
                 <tr>
-                    <td><?= date("Y-m-d", strtotime($row['date'])); ?></td>
+                    <td><?= $row['date'] ? date("Y-m-d", strtotime($row['date'])): ""; ?></td>
                     <td><?= $row['description']; ?></td>
                     <td><?= $row['v_no']; ?></td>
                     <td><?= formatCurrency($row['amount']); ?></td>

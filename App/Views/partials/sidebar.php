@@ -3,12 +3,14 @@
 
         <?php $userRole = get_user_role(); ?>
         <ul class="nav nav-list flex-column">
+            <?php if(in_array($userRole, array(1,2, 3, 4, 5, 6))) { ?>
             <li class="nav-item">
                 <a class="nav-link active" href="/dashboard">
                     <span data-feather="home"></span>
                     Dashboard
                 </a>
             </li>
+            <?php } ?>
             <?php if(in_array($userRole, array(1))) { ?>
             <li class="nav-item">
                 <a class="nav-link" href="/collection-centers">
@@ -202,12 +204,14 @@
                 </a>
             </li>
             <?php } ?>
+            <?php if(in_array($userRole, array(1,2, 3, 4, 5, 6))) { ?>
             <li class="nav-item">
                 <a class="nav-link" href="/auth/profile">
                     <span data-feather="layers"></span>
                     Profile
                 </a>
             </li>
+            <?php } ?>
 
         </ul>
 

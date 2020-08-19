@@ -63,13 +63,14 @@ Class Model_User extends Model {
             $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `collection_center_id`='".$data['collection_center']."', `name`= '".$data['name']."' , `email` = '".$data['email']."' , `password` = '".$data['password']."', `role_id` = '".$data['role_id']."'  WHERE `id` = ".$id ;
             return $this->db->exec($sql);
         } else {
-            $stm = $this->db->prepare("INSERT INTO ".$this->table." (collection_center_id,name,email,role_id,password,created_by,created_at,modified_by,status) VALUES (:collection_center, :name, :email, :role_id, :password, :created_by, :created_at, :modified_by, :status)") ;
+            $stm = $this->db->prepare("INSERT INTO ".$this->table." (collection_center_id,name,email,role_id,password,reset_pin,created_by,created_at,modified_by,status) VALUES (:collection_center, :name, :email, :role_id, :password, :reset_pin, :created_by, :created_at, :modified_by, :status)") ;
             return $stm->execute(array(
                 ':collection_center' => $data['collection_center'],
                 ':name' => $data['name'], 
                 ':email' => $data['email'], 
                 ':role_id' => $data['role_id'], 
-                ':password' => $data['password'],
+                ':password' => password_encrypt($data['password']),
+                ':reset_pin' => rand(1111,9999),
                 ':created_by' => $user_id,
                 ':created_at' => $date,
                 ':modified_by' => $user_id,
@@ -87,5 +88,29 @@ Class Model_User extends Model {
         $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `name`= '".$data['name']."', `password` = '".$password."' WHERE `id` = ".$id ;
         return $this->db->exec($sql);
 
+    }
+    
+    function validPin($pin=null, $username=null) {
+        $query = $this->db->prepare("SELECT * from ".$this->table." where reset_pin='".$pin."' and email = '".$username."'");
+        $query->execute(); 
+        return $query->rowCount();
+    }
+
+    function validUser($email=null) {
+        $query = $this->db->prepare("SELECT * from ".$this->table." where email='".$email."'");
+        $query->execute(); 
+        return $query->rowCount();
+    }
+
+
+    function updateUserPassword($data=[]) {
+        $date = date("Y-m-d h:i:s");
+        $user_id = -1;
+        $password = password_encrypt($data['password']);
+        $center = $data['collection_center'];
+        $pin = $data['pin'];
+        $uname = $data['username'];
+        $sql = "UPDATE `".$this->table."` SET `modified_at`= '".$date."', `modified_by`='".$user_id."', `password` = '".$password."' WHERE `reset_pin` = '".$pin."' and `collection_center_id`= '".$center." 'and `email`='".$uname."'";
+        return $this->db->exec($sql);
     }
 }

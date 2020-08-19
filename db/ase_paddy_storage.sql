@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 17, 2020 at 08:55 PM
+-- Generation Time: Aug 19, 2020 at 11:12 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.4.2
 
@@ -72,7 +72,7 @@ CREATE TABLE `bank_accounts` (
 INSERT INTO `bank_accounts` (`id`, `collection_center_id`, `bank_account_no`, `bank_account_name`, `bank_and_branch`, `created_by`, `created_at`, `modified_by`, `modified_at`, `status`) VALUES
 (1, 8, '8763243', 'khsdh', 'jhsdf', 1, '2020-08-12 07:05:25', 1, '2020-08-12 13:35:25', 0),
 (2, 6, '47652723', 'khsdh', 'jhsdf', 1, '2020-08-12 07:07:45', 1, '2020-08-12 13:37:45', 0),
-(3, 5, '73458345', 'khsdh', 'jhsdf', 1, '2020-08-12 07:08:12', 1, '2020-08-16 02:44:40', 0);
+(3, 5, '73458345  ', 'khsdh', 'jhsdf', 1, '2020-08-12 07:08:12', 1, '2020-08-17 03:40:54', 0);
 
 -- --------------------------------------------------------
 
@@ -156,7 +156,7 @@ CREATE TABLE `collection_center_stocks` (
 INSERT INTO `collection_center_stocks` (`collection_center_id`, `paddy_category_id`, `available_stock`) VALUES
 (6, 8, '300.0000'),
 (6, 3, '200.0000'),
-(6, 5, '500.0000'),
+(6, 5, '0.0000'),
 (6, 11, '400.0000'),
 (6, 10, '600.0000'),
 (6, 4, '500.0000'),
@@ -268,7 +268,7 @@ INSERT INTO `paddy_categories` (`id`, `name`, `description`, `available_stock`, 
 (2, 'Kalu Heenati', '', '0.0000', '2020-08-09 07:28:56', 2, '2020-08-16 02:30:02', 1, 1),
 (3, 'Kuruluthuda', '', '200.0000', '2020-08-16 08:01:18', 1, '2020-08-16 06:00:27', 1, 1),
 (4, 'Ran Kahawanu', '', '500.0000', '2020-08-16 08:01:53', 1, '2020-08-16 04:20:01', 1, 1),
-(5, 'Basmathi', '', '500.0000', '2020-08-16 08:02:15', 1, '2020-08-16 04:18:05', 1, 1),
+(5, 'Basmathi', '', '0.0000', '2020-08-16 08:02:15', 1, '2020-08-19 04:32:26', 1, 1),
 (6, 'Sudu Heenati', '', '0.0000', '2020-08-16 08:02:28', 1, '2020-08-16 14:32:28', 1, 1),
 (7, 'Suduru samba', '', '0.0000', '2020-08-16 08:03:08', 1, '2020-08-16 14:33:08', 1, 1),
 (8, 'Dik Wee', '', '300.0000', '2020-08-16 08:03:40', 1, '2020-08-16 04:13:41', 1, 1),
@@ -414,7 +414,7 @@ CREATE TABLE `pay_orders` (
 INSERT INTO `pay_orders` (`id`, `purchase_id`, `farmer_user_id`, `paid_amount`, `paid_date`, `pay_notes`, `issued_from_bank`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
 (1, 1, 7, '16000.00', '2020-08-16 09:43:41', '', 0, '2020-08-16 09:43:41', 3, '2020-08-16 16:13:41', 3, 0),
 (2, 2, 3, '25000.00', '2020-08-16 09:48:05', '', 0, '2020-08-16 09:48:05', 3, '2020-08-16 16:18:05', 3, 0),
-(3, 3, 8, '16600.00', '2020-08-16 09:48:53', '', 0, '2020-08-16 09:48:53', 3, '2020-08-16 16:18:53', 3, 0),
+(3, 3, 8, '16600.00', '2020-08-19 00:00:00', '', 0, '2020-08-16 09:48:53', 3, '2020-08-19 04:24:21', 3, 1),
 (4, 4, 5, '15000.00', '2020-08-06 00:00:00', '', 0, '2020-08-16 09:49:25', 3, '2020-08-16 22:11:31', 3, 1),
 (5, 5, 6, '18250.00', '2020-08-01 00:00:00', '', 0, '2020-08-16 09:50:01', 3, '2020-08-16 05:47:16', 3, 1);
 
@@ -549,7 +549,7 @@ CREATE TABLE `purchases` (
 
 INSERT INTO `purchases` (`id`, `farmer_id`, `collection_center_id`, `collection_date`, `total_amount`, `total_qty`, `purchase_notes`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
 (1, 7, 6, '2020-08-01', '16000.00', '500.0000', '', '2020-08-16 09:43:41', 3, '2020-08-16 16:13:41', 3, 1),
-(2, 3, 6, '2020-08-01', '25000.00', '500.0000', 'test note', '2020-08-16 09:48:05', 3, '2020-08-16 16:18:05', 3, 1),
+(2, 3, 6, '2020-08-01', '25000.00', '500.0000', 'test note', '2020-08-16 09:48:05', 3, '2020-08-19 04:32:26', 3, 4),
 (3, 8, 6, '2020-08-01', '16600.00', '500.0000', 'this is a test note', '2020-08-16 09:48:53', 3, '2020-08-16 16:18:53', 3, 1),
 (4, 5, 6, '2020-08-01', '15000.00', '500.0000', '', '2020-08-16 09:49:25', 3, '2020-08-16 16:19:25', 3, 1),
 (5, 6, 6, '2020-08-01', '18250.00', '500.0000', '', '2020-08-16 09:50:01', 3, '2020-08-16 16:20:01', 3, 1);
@@ -579,7 +579,7 @@ CREATE TABLE `purchase_items` (
 INSERT INTO `purchase_items` (`id`, `purchase_id`, `paddy_category_id`, `collected_amount`, `collected_rate`, `num_packs`, `notes`, `block_no`, `status`) VALUES
 (1, 1, 8, '300.000', '30.00', 10, '', 'A1', 1),
 (2, 1, 3, '200.000', '35.00', 25, '', 'B1', 1),
-(3, 2, 5, '500.000', '50.00', 230, '', 'A1', 1),
+(3, 2, 5, '500.000', '50.00', 230, '', 'A1', 4),
 (4, 3, 11, '400.000', '34.00', 100, '', 'F4', 1),
 (5, 3, 10, '100.000', '30.00', 40, '', 'A2', 1),
 (6, 4, 10, '500.000', '30.00', 15, '', 'A4', 1),
@@ -664,7 +664,7 @@ CREATE TABLE `transfers` (
 --
 
 INSERT INTO `transfers` (`id`, `from_center_id`, `to_center_id`, `vehicle_id`, `transfer_date`, `transfer_status_id`, `transfer_notes`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 6, 5, 3, '2020-08-03', 1, '', '2020-08-16 11:36:14', 1, '2020-08-16 18:06:14', 1, 1),
+(1, 6, 5, 3, '2020-08-03', 1, '', '2020-08-16 11:36:14', 1, '2020-08-18 03:46:31', 1, 4),
 (2, 6, 5, 3, '2020-08-03', 2, '', '2020-08-16 11:37:40', 1, '2020-08-16 06:08:58', 3, 1);
 
 -- --------------------------------------------------------
@@ -701,6 +701,7 @@ CREATE TABLE `users` (
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `password` text COLLATE utf8_unicode_ci NOT NULL,
+  `reset_pin` int(4) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(11) NOT NULL,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -712,14 +713,16 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `role_id`, `collection_center_id`, `name`, `email`, `password`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
-(1, 1, 0, 'PSC Admin', 'admin@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-02 15:10:38', 1, '2020-08-16 05:42:24', 3, 1),
-(2, 2, 2, 'Test', 'test@jadf.sdfdf', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-06 07:46:28', 1, '2020-08-16 05:42:31', 3, 1),
-(3, 4, 6, 'Collection Officer', 'co@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-11 10:03:30', 2, '2020-08-16 05:42:38', 3, 1),
-(4, 3, 6, 'Finance Officer', 'fo@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-11 10:03:49', 2, '2020-08-16 05:42:46', 3, 1),
-(5, 2, 6, 'Manager', 'ma@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-11 10:04:02', 2, '2020-08-16 05:42:51', 3, 1),
-(6, 5, 6, 'Storekeeper', 'stkp@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-11 10:04:26', 2, '2020-08-16 05:43:00', 3, 1),
-(7, 4, 5, 'Anuradhapura Collection Officer', 'co1@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', '2020-08-14 10:17:26', 1, '2020-08-16 05:43:07', 3, 1);
+INSERT INTO `users` (`id`, `role_id`, `collection_center_id`, `name`, `email`, `password`, `reset_pin`, `created_at`, `created_by`, `modified_at`, `modified_by`, `status`) VALUES
+(1, 1, 0, 'PSC Admin', 'admin@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 6747, '2020-08-02 15:10:38', 1, '2020-08-16 05:42:24', 3, 1),
+(2, 2, 2, 'Test', 'test@jadf.sdfdf', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 7637, '2020-08-06 07:46:28', 1, '2020-08-16 05:42:31', 3, 1),
+(3, 4, 6, 'Collection Officer', 'co@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 3727, '2020-08-11 10:03:30', 2, '2020-08-19 05:38:40', -1, 1),
+(4, 3, 6, 'Finance Officer', 'fo@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 3243, '2020-08-11 10:03:49', 2, '2020-08-16 05:42:46', 3, 1),
+(5, 2, 6, 'Manager', 'ma@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 3242, '2020-08-11 10:04:02', 2, '2020-08-16 05:42:51', 3, 1),
+(6, 5, 6, 'Storekeeper', 'stkp@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 5343, '2020-08-11 10:04:26', 2, '2020-08-16 05:43:00', 3, 1),
+(7, 4, 5, 'Anuradhapura Collection Officer', 'co1@psc.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 6343, '2020-08-14 10:17:26', 1, '2020-08-16 05:43:07', 3, 1),
+(8, 2, 5, 'Center Manager', 'cmanu@pas.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 5001, '2020-08-19 11:11:27', 1, '2020-08-19 17:41:27', 1, 1),
+(9, 4, 5, 'Collection Office', 'coanu@pas.com', '5aadb45520dcd8726b2822a7a78bb53d794f557199d5d4abdedd2c55a4bd6ca73607605c558de3db80c8e86c3196484566163ed1327e82e8b6757d1932113cb8', 8238, '2020-08-19 11:12:21', 1, '2020-08-19 17:42:21', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1082,7 +1085,7 @@ ALTER TABLE `transfer_items`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user_roles`

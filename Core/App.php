@@ -39,7 +39,7 @@ Class App {
         $ctrl = new $controller;
         
         if(method_exists($ctrl, $method)) {
-            if(is_permitted($url_ctrl.'-'.$method) || $url_ctrl === "dashboard" || ($url_ctrl === "Auth" || $url_ctrl === "auth")) {
+            if(is_permitted($url_ctrl.'-'.$method) || (get_user_id() > 0 && $url_ctrl === "dashboard") || ($url_ctrl === "Auth" || $url_ctrl === "auth")) {
                 $ctrl->$method($params);
             } else {
                 App::ErrorPage("No Permission");
