@@ -1,5 +1,4 @@
 # paddy_storage_cooperation
-# ASE CourceWork 01
 #
 
 ################################## SYSTEM REQUIREMENTS #########################################
